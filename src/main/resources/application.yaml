@@ -187,3 +187,19 @@ ai:
   api_key:      "sk-api-key"
   request_body: '{ "input": "$message"}'
   message_replacement_pattern: "$message"
+
+#
+# Google Auth Properties
+#
+google:
+  token:
+    server:
+      url: "https://oauth2.googleapis.com/token"
+  auth:
+    server:
+      url: "https://accounts.google.com/o/oauth2/auth"
+  scope: "https://www.googleapis.com/auth/userinfo.profile"
+  key: "key"
+  secret: "secret"
+  callback:
+    url: "/"
