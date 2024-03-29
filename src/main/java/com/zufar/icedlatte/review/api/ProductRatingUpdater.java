@@ -28,7 +28,7 @@ public class ProductRatingUpdater {
     private final ProductRatingDtoConverter ratingConverter;
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
-    public ProductRatingDto addRating(final UUID userId, final UUID productId, final Integer rating) {
+    public ProductRatingDto addNewRating(final UUID userId, final UUID productId, final Integer rating) {
         final UserEntity user = singleUserProvider.getUserEntityById(userId);
         final ProductInfo product = productApi.getProductEntityById(productId);
         ProductRating productRatingEntity = ratingRepository.findByUserIdAndProductInfoProductId(userId, productId);
@@ -39,7 +39,7 @@ public class ProductRatingUpdater {
                     .productInfo(product)
                     .build();
         } else {
-            log.info("Updating existing product rating entry: {}", productRatingEntity.getId());
+            log.info("Updating the existing product rating entry: {}", productRatingEntity.getId());
         }
         productRatingEntity.setProductRating(rating);
         ratingRepository.save(productRatingEntity);

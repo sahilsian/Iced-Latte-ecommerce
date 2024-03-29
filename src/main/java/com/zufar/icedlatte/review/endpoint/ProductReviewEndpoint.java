@@ -38,17 +38,17 @@ public class ProductReviewEndpoint implements com.zufar.icedlatte.openapi.produc
     @Override
     @PostMapping(value = "/{productId}/reviews")
     public ResponseEntity<ProductReviewResponse> addNewProductReview(@PathVariable final UUID productId,
-                                                           final ProductReviewRequest productReviewRequest) {
-        log.info("Received request to add product review for product with productId = '{}'", productId);
+                                                                     final ProductReviewRequest productReviewRequest) {
+        log.info("Received the request to add a new product review for the product with the productId = '{}'", productId);
         var review = productReviewCreator.create(productId, productReviewRequest);
-        log.info("Product review was added with productReviewId = '{}'", review.getProductReviewId());
+        log.info("New product review was added with productReviewId = '{}' for the product with the productId = '{}'", review.getProductReviewId(), productId);
         return ResponseEntity.ok().body(review);
     }
 
     @Override
     @DeleteMapping(value = "/{productId}/reviews/{productReviewId}")
     public ResponseEntity<Void> deleteProductReview(@PathVariable final UUID productId,
-                                             @PathVariable final UUID productReviewId) {
+                                                    @PathVariable final UUID productReviewId) {
         log.info("Received request to delete product review with productReviewId = '{}', productId = '{}'", productReviewId, productId);
         productReviewDeleter.delete(productId, productReviewId);
         log.info("Product review was deleted");
@@ -58,23 +58,23 @@ public class ProductReviewEndpoint implements com.zufar.icedlatte.openapi.produc
     @Override
     @GetMapping(value = "/{productId}/reviews")
     public ResponseEntity<ProductReviewsAndRatingsWithPagination> getProductReviewsAndRatings(@PathVariable final UUID productId,
-                                                                                       @RequestParam(name = "page", defaultValue = "0") final Integer page,
-                                                                                       @RequestParam(name = "size", defaultValue = "10") final Integer size,
-                                                                                       @RequestParam(name = "sort_attribute", defaultValue = "createdAt") final String sortAttribute,
-                                                                                       @RequestParam(name = "sort_direction", defaultValue = "desc") final String sortDirection) {
-        log.info("Received the request to get reviews and ratings for product {} with these pagination and sorting attributes: page - {}, size - {}, sort_attribute - {}, sort_direction - {}",
+                                                                                              @RequestParam(name = "page", defaultValue = "0") final Integer page,
+                                                                                              @RequestParam(name = "size", defaultValue = "10") final Integer size,
+                                                                                              @RequestParam(name = "sort_attribute", defaultValue = "createdAt") final String sortAttribute,
+                                                                                              @RequestParam(name = "sort_direction", defaultValue = "desc") final String sortDirection) {
+        log.info("Received the request to get reviews and ratings for the product with the productId = '{}' and with the next pagination and sorting attributes: page - {}, size - {}, sort_attribute - {}, sort_direction - {}",
                 productId, page, size, sortAttribute, sortDirection);
         ProductReviewsAndRatingsWithPagination reviewsPaginationDto = productReviewsAndRatingsProvider.getProductReviews(productId, page, size, sortAttribute, sortDirection);
-        log.info("Product reviews and ratings were retrieved successfully");
+        log.info("Product reviews and ratings were retrieved successfully for the product with the productId = '{}'", productId);
         return ResponseEntity.ok().body(reviewsPaginationDto);
     }
 
     @Override
     @GetMapping(value = "/{productId}/review")
-    public ResponseEntity<ProductReviewWithRating> getProductReview(@PathVariable final UUID productId){
-        log.info("Received the request to get product review and rating for product {}", productId);
+    public ResponseEntity<ProductReviewWithRating> getProductReview(@PathVariable final UUID productId) {
+        log.info("Received the request to get product review and rating for the product with the productId = '{}'", productId);
         ProductReviewWithRating result = productReviewsAndRatingsProvider.getProductReviewAndRatingByUser(productId);
-        log.info("Product review and rating were retrieved successfully");
+        log.info("Product review and rating were retrieved successfully for the product with the productId = '{}'", productId);
         return ResponseEntity.ok().body(result);
     }
 }
