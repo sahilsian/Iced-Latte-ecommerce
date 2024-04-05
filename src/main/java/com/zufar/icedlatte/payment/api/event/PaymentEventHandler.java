@@ -1,8 +1,8 @@
-package com.zufar.icedlatte.payment.api.impl.event;
+package com.zufar.icedlatte.payment.api.event;
 
 import com.stripe.model.Event;
 import com.stripe.model.PaymentIntent;
-import com.zufar.icedlatte.payment.api.impl.scenario.PaymentScenarioExecutor;
+import com.zufar.icedlatte.payment.api.scenario.PaymentScenarioExecutor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

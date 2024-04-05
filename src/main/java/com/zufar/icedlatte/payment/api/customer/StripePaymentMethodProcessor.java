@@ -1,4 +1,4 @@
-package com.zufar.icedlatte.payment.api.impl.customer;
+package com.zufar.icedlatte.payment.api.customer;
 
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentMethod;

@@ -1,4 +1,4 @@
-package com.zufar.icedlatte.payment.api.impl.intent;
+package com.zufar.icedlatte.payment.api.intent;
 
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.PaymentMethod;

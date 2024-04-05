@@ -1,4 +1,4 @@
-package com.zufar.icedlatte.payment.api.impl.intent;
+package com.zufar.icedlatte.payment.api.intent;
 
 import com.zufar.icedlatte.cart.exception.ShoppingCartNotFoundException;
 import com.zufar.icedlatte.cart.repository.ShoppingCartRepository;

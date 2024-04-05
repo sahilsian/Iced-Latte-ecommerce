@@ -1,4 +1,4 @@
-package com.zufar.icedlatte.payment.api.impl.event;
+package com.zufar.icedlatte.payment.api.event;
 
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;

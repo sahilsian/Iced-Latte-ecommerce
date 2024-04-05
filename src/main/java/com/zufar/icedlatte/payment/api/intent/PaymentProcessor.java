@@ -1,9 +1,9 @@
-package com.zufar.icedlatte.payment.api.impl.intent;
+package com.zufar.icedlatte.payment.api.intent;
 
 import com.stripe.model.PaymentMethod;
 import com.zufar.icedlatte.openapi.dto.CreatePaymentRequest;
 import com.zufar.icedlatte.openapi.dto.ProcessedPaymentWithClientSecretDto;
-import com.zufar.icedlatte.payment.api.impl.customer.StripeCustomerDataProcessor;
+import com.zufar.icedlatte.payment.api.customer.StripeCustomerDataProcessor;
 import com.zufar.icedlatte.payment.config.StripeConfiguration;
 import com.zufar.icedlatte.payment.entity.Payment;
 import lombok.RequiredArgsConstructor;

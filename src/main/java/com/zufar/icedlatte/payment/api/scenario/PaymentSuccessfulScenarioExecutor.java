@@ -1,4 +1,4 @@
-package com.zufar.icedlatte.payment.api.impl.scenario;
+package com.zufar.icedlatte.payment.api.scenario;
 
 import com.stripe.model.Event;
 import com.stripe.model.PaymentIntent;
