@@ -192,14 +192,9 @@ ai:
 # Google Auth Properties
 #
 google:
-  token:
-    server:
-      url: "https://oauth2.googleapis.com/token"
   auth:
     server:
-      url: "https://accounts.google.com/o/oauth2/auth"
+      url: "https://accounts.google.com/o/oauth2/v2/auth"
   scope: "https://www.googleapis.com/auth/userinfo.profile"
-  key: "key"
-  secret: "secret"
-  callback:
-    url: "/"
+  client-id: "sk-client-id"
+  client-secret: "sk-client-secret"

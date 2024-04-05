@@ -26,52 +26,66 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SpringSecurityConfiguration {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(final HttpSecurity httpSecurity,
-                                                   final JwtAuthenticationFilter jwtTokenFilter) throws Exception {
-        return httpSecurity
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests
-                                .requestMatchers(SecurityConstants.SHOPPING_CART_URL).authenticated()
-                                .requestMatchers(SecurityConstants.PAYMENT_URL).authenticated()
-                                .requestMatchers(SecurityConstants.USERS_URL).authenticated()
-                                .requestMatchers(SecurityConstants.FAVOURITES_URL).authenticated()
-                                .requestMatchers(SecurityConstants.ORDERS_URL).authenticated()
-                                .requestMatchers(SecurityConstants.SHIPPING_URL).authenticated()
-                                .requestMatchers(HttpMethod.GET, SecurityConstants.RATING_URL).permitAll()
-                                .requestMatchers(HttpMethod.GET, SecurityConstants.REVIEWS_URL).permitAll()
-                                .anyRequest().permitAll()
-                )
-                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
-    }
+  @Bean
+  public SecurityFilterChain securityFilterChain(
+      final HttpSecurity httpSecurity, final JwtAuthenticationFilter jwtTokenFilter)
+      throws Exception {
+    return httpSecurity
+        .csrf(AbstractHttpConfigurer::disable)
+        .authorizeHttpRequests(
+            authorizeRequests ->
+                authorizeRequests
+                    .requestMatchers(SecurityConstants.SHOPPING_CART_URL)
+                    .authenticated()
+                    .requestMatchers(SecurityConstants.PAYMENT_URL)
+                    .authenticated()
+                    .requestMatchers(SecurityConstants.USERS_URL)
+                    .authenticated()
+                    .requestMatchers(SecurityConstants.FAVOURITES_URL)
+                    .authenticated()
+                    .requestMatchers(SecurityConstants.ORDERS_URL)
+                    .authenticated()
+                    .requestMatchers(SecurityConstants.SHIPPING_URL)
+                    .authenticated()
+                    .requestMatchers(HttpMethod.GET, SecurityConstants.RATING_URL)
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, SecurityConstants.REVIEWS_URL)
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, SecurityConstants.AUTH_3PART_URL)
+                    .permitAll()
+                    .anyRequest()
+                    .permitAll())
+        .sessionManagement(
+            sessionManagement ->
+                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+        .build();
+  }
 
-    @Bean
-    public AuthenticationProvider authenticationProvider(final UserDetailsService userDetailsService,
-                                                         final PasswordEncoder passwordEncoder) {
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userDetailsService);
-        authenticationProvider.setPasswordEncoder(passwordEncoder);
-        authenticationProvider.setHideUserNotFoundExceptions(false);
-        return authenticationProvider;
-    }
+  @Bean
+  public AuthenticationProvider authenticationProvider(
+      final UserDetailsService userDetailsService, final PasswordEncoder passwordEncoder) {
+    DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+    authenticationProvider.setUserDetailsService(userDetailsService);
+    authenticationProvider.setPasswordEncoder(passwordEncoder);
+    authenticationProvider.setHideUserNotFoundExceptions(false);
+    return authenticationProvider;
+  }
 
-    @Bean
-    public AuthenticationManager authenticationManager(final HttpSecurity httpSecurity,
-                                                       final AuthenticationProvider authenticationProvider) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity
-                .getSharedObject(AuthenticationManagerBuilder.class);
+  @Bean
+  public AuthenticationManager authenticationManager(
+      final HttpSecurity httpSecurity, final AuthenticationProvider authenticationProvider)
+      throws Exception {
+    AuthenticationManagerBuilder authenticationManagerBuilder =
+        httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
 
-        authenticationManagerBuilder.authenticationProvider(authenticationProvider);
+    authenticationManagerBuilder.authenticationProvider(authenticationProvider);
 
-        return authenticationManagerBuilder
-                .build();
-    }
+    return authenticationManagerBuilder.build();
+  }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 }
