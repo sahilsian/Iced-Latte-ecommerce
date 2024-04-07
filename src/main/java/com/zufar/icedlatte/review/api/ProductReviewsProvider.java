@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.zufar.icedlatte.common.util.Utils.createPageableObject;
-import static com.zufar.icedlatte.review.converter.ProductReviewDtoConverter.EMPTY_REVIEW_RESPONSE;
+import static com.zufar.icedlatte.review.converter.ProductReviewDtoConverter.EMPTY_PRODUCT_REVIEW_RESPONSE;
 
 @Slf4j
 @Service
@@ -60,7 +60,7 @@ public class ProductReviewsProvider {
         var userId = securityPrincipalProvider.getUserId();
         return reviewRepository.findByUserIdAndProductInfoProductId(userId, productId)
                 .map(productReviewDtoConverter::toReviewResponse)
-                .orElse(EMPTY_REVIEW_RESPONSE);
+                .orElse(EMPTY_PRODUCT_REVIEW_RESPONSE);
     }
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, readOnly = true)

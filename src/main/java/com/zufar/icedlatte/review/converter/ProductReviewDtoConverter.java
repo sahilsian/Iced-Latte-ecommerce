@@ -12,29 +12,20 @@ import java.util.List;
 @Service
 public class ProductReviewDtoConverter {
 
-    public static final ProductReviewResponse EMPTY_REVIEW_RESPONSE;
+    public static final ProductReviewResponse EMPTY_PRODUCT_REVIEW_RESPONSE =
+            new ProductReviewResponse(null, null, null, null, null, null);
 
-    static {
-        var response = new ProductReviewResponse();
-        response.setProductReviewId(null);
-        response.setCreatedAt(null);
-        response.setText(null);
-        response.setRating(null);
-        EMPTY_REVIEW_RESPONSE = response;
+    public ProductReviewResponse toReviewResponse(ProductReview productReview) {
+        return new ProductReviewResponse(
+                productReview.getId(),
+                productReview.getProductRating(),
+                productReview.getText(),
+                productReview.getCreatedAt(),
+                productReview.getUser().getFirstName(),
+                productReview.getUser().getLastName());
     }
 
-    public ProductReviewResponse toReviewResponse(ProductReview productReview){
-        var response = new ProductReviewResponse();
-        response.setProductReviewId(productReview.getId());
-        response.setCreatedAt(productReview.getCreatedAt());
-        response.setText(productReview.getText());
-        response.setRating(productReview.getProductRating());
-        response.setUserName(productReview.getUser().getFirstName());
-        response.setUserLastName(productReview.getUser().getLastName());
-        return response;
-    }
-
-    public ProductReviewsAndRatingsWithPagination toProductReviewsAndRatingsWithPagination(final Page<ProductReviewResponse> page){
+    public ProductReviewsAndRatingsWithPagination toProductReviewsAndRatingsWithPagination(final Page<ProductReviewResponse> page) {
         var result = new ProductReviewsAndRatingsWithPagination();
         result.setPage(page.getTotalPages());
         result.setSize(page.getSize());
