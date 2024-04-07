@@ -65,14 +65,14 @@ public class ProductReviewsProvider {
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, readOnly = true)
     public ProductReviewRatingStats getRatingAndReviewStat(final UUID productId) {
-        List<Object[]> listOfMappings = reviewRepository.getRatingsMapByProductId(productId);
+        List<Object[]> productRatingCountPairs = reviewRepository.getRatingsMapByProductId(productId);
         Double avgRating = reviewRepository.getAvgRatingByProductId(productId);
-        if (listOfMappings == null || avgRating == null) {
+        if (productRatingCountPairs == null || avgRating == null) {
             log.error("The product with productId = {} was not found.", productId);
             throw new ProductNotFoundException(productId);
         }
         Integer reviewCount = reviewRepository.getReviewCountProductById(productId);
         return new ProductReviewRatingStats(productId, avgRating, reviewCount,
-                productReviewDtoConverter.convertToProductRatingMap(listOfMappings));
+                productReviewDtoConverter.convertToProductRatingMap(productRatingCountPairs));
     }
 }

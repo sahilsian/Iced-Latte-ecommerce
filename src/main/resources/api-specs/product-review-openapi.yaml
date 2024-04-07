@@ -16,7 +16,7 @@ servers:
 
 tags:
   - name: "Product Review"
-    description: "An API for product review creation and modification"
+    description: "An API for product's review creation and modification"
 
 paths:
   /api/v1/products/{productId}/reviews:
@@ -81,7 +81,7 @@ paths:
     post:
       tags:
         - "Product Review"
-      summary: "Add a new review for a specific product by authorized user. If review exists, then 400 error will be returned"
+      summary: "Add a new review for a specific product by an authorized user. If review exists, then 400 error will be returned"
       operationId: "addNewProductReview"
       parameters:
         - name: "productId"
@@ -117,7 +117,7 @@ paths:
     delete:
       tags:
         - "Product Review"
-      summary: "Delete an existing product's review created the authorized user"
+      summary: "Delete an existing product's review created by an authorized user"
       operationId: "deleteProductReview"
       parameters:
         - name: "productId"
@@ -148,7 +148,7 @@ paths:
     get:
       tags:
         - "Product Review"
-      summary: "Return a review created by the authorized user"
+      summary: "Return a review created by an authorized user"
       operationId: "getProductReview"
       parameters:
         - name: "productId"
@@ -174,19 +174,19 @@ paths:
     get:
       tags:
         - "Product Review"
-      summary: "Get product review and rating statistics: average rating, count of reviews, ratings map. Endpoint is available for unauthorized users"
+      summary: "Returns statistics of product's review and rating : average rating, count of reviews, ratings map. The endpoint is available for unauthorized users"
       operationId: "getRatingAndReviewStat"
       parameters:
         - name: "productId"
           in: "path"
-          description: "ID of the product to get rating for"
+          description: "Id of the product to get rating for"
           required: true
           schema:
             type: "string"
             format: "uuid"
       responses:
         "200":
-          description: "Product Review and Rating statistics retrieved successfully."
+          description: "Statistics of product's review and rating was retrieved successfully."
           content:
             application/json:
               schema:
