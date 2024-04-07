@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public class ProductReviewNotFoundException extends ResourceNotFoundException {
 
-    public ProductReviewNotFoundException(UUID reviewId) {
-        super(String.format("Review entity with id %s doesn't exist", reviewId));
+    public ProductReviewNotFoundException(UUID productReviewId) {
+        super(String.format("Product's review with productReviewId = '%s' was not found", productReviewId));
     }
 }

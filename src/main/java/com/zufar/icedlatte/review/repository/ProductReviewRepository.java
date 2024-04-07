@@ -21,12 +21,12 @@ public interface ProductReviewRepository extends JpaRepository<ProductReview, UU
 
     Page<ProductReview> findByProductInfoProductIdAndUserIdNot(UUID productId, UUID userId, Pageable pageable);
 
-    @Query("SELECT COUNT(pr) FROM ProductReview pr WHERE pr.productInfo.id = :productId")
+    @Query("SELECT COUNT(pr) FROM ProductReview pr WHERE pr.productInfo.productId = :productId")
     Integer getReviewCountProductById(UUID productId);
 
-    @Query("SELECT AVG(pr.productRating) FROM ProductReview pr WHERE pr.productInfo.id = :productId")
+    @Query("SELECT AVG(pr.productRating) FROM ProductReview pr WHERE pr.productInfo.productId = :productId")
     Double getAvgRatingByProductId(UUID productId);
 
-    @Query("SELECT pr.productRating, COUNT(pr.productRating) FROM ProductReview pr WHERE pr.productInfo.id = :productId GROUP BY pr.productRating")
+    @Query("SELECT pr.productRating, COUNT(pr.productRating) FROM ProductReview pr WHERE pr.productInfo.productId = :productId GROUP BY pr.productRating")
     List<Object[]> getRatingsMapByProductId(UUID productId);
 }

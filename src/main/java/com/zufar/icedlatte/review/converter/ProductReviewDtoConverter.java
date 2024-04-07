@@ -44,31 +44,31 @@ public class ProductReviewDtoConverter {
         return result;
     }
 
-    public RatingMap convertToRatingMap(List<Object[]> listOfMappings) {
-        var map = new RatingMap();
+    public RatingMap convertToProductRatingMap(List<Object[]> listOfMappings) {
+        var productRatingMap = new RatingMap();
         for (Object[] arr : listOfMappings) {
-            var rating = (Integer) arr[0];
+            var productRating = (Integer) arr[0];
             var count = ((Long) arr[1]).intValue();
-            switch (rating) {
+            switch (productRating) {
                 case 5:
-                    map._5(count);
+                    productRatingMap._5(count);
                     break;
                 case 4:
-                    map._4(count);
+                    productRatingMap._4(count);
                     break;
                 case 3:
-                    map._3(count);
+                    productRatingMap._3(count);
                     break;
                 case 2:
-                    map._2(count);
+                    productRatingMap._2(count);
                     break;
                 case 1:
-                    map._1(count);
+                    productRatingMap._1(count);
                     break;
                 default:
-                    assert false : "Unexpected rating value";
+                    assert false : "Unexpected product's rating value";
             }
         }
-        return map;
+        return productRatingMap;
     }
 }
