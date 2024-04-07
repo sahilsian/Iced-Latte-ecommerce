@@ -48,6 +48,9 @@ public class ProductReview {
     @Column(name = "text", nullable = false)
     private String text;
 
+    @Column(name = "rating", nullable = false)
+    private Integer productRating;
+
     @Override
     public String toString() {
         return "Product Review {" +

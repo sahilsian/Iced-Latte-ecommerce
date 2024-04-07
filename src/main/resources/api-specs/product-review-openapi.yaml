@@ -117,7 +117,7 @@ paths:
     delete:
       tags:
         - "Product Review"
-      summary: "Delete an existed product's review by authorized user"
+      summary: "Delete an existing product's review created the authorized user"
       operationId: "deleteProductReview"
       parameters:
         - name: "productId"
@@ -160,18 +160,41 @@ paths:
             format: "uuid"
       responses:
         "200":
-          description: "The product was found and its review and rating are returned. Rating and review are null, if user left no review and rating for the product"
+          description: "Review and rating are returned. All fields are null, if user left no review for the product"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProductReviewWithRating"
+                $ref: "#/components/schemas/ProductReviewResponse"
         "401":
           description: "Unauthorized access"
+        "500":
+          description: "Internal server error"
+
+  /api/v1/products/{productId}/reviews/statistics:
+    get:
+      tags:
+        - "Product Review"
+      summary: "Get product review and rating statistics: average rating, count of reviews, ratings map. Endpoint is available for unauthorized users"
+      operationId: "getRatingAndReviewStat"
+      parameters:
+        - name: "productId"
+          in: "path"
+          description: "ID of the product to get rating for"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      responses:
+        "200":
+          description: "Product Review and Rating statistics retrieved successfully."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductReviewRatingStats"
         "404":
           description: "Product was not found"
         "500":
           description: "Internal server error"
-
 
 components:
   schemas:
@@ -182,20 +205,13 @@ components:
           type: "string"
           minLength: 1
           maxLength: 1500
+        rating:
+          type: "integer"
+          minimum: 1
+          maximum: 5
       required:
         - text
-
-    ProductReviewResponse:
-      type: "object"
-      properties:
-        productReviewId:
-          type: "string"
-          format: "uuid"
-        text:
-          type: "string"
-        createdAt:
-          type: "string"
-          format: "date-time"
+        - rating
 
     ProductReviewsAndRatingsWithPagination:
       type: "object"
@@ -203,7 +219,7 @@ components:
         reviewsWithRatings:
           type: "array"
           items:
-            $ref: "#/components/schemas/ProductReviewWithRating"
+            $ref: "#/components/schemas/ProductReviewResponse"
         page:
           type: "integer"
           format: "int32"
@@ -217,20 +233,23 @@ components:
           type: "integer"
           format: "int32"
 
-    ProductReviewWithRating:
+    ProductReviewResponse:
       type: "object"
       description: "Object used to group product's reviews and ratings by user"
       required:
+        - productReviewId
         - rating
-        - reviewText
+        - text
         - createdAt
         - userName
         - userLastName
       properties:
+        productReviewId:
+          type: "string"
+          format: "uuid"
         rating:
           type: "integer"
-          format: "int32"
-        reviewText:
+        text:
           type: "string"
         createdAt:
           type: "string"
@@ -239,3 +258,53 @@ components:
           type: "string"
         userLastName:
           type: "string"
+
+    ProductReviewRatingStats:
+      type: object
+      properties:
+        productId:
+          type: string
+          format: "uuid"
+        avgRating:
+          type: "number"
+          format: "double"
+        reviewCount:
+          type: "integer"
+          format: "int32"
+        ratingMap:
+          $ref: "#/components/schemas/RatingMap"
+      required:
+        - productId
+        - avgRating
+        - reviewCount
+        - ratingMap
+
+    RatingMap:
+      type: object
+      properties:
+        5:
+          type: "integer"
+          format: "int32"
+          default: 0
+        4:
+          type: "integer"
+          format: "int32"
+          default: 0
+        3:
+          type: "integer"
+          format: "int32"
+          default: 0
+        2:
+          type: "integer"
+          format: "int32"
+          default: 0
+        1:
+          type: "integer"
+          format: "int32"
+          default: 0
+      required:
+        - "1"
+        - "2"
+        - "3"
+        - "4"
+        - "5"

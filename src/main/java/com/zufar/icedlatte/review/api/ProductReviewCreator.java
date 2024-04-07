@@ -26,7 +26,7 @@ public class ProductReviewCreator {
     private final ProductReviewDtoConverter productReviewDtoConverter;
     private final SecurityPrincipalProvider securityPrincipalProvider;
     private final SingleUserProvider singleUserProvider;
-    private final ProductRatingAndReviewValidator productReviewValidator;
+    private final ProductReviewValidator productReviewValidator;
     private final SingleProductProvider singleProductProvider;
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
@@ -39,6 +39,7 @@ public class ProductReviewCreator {
                 .user(singleUserProvider.getUserEntityById(userId))
                 .productInfo(singleProductProvider.getProductEntityById(productId))
                 .text(productReviewText)
+                .productRating(productReviewRequest.getRating())
                 .build();
 
         reviewRepository.saveAndFlush(productReview);
