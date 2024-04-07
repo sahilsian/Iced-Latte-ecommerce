@@ -51,7 +51,7 @@ public class ProductReviewEndpoint implements com.zufar.icedlatte.openapi.produc
                                                     @PathVariable final UUID productReviewId) {
         log.info("Received request to delete product review with productReviewId = '{}', productId = '{}'", productReviewId, productId);
         productReviewDeleter.delete(productId, productReviewId);
-        log.info("Product review was deleted");
+        log.info("Product review with productReviewId = '{}' was deleted", productReviewId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -81,9 +81,9 @@ public class ProductReviewEndpoint implements com.zufar.icedlatte.openapi.produc
     @Override
     @GetMapping("/{productId}/reviews/statistics")
     public ResponseEntity<ProductReviewRatingStats> getRatingAndReviewStat(@PathVariable final UUID productId) {
-        log.info("Received the request to get the review's and rating's statistics for the product with the id = '{}'", productId);
+        log.info("Received the request to get the statistics of product's review and rating for the product with the productId = '{}'", productId);
         final ProductReviewRatingStats stats = productReviewsProvider.getRatingAndReviewStat(productId);
-        log.info("Product review and rating statistics were retrieved successfully for the product with the id = '{}'", productId);
+        log.info("Statistics for product's review and rating for the product with the productId = '{}' was retrieved successfully", productId);
         return ResponseEntity.ok().body(stats);
     }
 }

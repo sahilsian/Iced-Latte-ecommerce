@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.zufar.icedlatte.common.util.Utils.createPageableObject;
-import static com.zufar.icedlatte.review.converter.ProductReviewDtoConverter.EMPTY_REVIEW_RESPONSE;
+import static com.zufar.icedlatte.review.converter.ProductReviewDtoConverter.EMPTY_PRODUCT_REVIEW_RESPONSE;
 
 @Slf4j
 @Service
@@ -55,24 +55,24 @@ public class ProductReviewsProvider {
     }
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, readOnly = true)
-    public ProductReviewResponse getProductReviewForUser(UUID productId) {
+    public ProductReviewResponse getProductReviewForUser(final UUID productId) {
         productReviewValidator.validateProductExists(productId);
         var userId = securityPrincipalProvider.getUserId();
         return reviewRepository.findByUserIdAndProductInfoProductId(userId, productId)
                 .map(productReviewDtoConverter::toReviewResponse)
-                .orElse(EMPTY_REVIEW_RESPONSE);
+                .orElse(EMPTY_PRODUCT_REVIEW_RESPONSE);
     }
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, readOnly = true)
     public ProductReviewRatingStats getRatingAndReviewStat(final UUID productId) {
-        List<Object[]> listOfMappings = reviewRepository.getRatingsMapByProductId(productId);
+        List<Object[]> productRatingCountPairs = reviewRepository.getRatingsMapByProductId(productId);
         Double avgRating = reviewRepository.getAvgRatingByProductId(productId);
-        if (listOfMappings == null || avgRating == null) {
-            log.error("The product with id = {} was not found.", productId);
+        if (productRatingCountPairs == null || avgRating == null) {
+            log.error("The product with productId = {} was not found.", productId);
             throw new ProductNotFoundException(productId);
         }
         Integer reviewCount = reviewRepository.getReviewCountProductById(productId);
         return new ProductReviewRatingStats(productId, avgRating, reviewCount,
-                productReviewDtoConverter.convertToRatingMap(listOfMappings));
+                productReviewDtoConverter.convertToProductRatingMap(productRatingCountPairs));
     }
 }

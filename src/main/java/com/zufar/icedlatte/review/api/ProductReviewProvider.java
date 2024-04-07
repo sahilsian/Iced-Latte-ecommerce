@@ -20,11 +20,11 @@ public class ProductReviewProvider {
     private final ProductReviewRepository reviewRepository;
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, readOnly = true)
-    public ProductReview getReviewEntityById(final UUID reviewId) {
-        return reviewRepository.findById(reviewId)
+    public ProductReview getReviewEntityById(final UUID productReviewId) {
+        return reviewRepository.findById(productReviewId)
                 .orElseThrow(() -> {
-                    log.warn("Failed to get the review entity with id: {}", reviewId);
-                    return new ProductReviewNotFoundException(reviewId);
+                    log.warn("Failed to get the review entity with productReviewId = '{}'", productReviewId);
+                    return new ProductReviewNotFoundException(productReviewId);
                 });
     }
 }

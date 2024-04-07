@@ -12,29 +12,20 @@ import java.util.List;
 @Service
 public class ProductReviewDtoConverter {
 
-    public static final ProductReviewResponse EMPTY_REVIEW_RESPONSE;
+    public static final ProductReviewResponse EMPTY_PRODUCT_REVIEW_RESPONSE =
+            new ProductReviewResponse(null, null, null, null, null, null);
 
-    static {
-        var response = new ProductReviewResponse();
-        response.setProductReviewId(null);
-        response.setCreatedAt(null);
-        response.setText(null);
-        response.setRating(null);
-        EMPTY_REVIEW_RESPONSE = response;
+    public ProductReviewResponse toReviewResponse(ProductReview productReview) {
+        return new ProductReviewResponse(
+                productReview.getId(),
+                productReview.getProductRating(),
+                productReview.getText(),
+                productReview.getCreatedAt(),
+                productReview.getUser().getFirstName(),
+                productReview.getUser().getLastName());
     }
 
-    public ProductReviewResponse toReviewResponse(ProductReview productReview){
-        var response = new ProductReviewResponse();
-        response.setProductReviewId(productReview.getId());
-        response.setCreatedAt(productReview.getCreatedAt());
-        response.setText(productReview.getText());
-        response.setRating(productReview.getProductRating());
-        response.setUserName(productReview.getUser().getFirstName());
-        response.setUserLastName(productReview.getUser().getLastName());
-        return response;
-    }
-
-    public ProductReviewsAndRatingsWithPagination toProductReviewsAndRatingsWithPagination(final Page<ProductReviewResponse> page){
+    public ProductReviewsAndRatingsWithPagination toProductReviewsAndRatingsWithPagination(final Page<ProductReviewResponse> page) {
         var result = new ProductReviewsAndRatingsWithPagination();
         result.setPage(page.getTotalPages());
         result.setSize(page.getSize());
@@ -44,31 +35,32 @@ public class ProductReviewDtoConverter {
         return result;
     }
 
-    public RatingMap convertToRatingMap(List<Object[]> listOfMappings) {
-        var map = new RatingMap();
-        for (Object[] arr : listOfMappings) {
-            var rating = (Integer) arr[0];
-            var count = ((Long) arr[1]).intValue();
-            switch (rating) {
+    public RatingMap convertToProductRatingMap(List<Object[]> productRatingCountPairs) {
+        var productRatingMap = new RatingMap(null, null, null, null, null);
+
+        for (Object[] productRatingAndCountPair : productRatingCountPairs) {
+            var productRating = (Integer) productRatingAndCountPair[0];
+            var count = ((Long) productRatingAndCountPair[1]).intValue();
+            switch (productRating) {
                 case 5:
-                    map._5(count);
+                    productRatingMap.set5(count);
                     break;
                 case 4:
-                    map._4(count);
+                    productRatingMap.set4(count);
                     break;
                 case 3:
-                    map._3(count);
+                    productRatingMap.set3(count);
                     break;
                 case 2:
-                    map._2(count);
+                    productRatingMap.set2(count);
                     break;
                 case 1:
-                    map._1(count);
+                    productRatingMap.set1(count);
                     break;
                 default:
-                    assert false : "Unexpected rating value";
+                    assert false : "Unexpected product's rating value";
             }
         }
-        return map;
+        return productRatingMap;
     }
 }

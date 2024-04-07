@@ -39,7 +39,8 @@ public class ProductReviewValidator {
     /**
      * Check if user has already created a review for this product
      */
-    public void validateReviewExists(final UUID userId, final UUID productId) {
+    public void validateReviewExists(final UUID userId,
+                                     final UUID productId) {
         var review = reviewRepository.findByUserIdAndProductInfoProductId(userId, productId);
         if (review.isPresent()) {
             throw new DeniedProductReviewCreationException(productId, userId, review.get().getId());
