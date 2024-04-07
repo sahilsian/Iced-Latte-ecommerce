@@ -1,6 +1,5 @@
 package com.zufar.icedlatte.review.repository;
 
-import com.zufar.icedlatte.openapi.dto.ProductReviewWithRating;
 import com.zufar.icedlatte.review.entity.ProductReview;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -17,23 +17,16 @@ public interface ProductReviewRepository extends JpaRepository<ProductReview, UU
 
     Optional<ProductReview> findByUserIdAndProductInfoProductId(UUID userId, UUID productId);
 
-    @Query("SELECT new com.zufar.icedlatte.openapi.dto.ProductReviewWithRating(r.productRating, pr.text, COALESCE(pr.createdAt, r.createdAt), u.firstName, u.lastName) " +
-            "FROM ProductReview pr " +
-            "FULL JOIN ProductRating r ON r.user = pr.user AND pr.productInfo.productId = r.productInfo.productId " +
-            "JOIN UserEntity u ON u.id=coalesce(r.user.id, pr.user.id) " +
-            "WHERE pr.productInfo.productId = :productId OR r.productInfo.productId = :productId")
-    Page<ProductReviewWithRating> findByProductIdWithRatings(@Param("productId") UUID productId, Pageable pageable);
+    Page<ProductReview> findByProductInfoProductId(@Param("productId") UUID productId, Pageable pageable);
 
-    @Query("SELECT new com.zufar.icedlatte.openapi.dto.ProductReviewWithRating(r.productRating, pr.text, COALESCE(pr.createdAt, r.createdAt), u.firstName, u.lastName) " +
-            "FROM ProductReview pr " +
-            "FULL JOIN ProductRating r ON r.user = pr.user AND pr.productInfo.productId = r.productInfo.productId " +
-            "JOIN UserEntity u ON u.id= coalesce(r.user.id, pr.user.id)" +
-            "WHERE " +
-            "(pr.productInfo.productId = :productId OR r.productInfo.productId = :productId) " +
-            "AND " +
-            "(pr.user.id = :userId OR r.user.id = :userId)")
-    Optional<ProductReviewWithRating> findByProductIdWithRating(@Param("userId") UUID userId, @Param("productId") UUID productId);
+    Page<ProductReview> findByProductInfoProductIdAndUserIdNot(UUID productId, UUID userId, Pageable pageable);
 
     @Query("SELECT COUNT(pr) FROM ProductReview pr WHERE pr.productInfo.id = :productId")
-    Optional<Integer> getReviewCountProductById(UUID productId);
+    Integer getReviewCountProductById(UUID productId);
+
+    @Query("SELECT AVG(pr.productRating) FROM ProductReview pr WHERE pr.productInfo.id = :productId")
+    Double getAvgRatingByProductId(UUID productId);
+
+    @Query("SELECT pr.productRating, COUNT(pr.productRating) FROM ProductReview pr WHERE pr.productInfo.id = :productId GROUP BY pr.productRating")
+    List<Object[]> getRatingsMapByProductId(UUID productId);
 }

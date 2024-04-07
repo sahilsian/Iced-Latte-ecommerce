@@ -604,24 +604,6 @@
                             </configOptions>
                         </configuration>
                     </execution>
-                    <!-- Generate from Product Rating OpenAPI Spec -->
-                    <execution>
-                        <id>generate-from-product-rating-openapi-spec</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/api-specs/product-rating-openapi.yaml</inputSpec>
-                            <generatorName>spring</generatorName>
-                            <configOptions>
-                                <useJakartaEe>true</useJakartaEe>
-                                <apiPackage>${openapi-package}.product.rating.api</apiPackage>
-                                <modelPackage>${openapi-package-with-dto}</modelPackage>
-                                <interfaceOnly>true</interfaceOnly>
-                                <useTags>true</useTags>
-                            </configOptions>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
         </plugins>

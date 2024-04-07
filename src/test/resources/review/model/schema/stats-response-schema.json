@@ -5,7 +5,7 @@
     "productId": {
       "type": "string"
     },
-    "rating": {
+    "avgRating": {
       "type": "number"
     },
     "reviewCount": {
