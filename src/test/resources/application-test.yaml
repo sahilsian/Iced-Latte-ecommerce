@@ -95,3 +95,5 @@ google:
   scope: "https://www.googleapis.com/auth/userinfo.profile"
   client-id: "sk-api-client"
   client-secret: "sk-api-secret"
+  authenticateUri: "http://localhost:8083/auth/login"
+  redirectUri: "http://localhost:8083"
