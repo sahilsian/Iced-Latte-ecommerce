@@ -6,27 +6,27 @@
       "type": "string"
     },
     "avgRating": {
-      "type": "number"
+      "type": "string"
     },
-    "reviewCount": {
+    "reviewsCount": {
       "type": "number"
     },
     "ratingMap": {
       "type": "object",
       "properties": {
-        "1": {
+        "star1": {
           "type": "number"
         },
-        "2": {
+        "star2": {
           "type": "number"
         },
-        "3": {
+        "star3": {
           "type": "number"
         },
-        "4": {
+        "star4": {
           "type": "number"
         },
-        "5": {
+        "star5": {
           "type": "number"
         }
       }
