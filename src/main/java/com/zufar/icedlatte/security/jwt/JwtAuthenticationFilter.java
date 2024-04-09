@@ -7,6 +7,7 @@ import com.zufar.icedlatte.security.exception.JwtTokenBlacklistedException;
 import com.zufar.icedlatte.security.exception.JwtTokenHasNoUserEmailException;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
@@ -40,12 +41,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull final HttpServletRequest httpRequest,
                                     @NonNull final HttpServletResponse httpResponse,
-                                    @NonNull final FilterChain filterChain) throws IOException {
+                                    @NonNull final FilterChain filterChain) throws IOException, ServletException {
         try {
             if (shouldNotFilter(httpRequest)) {
                 return;
             }
-            var authenticationToken = jwtAuthenticationProvider.get(httpRequest);
+            Authentication authenticationToken;
+            try {
+                authenticationToken = jwtAuthenticationProvider.get(httpRequest);
+            } catch (AbsentBearerHeaderException exception) {
+                // Unauthorized access is OK for GET /api/v1/reviews/,
+                // but it's worth trying to extract the token in order to exclude the user's review from pagination
+                if (isGetReviews(httpRequest)) {
+                    // Proceed without invoking this filter...
+                    filterChain.doFilter(httpRequest, httpResponse);
+                    return;
+                }
+                throw exception;
+            }
+
+            if (authenticationToken == null) {
+                authenticationToken = jwtAuthenticationProvider.get(httpRequest);
+            }
 
             SecurityContextHolder
                     .getContext()
@@ -88,7 +105,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean isSecuredUrl(HttpServletRequest request) {
-        if (isGetReviews(request)) return false;
         return Stream.of(SecurityConstants.SHOPPING_CART_URL, SecurityConstants.PAYMENT_URL, SecurityConstants.USERS_URL, SecurityConstants.FAVOURITES_URL, SecurityConstants.AUTH_URL, SecurityConstants.ORDERS_URL, SecurityConstants.SHIPPING_URL, SecurityConstants.REVIEWS_URL, SecurityConstants.REVIEW_URL).anyMatch(securedUrl -> new AntPathRequestMatcher(securedUrl).matches(request));
     }
 

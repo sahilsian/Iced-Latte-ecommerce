@@ -4,7 +4,6 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -130,7 +129,6 @@ class ProductReviewEndpointTest {
     }
 
     @Test
-    @Disabled
     @DisplayName("Should fetch reviews and ratings with default pagination and sorting for authorized user")
     void shouldFetchReviewsAndRatingsWithDefaultPaginationAndSortingForAuthorized() {
         Response response = given(specification)
