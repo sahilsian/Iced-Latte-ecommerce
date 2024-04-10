@@ -90,7 +90,7 @@ class ProductReviewEndpointTest {
 
         Response response = given(specification)
                 .body(body)
-                .post("/{productId}/reviews", AFFOGATO_ID);
+                .post("/{productId}/review", AFFOGATO_ID);
 
         assertRestApiBodySchemaResponse(response, HttpStatus.OK, REVIEW_RESPONSE_SCHEMA)
                 .body("text", equalTo(EXPECTED_REVIEW))
@@ -198,7 +198,7 @@ class ProductReviewEndpointTest {
 
         Response response = given(specification)
                 .body(body)
-                .post("/{productId}/reviews", randomProduct);
+                .post("/{productId}/review", randomProduct);
 
         assertRestApiNotFoundResponse(response, FAILED_REVIEW_SCHEMA);
     }
@@ -210,7 +210,7 @@ class ProductReviewEndpointTest {
 
         Response response = given(specification)
                 .body(body)
-                .post("/{productId}/reviews", AMERICANO_ID);
+                .post("/{productId}/review", AMERICANO_ID);
 
         assertRestApiBadRequestResponse(response, FAILED_REVIEW_SCHEMA);
     }
@@ -222,7 +222,7 @@ class ProductReviewEndpointTest {
 
         Response response = given(specification)
                 .body(body)
-                .post("/{productId}/reviews", AMERICANO_ID);
+                .post("/{productId}/review", AMERICANO_ID);
 
         assertRestApiBadRequestResponse(response, FAILED_REVIEW_SCHEMA);
     }
@@ -235,12 +235,12 @@ class ProductReviewEndpointTest {
         // 1st create review - ok
         given(specification)
                 .body(body)
-                .post("/{productId}/reviews", AMERICANO_ID);
+                .post("/{productId}/review", AMERICANO_ID);
 
         // 2nd create review - no way, remove previous first
         Response response = given(specification)
                 .body(body)
-                .post("/{productId}/reviews", AMERICANO_ID);
+                .post("/{productId}/review", AMERICANO_ID);
 
         assertRestApiBadRequestResponse(response, FAILED_REVIEW_SCHEMA);
     }
@@ -252,7 +252,7 @@ class ProductReviewEndpointTest {
 
         Response responsePost = given(specification)
                 .body(body)
-                .post("/{productId}/reviews", AFFOGATO_ID);
+                .post("/{productId}/review", AFFOGATO_ID);
 
         var reviewId = responsePost.then().extract().path("productReviewId").toString();
 
@@ -284,7 +284,7 @@ class ProductReviewEndpointTest {
         String body = getRequestBody(REVIEW_ADD_BODY);
         Response responsePost = given(specification)
                 .body(body)
-                .post("/{productId}/reviews", AMERICANO_ID);
+                .post("/{productId}/review", AMERICANO_ID);
         Response responseDelete = given(specification)
                 .delete("/{productId}/reviews/{reviewId}", AMERICANO_ID, UUID.randomUUID());
 

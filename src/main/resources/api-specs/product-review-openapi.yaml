@@ -23,7 +23,7 @@ paths:
     get:
       tags:
         - "Product Review"
-      summary: "Retrieve product's reviews and ratings, endpoint is available for unauthorized users"
+      summary: "Retrieve product's reviews and ratings, endpoint is available for unauthorized users. Review of an authorized user is excluded from the response"
       operationId: "getProductReviewsAndRatings"
       parameters:
         - name: "productId"
@@ -73,41 +73,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProductReviewsAndRatingsWithPagination"
-        "404":
-          description: "Product was not found"
-        "500":
-          description: "Internal server error"
-
-    post:
-      tags:
-        - "Product Review"
-      summary: "Add a new review for a specific product by an authorized user. If review exists, then 400 error will be returned"
-      operationId: "addNewProductReview"
-      parameters:
-        - name: "productId"
-          in: "path"
-          required: true
-          description: "Unique identifier of the product."
-          schema:
-            type: "string"
-            format: "uuid"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ProductReviewRequest"
-        required: true
-      responses:
-        "200":
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ProductReviewResponse"
-        "400":
-          description: "Bad request, e.g. review exists"
-        "401":
-          description: "Unauthorized access"
         "404":
           description: "Product was not found"
         "500":
@@ -167,6 +132,40 @@ paths:
                 $ref: "#/components/schemas/ProductReviewResponse"
         "401":
           description: "Unauthorized access"
+        "500":
+          description: "Internal server error"
+    post:
+      tags:
+        - "Product Review"
+      summary: "Add a new review for a specific product by an authorized user. If review exists, then 400 error will be returned"
+      operationId: "addNewProductReview"
+      parameters:
+        - name: "productId"
+          in: "path"
+          required: true
+          description: "Unique identifier of the product."
+          schema:
+            type: "string"
+            format: "uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductReviewRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductReviewResponse"
+        "400":
+          description: "Bad request, e.g. review exists"
+        "401":
+          description: "Unauthorized access"
+        "404":
+          description: "Product was not found"
         "500":
           description: "Internal server error"
 
