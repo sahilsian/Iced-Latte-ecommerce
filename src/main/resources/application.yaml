@@ -93,6 +93,7 @@ spring:
 temporary-cache:
   time:
     token: 5
+  get-token-enabled: true
 
 #
 # Stripe Api Properties
