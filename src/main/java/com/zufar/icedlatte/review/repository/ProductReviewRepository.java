@@ -19,8 +19,6 @@ public interface ProductReviewRepository extends JpaRepository<ProductReview, UU
 
     Page<ProductReview> findByProductInfoProductId(@Param("productId") UUID productId, Pageable pageable);
 
-    Page<ProductReview> findByProductInfoProductIdAndUserIdNot(UUID productId, UUID userId, Pageable pageable);
-
     @Query("SELECT COUNT(pr) FROM ProductReview pr WHERE pr.productInfo.productId = :productId")
     Integer getReviewCountProductById(UUID productId);
 
