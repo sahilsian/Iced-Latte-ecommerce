@@ -4,7 +4,6 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -162,14 +161,14 @@ class ProductReviewEndpointTest {
                 .get("/{productId}/reviews/statistics", ESPRESSO_ID);
 
         assertRestApiBodySchemaResponse(response, HttpStatus.OK, RATING_RESPONSE_SCHEMA)
-                .body("avgRating", equalTo(3.0F))
-                .body("reviewCount", equalTo(1))
+                .body("avgRating", equalTo("3.0"))
+                .body("reviewsCount", equalTo(1))
                 .body("productId", notNullValue())
-                .body("ratingMap.1", equalTo(0))
-                .body("ratingMap.2", equalTo(0))
-                .body("ratingMap.3", equalTo(1))
-                .body("ratingMap.4", equalTo(0))
-                .body("ratingMap.5", equalTo(0));
+                .body("ratingMap.star1", equalTo(0))
+                .body("ratingMap.star2", equalTo(0))
+                .body("ratingMap.star3", equalTo(1))
+                .body("ratingMap.star4", equalTo(0))
+                .body("ratingMap.star5", equalTo(0));
     }
 
     @Test

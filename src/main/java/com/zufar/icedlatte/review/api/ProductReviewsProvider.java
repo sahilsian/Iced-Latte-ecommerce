@@ -64,8 +64,9 @@ public class ProductReviewsProvider {
             log.error("The product with productId = {} was not found.", productId);
             throw new ProductNotFoundException(productId);
         }
-        Integer reviewCount = reviewRepository.getReviewCountProductById(productId);
-        return new ProductReviewRatingStats(productId, avgRating, reviewCount,
+        String formattedAvgRating = String.format("%.1f", avgRating);
+        Integer reviewsCount = reviewRepository.getReviewCountProductById(productId);
+        return new ProductReviewRatingStats(productId, formattedAvgRating, reviewsCount,
                 productReviewDtoConverter.convertToProductRatingMap(productRatingCountPairs));
     }
 }
