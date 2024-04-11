@@ -56,4 +56,8 @@ public class ProductReviewValidator {
             throw new DeniedProductReviewDeletionException(productReviewId, currentUserId);
         }
     }
+
+    public static void main(String[] args) {
+        System.out.println(Math.ro);
+    }
 }

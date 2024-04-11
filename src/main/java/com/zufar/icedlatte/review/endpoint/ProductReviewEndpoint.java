@@ -36,7 +36,7 @@ public class ProductReviewEndpoint implements com.zufar.icedlatte.openapi.produc
     private final ProductReviewsProvider productReviewsProvider;
 
     @Override
-    @PostMapping(value = "/{productId}/review")
+    @PostMapping(value = "/{productId}/reviews")
     public ResponseEntity<ProductReviewResponse> addNewProductReview(@PathVariable final UUID productId,
                                                                      final ProductReviewRequest productReviewRequest) {
         log.info("Received the request to add a new product review for the product with the productId = '{}'", productId);
