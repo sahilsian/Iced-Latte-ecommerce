@@ -130,24 +130,6 @@ class ProductReviewEndpointTest {
     }
 
     @Test
-    @DisplayName("Should fetch reviews and ratings with default pagination and sorting for authorized user")
-    void shouldFetchReviewsAndRatingsWithDefaultPaginationAndSortingForAuthorized() {
-        Response response = given(specification)
-                .get("/{productId}/reviews", AMERICANO_ID);
-
-        // Review by Jane Smith is excluded
-        assertRestApiBodySchemaResponse(response, HttpStatus.OK, REVIEWS_WITH_RATINGS_RESPONSE_SCHEMA)
-                .body("totalElements", equalTo(2))
-                .body("totalPages", equalTo(1))
-                .body("reviewsWithRatings[0].rating", equalTo(5))
-                .body("reviewsWithRatings[0].text", startsWith(START_OF_REVIEW_FOR_AMERICANO))
-                .body("reviewsWithRatings[0].userName", equalTo("John"))
-                .body("reviewsWithRatings[1].rating", equalTo(1))
-                .body("reviewsWithRatings[1].text", startsWith(START_OF_REVIEW_FOR_AMERICANO))
-                .body("reviewsWithRatings[1].userName", equalTo("Michael"));
-    }
-
-    @Test
     @DisplayName("Should fetch review and rating successfully for an authorized user")
     void shouldFetchReviewAndRatingSuccessfully() {
         // no review was created by Jane Smith

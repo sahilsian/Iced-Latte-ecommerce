@@ -41,16 +41,9 @@ public class ProductReviewsProvider {
                                                                     final String sortDirection) {
         productReviewValidator.validateProductExists(productId);
         Pageable pageable = createPageableObject(page, size, sortAttribute, sortDirection);
-        Page<ProductReview> productReviewWithRatingPage;
-        // anonymous user
-        if (securityPrincipalProvider.isAnonymous()) {
-            productReviewWithRatingPage = reviewRepository.findByProductInfoProductId(productId, pageable);
-        // logged-in user -> exclude their review (it should be fetched using separate endpoint)
-        } else {
-            var userId = securityPrincipalProvider.getUserId();
-            productReviewWithRatingPage = reviewRepository.findByProductInfoProductIdAndUserIdNot(productId, userId, pageable);
-        }
-        Page<ProductReviewResponse> responsePage = productReviewWithRatingPage.map(productReviewDtoConverter::toReviewResponse);
+        Page<ProductReviewResponse> responsePage = reviewRepository
+                .findByProductInfoProductId(productId, pageable)
+                .map(productReviewDtoConverter::toReviewResponse);
         return productReviewDtoConverter.toProductReviewsAndRatingsWithPagination(responsePage);
     }
 
