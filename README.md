@@ -27,7 +27,7 @@ Built using Spring Boot and PostgreSQL, it's crafted for educational purposes, o
 
 - **Architecture:** Monolith.
 - **Computer language:** Java 17.
-- **Framework:** Spring Web, Spring Boot 3, Spring Data, Spring Security, Spring Actuator, Spring Web, Spring Retry, Lombok, Apacje Commons, Spring Mail, Google Guava.
+- **Framework:** Spring Web, Spring Boot 3, Spring Data, Spring Security, Spring Actuator, Spring Web, Spring Retry, Lombok, Apache Commons, Spring Mail, Google Guava.
 - **Security:** JWT, TLS.
 - **Migration tool:** Liquabase.
 - **Logging:** Log4j2, Slf4j.

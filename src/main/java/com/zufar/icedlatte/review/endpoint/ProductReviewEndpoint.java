@@ -1,10 +1,10 @@
 package com.zufar.icedlatte.review.endpoint;
 
+import com.zufar.icedlatte.openapi.dto.ProductReviewRatingStats;
 import com.zufar.icedlatte.openapi.dto.ProductReviewRequest;
 import com.zufar.icedlatte.openapi.dto.ProductReviewResponse;
-import com.zufar.icedlatte.openapi.dto.ProductReviewWithRating;
 import com.zufar.icedlatte.openapi.dto.ProductReviewsAndRatingsWithPagination;
-import com.zufar.icedlatte.review.api.ProductReviewsAndRatingsProvider;
+import com.zufar.icedlatte.review.api.ProductReviewsProvider;
 import com.zufar.icedlatte.review.api.ProductReviewCreator;
 import com.zufar.icedlatte.review.api.ProductReviewDeleter;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class ProductReviewEndpoint implements com.zufar.icedlatte.openapi.produc
 
     private final ProductReviewCreator productReviewCreator;
     private final ProductReviewDeleter productReviewDeleter;
-    private final ProductReviewsAndRatingsProvider productReviewsAndRatingsProvider;
+    private final ProductReviewsProvider productReviewsProvider;
 
     @Override
     @PostMapping(value = "/{productId}/reviews")
@@ -51,7 +51,7 @@ public class ProductReviewEndpoint implements com.zufar.icedlatte.openapi.produc
                                                     @PathVariable final UUID productReviewId) {
         log.info("Received request to delete product review with productReviewId = '{}', productId = '{}'", productReviewId, productId);
         productReviewDeleter.delete(productId, productReviewId);
-        log.info("Product review was deleted");
+        log.info("Product review with productReviewId = '{}' was deleted", productReviewId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -64,17 +64,26 @@ public class ProductReviewEndpoint implements com.zufar.icedlatte.openapi.produc
                                                                                               @RequestParam(name = "sort_direction", defaultValue = "desc") final String sortDirection) {
         log.info("Received the request to get reviews and ratings for the product with the productId = '{}' and with the next pagination and sorting attributes: page - {}, size - {}, sort_attribute - {}, sort_direction - {}",
                 productId, page, size, sortAttribute, sortDirection);
-        ProductReviewsAndRatingsWithPagination reviewsPaginationDto = productReviewsAndRatingsProvider.getProductReviews(productId, page, size, sortAttribute, sortDirection);
+        ProductReviewsAndRatingsWithPagination reviewsPaginationDto = productReviewsProvider.getProductReviews(productId, page, size, sortAttribute, sortDirection);
         log.info("Product reviews and ratings were retrieved successfully for the product with the productId = '{}'", productId);
         return ResponseEntity.ok().body(reviewsPaginationDto);
     }
 
     @Override
     @GetMapping(value = "/{productId}/review")
-    public ResponseEntity<ProductReviewWithRating> getProductReview(@PathVariable final UUID productId) {
+    public ResponseEntity<ProductReviewResponse> getProductReview(@PathVariable final UUID productId) {
         log.info("Received the request to get product review and rating for the product with the productId = '{}'", productId);
-        ProductReviewWithRating result = productReviewsAndRatingsProvider.getProductReviewAndRatingByUser(productId);
+        ProductReviewResponse result = productReviewsProvider.getProductReviewForUser(productId);
         log.info("Product review and rating were retrieved successfully for the product with the productId = '{}'", productId);
         return ResponseEntity.ok().body(result);
+    }
+
+    @Override
+    @GetMapping("/{productId}/reviews/statistics")
+    public ResponseEntity<ProductReviewRatingStats> getRatingAndReviewStat(@PathVariable final UUID productId) {
+        log.info("Received the request to get the statistics of product's review and rating for the product with the productId = '{}'", productId);
+        final ProductReviewRatingStats stats = productReviewsProvider.getRatingAndReviewStat(productId);
+        log.info("Statistics for product's review and rating for the product with the productId = '{}' was retrieved successfully", productId);
+        return ResponseEntity.ok().body(stats);
     }
 }

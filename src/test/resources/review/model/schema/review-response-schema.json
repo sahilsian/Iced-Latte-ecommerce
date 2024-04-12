@@ -3,13 +3,22 @@
   "type": "object",
   "properties": {
     "productReviewId": {
-      "type": "string"
+      "type": ["string", "null"]
     },
     "text": {
-      "type": "string"
+      "type": ["string", "null"]
     },
     "createdAt": {
-      "type": "string"
+      "type": ["string", "null"]
+    },
+    "rating": {
+      "type": ["number", "null"]
+    },
+    "userName": {
+      "type": ["string", "null"]
+    },
+    "userLastName": {
+      "type": ["string", "null"]
     }
   }
 }

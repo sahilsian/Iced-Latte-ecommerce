@@ -16,7 +16,7 @@ servers:
 
 tags:
   - name: "Product Review"
-    description: "An API for product review creation and modification"
+    description: "An API for product's review creation and modification"
 
 paths:
   /api/v1/products/{productId}/reviews:
@@ -81,7 +81,7 @@ paths:
     post:
       tags:
         - "Product Review"
-      summary: "Add a new review for a specific product by authorized user. If review exists, then 400 error will be returned"
+      summary: "Add a new review for a specific product by an authorized user. If review exists, then 400 error will be returned"
       operationId: "addNewProductReview"
       parameters:
         - name: "productId"
@@ -117,7 +117,7 @@ paths:
     delete:
       tags:
         - "Product Review"
-      summary: "Delete an existed product's review by authorized user"
+      summary: "Delete an existing product's review created by an authorized user"
       operationId: "deleteProductReview"
       parameters:
         - name: "productId"
@@ -148,7 +148,7 @@ paths:
     get:
       tags:
         - "Product Review"
-      summary: "Return a review created by the authorized user"
+      summary: "Return a review created by an authorized user"
       operationId: "getProductReview"
       parameters:
         - name: "productId"
@@ -160,18 +160,41 @@ paths:
             format: "uuid"
       responses:
         "200":
-          description: "The product was found and its review and rating are returned. Rating and review are null, if user left no review and rating for the product"
+          description: "Review and rating are returned. All fields are null, if user left no review for the product"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProductReviewWithRating"
+                $ref: "#/components/schemas/ProductReviewResponse"
         "401":
           description: "Unauthorized access"
+        "500":
+          description: "Internal server error"
+
+  /api/v1/products/{productId}/reviews/statistics:
+    get:
+      tags:
+        - "Product Review"
+      summary: "Returns statistics of product's review and rating : average rating, count of reviews, ratings map. The endpoint is available for unauthorized users"
+      operationId: "getRatingAndReviewStat"
+      parameters:
+        - name: "productId"
+          in: "path"
+          description: "Id of the product to get rating for"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      responses:
+        "200":
+          description: "Statistics of product's review and rating was retrieved successfully."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductReviewRatingStats"
         "404":
           description: "Product was not found"
         "500":
           description: "Internal server error"
-
 
 components:
   schemas:
@@ -182,20 +205,13 @@ components:
           type: "string"
           minLength: 1
           maxLength: 1500
+        rating:
+          type: "integer"
+          minimum: 1
+          maximum: 5
       required:
         - text
-
-    ProductReviewResponse:
-      type: "object"
-      properties:
-        productReviewId:
-          type: "string"
-          format: "uuid"
-        text:
-          type: "string"
-        createdAt:
-          type: "string"
-          format: "date-time"
+        - rating
 
     ProductReviewsAndRatingsWithPagination:
       type: "object"
@@ -203,7 +219,7 @@ components:
         reviewsWithRatings:
           type: "array"
           items:
-            $ref: "#/components/schemas/ProductReviewWithRating"
+            $ref: "#/components/schemas/ProductReviewResponse"
         page:
           type: "integer"
           format: "int32"
@@ -217,20 +233,23 @@ components:
           type: "integer"
           format: "int32"
 
-    ProductReviewWithRating:
+    ProductReviewResponse:
       type: "object"
       description: "Object used to group product's reviews and ratings by user"
       required:
+        - productReviewId
         - rating
-        - reviewText
+        - text
         - createdAt
         - userName
         - userLastName
       properties:
+        productReviewId:
+          type: "string"
+          format: "uuid"
         rating:
           type: "integer"
-          format: "int32"
-        reviewText:
+        text:
           type: "string"
         createdAt:
           type: "string"
@@ -239,3 +258,52 @@ components:
           type: "string"
         userLastName:
           type: "string"
+
+    ProductReviewRatingStats:
+      type: object
+      properties:
+        productId:
+          type: string
+          format: "uuid"
+        avgRating:
+          type: string
+        reviewsCount:
+          type: "integer"
+          format: "int32"
+        ratingMap:
+          $ref: "#/components/schemas/RatingMap"
+      required:
+        - productId
+        - avgRating
+        - reviewsCount
+        - ratingMap
+
+    RatingMap:
+      type: object
+      properties:
+        star5:
+          type: "integer"
+          format: "int32"
+          default: 0
+        star4:
+          type: "integer"
+          format: "int32"
+          default: 0
+        star3:
+          type: "integer"
+          format: "int32"
+          default: 0
+        star2:
+          type: "integer"
+          format: "int32"
+          default: 0
+        star1:
+          type: "integer"
+          format: "int32"
+          default: 0
+      required:
+        - "star1"
+        - "star2"
+        - "star3"
+        - "star4"
+        - "star5"
