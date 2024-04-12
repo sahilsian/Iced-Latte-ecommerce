@@ -162,7 +162,7 @@ class ProductReviewEndpointTest {
                 .get("/{productId}/reviews/statistics", ESPRESSO_ID);
 
         assertRestApiBodySchemaResponse(response, HttpStatus.OK, RATING_RESPONSE_SCHEMA)
-                .body("avgRating", contains("3.0"))
+                .body("avgRating", equalTo("3.0"))
                 .body("reviewsCount", equalTo(1))
                 .body("productId", notNullValue())
                 .body("ratingMap.star1", equalTo(0))
