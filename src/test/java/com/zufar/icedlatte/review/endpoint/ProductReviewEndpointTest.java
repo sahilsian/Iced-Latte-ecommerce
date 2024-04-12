@@ -4,7 +4,6 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -130,24 +129,6 @@ class ProductReviewEndpointTest {
     }
 
     @Test
-    @DisplayName("Should fetch reviews and ratings with default pagination and sorting for authorized user")
-    void shouldFetchReviewsAndRatingsWithDefaultPaginationAndSortingForAuthorized() {
-        Response response = given(specification)
-                .get("/{productId}/reviews", AMERICANO_ID);
-
-        // Review by Jane Smith is excluded
-        assertRestApiBodySchemaResponse(response, HttpStatus.OK, REVIEWS_WITH_RATINGS_RESPONSE_SCHEMA)
-                .body("totalElements", equalTo(2))
-                .body("totalPages", equalTo(1))
-                .body("reviewsWithRatings[0].rating", equalTo(5))
-                .body("reviewsWithRatings[0].text", startsWith(START_OF_REVIEW_FOR_AMERICANO))
-                .body("reviewsWithRatings[0].userName", equalTo("John"))
-                .body("reviewsWithRatings[1].rating", equalTo(1))
-                .body("reviewsWithRatings[1].text", startsWith(START_OF_REVIEW_FOR_AMERICANO))
-                .body("reviewsWithRatings[1].userName", equalTo("Michael"));
-    }
-
-    @Test
     @DisplayName("Should fetch review and rating successfully for an authorized user")
     void shouldFetchReviewAndRatingSuccessfully() {
         // no review was created by Jane Smith
@@ -180,14 +161,14 @@ class ProductReviewEndpointTest {
                 .get("/{productId}/reviews/statistics", ESPRESSO_ID);
 
         assertRestApiBodySchemaResponse(response, HttpStatus.OK, RATING_RESPONSE_SCHEMA)
-                .body("avgRating", equalTo(3.0F))
-                .body("reviewCount", equalTo(1))
+                .body("avgRating", equalTo("3.0"))
+                .body("reviewsCount", equalTo(1))
                 .body("productId", notNullValue())
-                .body("ratingMap.1", equalTo(0))
-                .body("ratingMap.2", equalTo(0))
-                .body("ratingMap.3", equalTo(1))
-                .body("ratingMap.4", equalTo(0))
-                .body("ratingMap.5", equalTo(0));
+                .body("ratingMap.star1", equalTo(0))
+                .body("ratingMap.star2", equalTo(0))
+                .body("ratingMap.star3", equalTo(1))
+                .body("ratingMap.star4", equalTo(0))
+                .body("ratingMap.star5", equalTo(0));
     }
 
     @Test

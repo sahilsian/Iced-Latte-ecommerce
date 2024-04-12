@@ -266,9 +266,8 @@ components:
           type: string
           format: "uuid"
         avgRating:
-          type: "number"
-          format: "double"
-        reviewCount:
+          type: string
+        reviewsCount:
           type: "integer"
           format: "int32"
         ratingMap:
@@ -276,35 +275,35 @@ components:
       required:
         - productId
         - avgRating
-        - reviewCount
+        - reviewsCount
         - ratingMap
 
     RatingMap:
       type: object
       properties:
-        5:
+        star5:
           type: "integer"
           format: "int32"
           default: 0
-        4:
+        star4:
           type: "integer"
           format: "int32"
           default: 0
-        3:
+        star3:
           type: "integer"
           format: "int32"
           default: 0
-        2:
+        star2:
           type: "integer"
           format: "int32"
           default: 0
-        1:
+        star1:
           type: "integer"
           format: "int32"
           default: 0
       required:
-        - "1"
-        - "2"
-        - "3"
-        - "4"
-        - "5"
+        - "star1"
+        - "star2"
+        - "star3"
+        - "star4"
+        - "star5"

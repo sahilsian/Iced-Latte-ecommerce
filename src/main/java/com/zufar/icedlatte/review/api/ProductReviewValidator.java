@@ -56,4 +56,5 @@ public class ProductReviewValidator {
             throw new DeniedProductReviewDeletionException(productReviewId, currentUserId);
         }
     }
+
 }

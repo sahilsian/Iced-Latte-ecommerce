@@ -36,26 +36,26 @@ public class ProductReviewDtoConverter {
     }
 
     public RatingMap convertToProductRatingMap(List<Object[]> productRatingCountPairs) {
-        var productRatingMap = new RatingMap(null, null, null, null, null);
+        var productRatingMap = new RatingMap(0, 0, 0, 0, 0);
 
         for (Object[] productRatingAndCountPair : productRatingCountPairs) {
             var productRating = (Integer) productRatingAndCountPair[0];
             var count = ((Long) productRatingAndCountPair[1]).intValue();
             switch (productRating) {
                 case 5:
-                    productRatingMap.set5(count);
+                    productRatingMap.setStar5(count);
                     break;
                 case 4:
-                    productRatingMap.set4(count);
+                    productRatingMap.setStar4(count);
                     break;
                 case 3:
-                    productRatingMap.set3(count);
+                    productRatingMap.setStar3(count);
                     break;
                 case 2:
-                    productRatingMap.set2(count);
+                    productRatingMap.setStar2(count);
                     break;
                 case 1:
-                    productRatingMap.set1(count);
+                    productRatingMap.setStar1(count);
                     break;
                 default:
                     assert false : "Unexpected product's rating value";
