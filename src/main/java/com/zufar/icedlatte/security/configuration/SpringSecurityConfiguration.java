@@ -31,35 +31,22 @@ public class SpringSecurityConfiguration {
       final HttpSecurity httpSecurity, final JwtAuthenticationFilter jwtTokenFilter)
       throws Exception {
     return httpSecurity
-        .csrf(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(
-            authorizeRequests ->
-                authorizeRequests
-                    .requestMatchers(SecurityConstants.SHOPPING_CART_URL)
-                    .authenticated()
-                    .requestMatchers(SecurityConstants.PAYMENT_URL)
-                    .authenticated()
-                    .requestMatchers(SecurityConstants.USERS_URL)
-                    .authenticated()
-                    .requestMatchers(SecurityConstants.FAVOURITES_URL)
-                    .authenticated()
-                    .requestMatchers(SecurityConstants.ORDERS_URL)
-                    .authenticated()
-                    .requestMatchers(SecurityConstants.SHIPPING_URL)
-                    .authenticated()
-                    .requestMatchers(HttpMethod.GET, SecurityConstants.RATING_URL)
-                    .permitAll()
-                    .requestMatchers(HttpMethod.GET, SecurityConstants.REVIEWS_URL)
-                    .permitAll()
-                    .requestMatchers(HttpMethod.GET, SecurityConstants.AUTH_3PART_URL)
-                    .permitAll()
-                    .anyRequest()
-                    .permitAll())
-        .sessionManagement(
-            sessionManagement ->
-                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
-        .build();
+            .csrf(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests(authorizeRequests ->
+                    authorizeRequests
+                            .requestMatchers(SecurityConstants.SHOPPING_CART_URL).authenticated()
+                            .requestMatchers(SecurityConstants.PAYMENT_URL).authenticated()
+                            .requestMatchers(SecurityConstants.USERS_URL).authenticated()
+                            .requestMatchers(SecurityConstants.FAVOURITES_URL).authenticated()
+                            .requestMatchers(SecurityConstants.ORDERS_URL).authenticated()
+                            .requestMatchers(SecurityConstants.SHIPPING_URL).authenticated()
+                            .requestMatchers(HttpMethod.GET, SecurityConstants.REVIEWS_URL).permitAll()
+                            .requestMatchers(HttpMethod.GET, SecurityConstants.AUTH_3PART_URL).permitAll()
+                            .anyRequest().permitAll()
+            )
+            .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+            .build();
   }
 
   @Bean
