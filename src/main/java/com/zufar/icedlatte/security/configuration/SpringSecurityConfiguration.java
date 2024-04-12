@@ -27,9 +27,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SpringSecurityConfiguration {
 
   @Bean
-  public SecurityFilterChain securityFilterChain(
-      final HttpSecurity httpSecurity, final JwtAuthenticationFilter jwtTokenFilter)
-      throws Exception {
+  public SecurityFilterChain securityFilterChain(final HttpSecurity httpSecurity,
+                                                 final JwtAuthenticationFilter jwtTokenFilter) throws Exception {
     return httpSecurity
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authorizeRequests ->
