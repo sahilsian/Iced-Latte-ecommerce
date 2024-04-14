@@ -5,6 +5,7 @@ import com.zufar.icedlatte.user.converter.UserDtoConverter;
 import com.zufar.icedlatte.user.entity.UserEntity;
 import com.zufar.icedlatte.user.exception.UserNotFoundException;
 import com.zufar.icedlatte.user.repository.UserRepository;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -51,5 +52,10 @@ public class SingleUserProvider {
                     log.warn(LOG_MSG_ON_FAILURE);
                     return new UserNotFoundException(null);
                 });
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<UserEntity> findUserByEmail(final String email) {
+        return userCrudRepository.findByEmail(email);
     }
 }

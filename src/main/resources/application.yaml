@@ -196,7 +196,8 @@ google:
     server:
       url: "https://accounts.google.com/o/oauth2/v2/auth"
   scope: "https://www.googleapis.com/auth/userinfo.profile"
-  #client-id: "sk-client-id"
-  #client-secret: "sk-client-secret"
+  client-id: "sk-client-id"
+  client-secret: "sk-client-secret"
   authenticateUri: "https://iced-latte.uk/auth/login"
   redirectUri: "https://iced-latte.uk"
+

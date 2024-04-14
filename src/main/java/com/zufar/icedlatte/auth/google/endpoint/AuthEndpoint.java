@@ -12,6 +12,7 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.zufar.icedlatte.security.api.UserRegistrationService;
 import com.zufar.icedlatte.security.dto.UserAuthenticationRequest;
 import com.zufar.icedlatte.security.dto.UserRegistrationRequest;
+import com.zufar.icedlatte.user.api.SingleUserProvider;
 import com.zufar.icedlatte.user.entity.UserEntity;
 import com.zufar.icedlatte.user.repository.UserRepository;
 import java.io.IOException;
@@ -69,6 +70,7 @@ public class AuthEndpoint {
 
   private final UserRepository userCrudRepository;
   private final UserRegistrationService userRegistrationService;
+  private final SingleUserProvider singleUserProvider;
 
   @GetMapping()
   public ResponseEntity<?> googleAuth() {
@@ -156,7 +158,7 @@ public class AuthEndpoint {
   }
 
   private String findOrCreateUser(String email) {
-    Optional<UserEntity> userEntity = userCrudRepository.findByEmail(email);
+    Optional<UserEntity> userEntity = singleUserProvider.findUserByEmail(email);
     if (userEntity.isEmpty()) {
       String password = UUID.randomUUID().toString();
       userRegistrationService.register(new UserRegistrationRequest(email, email, email, password));
