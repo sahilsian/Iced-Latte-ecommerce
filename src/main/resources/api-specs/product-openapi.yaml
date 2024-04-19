@@ -137,6 +137,7 @@ components:
         - quantity
         - active
         - averageRating
+        - reviewsCount
       properties:
         id:
           type: "string"
@@ -156,7 +157,11 @@ components:
         productFileUrl:
           type: "string"
         averageRating:
-          type: "double"
+          type: "number"
+          format: "double"
+        reviewsCount:
+          type: "integer"
+          format: "int32"
 
     ProductListWithPaginationInfoDto:
       type: "object"
