@@ -45,10 +45,10 @@ public class ProductInfo {
     @Column(name = "active", nullable = false)
     private Boolean active;
 
-    @Column(name = "average_rating", nullable = false)
+    @Column(name = "average_rating")
     private BigDecimal averageRating;
 
-    @Column(name = "reviews_count", nullable = false)
+    @Column(name = "reviews_count")
     private Integer reviewsCount;
 
     @Override
