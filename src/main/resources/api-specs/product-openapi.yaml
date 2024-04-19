@@ -55,7 +55,7 @@ paths:
       operationId: "getProducts"
       parameters:
         - name: "page"
-          description: "The page number in order (starting from 0)."
+          description: "The page number (starting from 0) for pagination."
           in: "query"
           required: false
           schema:
@@ -74,19 +74,61 @@ paths:
             minimum: 1
             maximum: 100
         - name: "sort_attribute"
-          description: "The name of the product field by which the results should be sorted."
+          description: "The field name of the product by which the results should be sorted."
           in: "query"
           required: false
           schema:
             type: "string"
             default: "name"
         - name: "sort_direction"
-          description: "The direction of the sorting."
+          description: "The direction of sorting."
           in: "query"
           required: false
           schema:
             type: "string"
             default: "asc"
+        - name: "price_from"
+          description: "The lower limit of the product's price for filtering."
+          in: "query"
+          required: false
+          schema:
+            type: "integer"
+            format: "int32"
+            minimum: 0
+        - name: "price_to"
+          description: "The upper limit of the product's price for filtering."
+          in: "query"
+          required: false
+          schema:
+            type: "integer"
+            format: "int32"
+            minimum: 0
+        - name: "minimum_average_rating"
+          description: "The minimum average rating of the product for filtering."
+          in: "query"
+          required: false
+          schema:
+            type: "integer"
+            format: "int32"
+            minimum: 1
+        - name: "brand_names"
+          description: "Filter products by selected brand names (comma-separated list)."
+          in: "query"
+          required: false
+          schema:
+            type: "array"
+            items:
+              type: "string"
+            uniqueItems: true
+        - name: "seller_names"
+          description: "Filter products by selected seller names (comma-separated list)."
+          in: "query"
+          required: false
+          schema:
+            type: "array"
+            items:
+              type: "string"
+            uniqueItems: true
       responses:
         "200":
           description: "Paginated list of products retrieved successfully."

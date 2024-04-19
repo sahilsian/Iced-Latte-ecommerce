@@ -51,6 +51,12 @@ public class ProductInfo {
     @Column(name = "reviews_count")
     private Integer reviewsCount;
 
+    @Column(name = "brand_name", nullable = false)
+    private String brandName;
+
+    @Column(name = "seller_name", nullable = false)
+    private String sellerName;
+
     @Override
     public boolean equals(Object object) {
         if (this == object) {
