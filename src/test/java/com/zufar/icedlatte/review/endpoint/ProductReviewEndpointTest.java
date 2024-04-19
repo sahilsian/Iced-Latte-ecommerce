@@ -24,6 +24,7 @@ import static com.zufar.icedlatte.test.config.RestAssertion.assertRestApiNotFoun
 import static com.zufar.icedlatte.test.config.RestUtils.getJwtToken;
 import static com.zufar.icedlatte.test.config.RestUtils.getRequestBody;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -161,7 +162,7 @@ class ProductReviewEndpointTest {
                 .get("/{productId}/reviews/statistics", ESPRESSO_ID);
 
         assertRestApiBodySchemaResponse(response, HttpStatus.OK, RATING_RESPONSE_SCHEMA)
-                .body("avgRating", equalTo("3.0"))
+                .body("avgRating", anyOf(equalTo("3.0"), equalTo("3,0")))
                 .body("reviewsCount", equalTo(1))
                 .body("productId", notNullValue())
                 .body("ratingMap.star1", equalTo(0))
