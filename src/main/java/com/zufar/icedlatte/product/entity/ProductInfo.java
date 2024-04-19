@@ -1,7 +1,11 @@
 package com.zufar.icedlatte.product.entity;
 
-import com.zufar.icedlatte.review.entity.ProductReview;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +15,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -42,14 +45,11 @@ public class ProductInfo {
     @Column(name = "active", nullable = false)
     private Boolean active;
 
-    @Column(name = "average_rating")
+    @Column(name = "average_rating", nullable = false)
     private BigDecimal averageRating;
 
-    @Column(name = "reviews_count")
+    @Column(name = "reviews_count", nullable = false)
     private Integer reviewsCount;
-
-    @OneToMany(mappedBy = "productInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ProductReview> reviews;
 
     @Override
     public boolean equals(Object object) {
