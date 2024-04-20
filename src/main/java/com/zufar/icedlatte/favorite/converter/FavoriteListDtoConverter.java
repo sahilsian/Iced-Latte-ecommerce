@@ -39,21 +39,18 @@ public interface FavoriteListDtoConverter {
     }
 
     private static ProductInfoDto convertProductInfoDto(ProductInfo productInfo) {
-        ProductInfoDto productInfoDto = new ProductInfoDto();
-        productInfoDto.setId(productInfo.getProductId());
-        productInfoDto.setName(productInfo.getName());
-        productInfoDto.setPrice(productInfo.getPrice());
-        productInfoDto.setQuantity(productInfo.getQuantity());
-        productInfoDto.setActive(productInfo.getActive());
-        productInfoDto.setDescription(productInfo.getDescription());
-        return productInfoDto;
-    }
+        return new ProductInfoDto(
+                productInfo.getProductId(),
+                productInfo.getName(),
+                productInfo.getDescription(),
+                productInfo.getPrice(),
+                productInfo.getQuantity(),
+                productInfo.getActive(),
+                productInfo.getAverageRating(),
+                productInfo.getReviewsCount(),
+                productInfo.getBrandName(),
+                productInfo.getSellerName()
 
-    default ListOfFavoriteProductsDto toListProductDto(FavoriteListDto favoriteList) {
-        ListOfFavoriteProductsDto listOfFavoriteProductsDto = new ListOfFavoriteProductsDto();
-        for (FavoriteItemDto item : favoriteList.favoriteItems()) {
-            listOfFavoriteProductsDto.addProductsItem(item.productInfo());
-        }
-        return listOfFavoriteProductsDto;
+        );
     }
 }
