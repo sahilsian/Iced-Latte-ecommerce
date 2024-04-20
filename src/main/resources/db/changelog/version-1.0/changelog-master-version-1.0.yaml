@@ -49,3 +49,7 @@ databaseChangeLog:
       file: db/changelog/version-1.0/08.02.2024.part1.create-product-review-table.sql
   - include:
       file: db/changelog/version-1.0/08.02.2024.part2.insert-product-review-table.sql
+  - include:
+      file: db/changelog/version-1.0/13.04.2024.part1.create-product-review-rate-table.sql
+  - include:
+      file: db/changelog/version-1.0/13.04.2024.part2.insert-product-review-rate-table.sql

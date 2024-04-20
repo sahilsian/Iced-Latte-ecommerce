@@ -4,23 +4,7 @@
     "type": "array",
     "items": {
       "type": "object",
-      "properties": {
-        "rating": {
-          "type": "number"
-        },
-        "reviewText": {
-          "type": "string"
-        },
-        "createdAt": {
-          "type": "string"
-        },
-        "userName": {
-          "type": "string"
-        },
-        "userLastName": {
-          "type": "string"
-        }
-      }
+      "$ref": "review-response-schema.json"
     }
   },
   "page": {

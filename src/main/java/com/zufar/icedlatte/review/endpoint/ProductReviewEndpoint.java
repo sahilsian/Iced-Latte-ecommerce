@@ -1,12 +1,16 @@
 package com.zufar.icedlatte.review.endpoint;
 
+import com.zufar.icedlatte.openapi.dto.ProductReviewRateDto;
 import com.zufar.icedlatte.openapi.dto.ProductReviewRatingStats;
 import com.zufar.icedlatte.openapi.dto.ProductReviewRequest;
 import com.zufar.icedlatte.openapi.dto.ProductReviewResponse;
 import com.zufar.icedlatte.openapi.dto.ProductReviewsAndRatingsWithPagination;
+import com.zufar.icedlatte.review.api.ProductReviewRateProvider;
+import com.zufar.icedlatte.review.api.ProductReviewRateUpdater;
 import com.zufar.icedlatte.review.api.ProductReviewsProvider;
 import com.zufar.icedlatte.review.api.ProductReviewCreator;
 import com.zufar.icedlatte.review.api.ProductReviewDeleter;
+import com.zufar.icedlatte.review.api.ProductReviewsStatisticsProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -34,6 +39,9 @@ public class ProductReviewEndpoint implements com.zufar.icedlatte.openapi.produc
     private final ProductReviewCreator productReviewCreator;
     private final ProductReviewDeleter productReviewDeleter;
     private final ProductReviewsProvider productReviewsProvider;
+    private final ProductReviewsStatisticsProvider productReviewsStatisticsProvider;
+    private final ProductReviewRateUpdater productReviewRateUpdater;
+    private final ProductReviewRateProvider productReviewRateProvider;
 
     @Override
     @PostMapping(value = "/{productId}/reviews")
@@ -82,8 +90,27 @@ public class ProductReviewEndpoint implements com.zufar.icedlatte.openapi.produc
     @GetMapping("/{productId}/reviews/statistics")
     public ResponseEntity<ProductReviewRatingStats> getRatingAndReviewStat(@PathVariable final UUID productId) {
         log.info("Received the request to get the statistics of product's review and rating for the product with the productId = '{}'", productId);
-        final ProductReviewRatingStats stats = productReviewsProvider.getRatingAndReviewStat(productId);
+        final ProductReviewRatingStats stats = productReviewsStatisticsProvider.getRatingAndReviewStat(productId);
         log.info("Statistics for product's review and rating for the product with the productId = '{}' was retrieved successfully", productId);
         return ResponseEntity.ok().body(stats);
+    }
+
+    @Override
+    @PostMapping(value = "/{productId}/reviews/rate")
+    public ResponseEntity<ProductReviewRateDto> rateProductReview(@PathVariable final UUID productId,
+                                                                  final ProductReviewRateDto request) {
+        log.info("Received the request to rate a product review for the product with the productId = '{}'", productId);
+        var reviewRate = productReviewRateUpdater.updateReviewRate(productId, request);
+        log.info("Product review with id {} was successfully {}", request.getProductReviewId(), request.getIsLike() ? "liked" : "disliked");
+        return ResponseEntity.ok().body(reviewRate);
+    }
+
+    @Override
+    @GetMapping(value = "/{productId}/reviews/rate")
+    public ResponseEntity<List<ProductReviewRateDto>> getProductReviewRates(@PathVariable final UUID productId) {
+        log.info("Received the request to fetch product review rates for the product with the productId = '{}'", productId);
+        var reviewRates = productReviewRateProvider.getProductReviewRates(productId);
+        log.info("Product review rates were successfully retrieved");
+        return ResponseEntity.ok().body(reviewRates);
     }
 }

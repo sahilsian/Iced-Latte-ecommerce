@@ -1,5 +1,6 @@
 package com.zufar.icedlatte.review.repository;
 
+import com.zufar.icedlatte.review.dto.ProductRatingCount;
 import com.zufar.icedlatte.review.entity.ProductReview;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,6 @@ public interface ProductReviewRepository extends JpaRepository<ProductReview, UU
     @Query("SELECT AVG(pr.productRating) FROM ProductReview pr WHERE pr.productInfo.productId = :productId")
     Double getAvgRatingByProductId(UUID productId);
 
-    @Query("SELECT pr.productRating, COUNT(pr.productRating) FROM ProductReview pr WHERE pr.productInfo.productId = :productId GROUP BY pr.productRating")
-    List<Object[]> getRatingsMapByProductId(UUID productId);
+    @Query("SELECT new com.zufar.icedlatte.review.dto.ProductRatingCount(pr.productRating, COUNT(pr.productRating)) FROM ProductReview pr WHERE pr.productInfo.productId = :productId GROUP BY pr.productRating")
+    List<ProductRatingCount> getRatingsMapByProductId(UUID productId);
 }

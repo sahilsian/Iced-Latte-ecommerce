@@ -1,7 +1,7 @@
 package com.zufar.icedlatte.product.api.rating;
 
 import com.zufar.icedlatte.openapi.dto.ProductInfoDto;
-import com.zufar.icedlatte.review.api.ProductAverageRatingProvider;
+import com.zufar.icedlatte.review.api.ProductReviewsStatisticsProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProductAverageRatingUpdater {
 
-    private final ProductAverageRatingProvider productRatingProvider;
+    private final ProductReviewsStatisticsProvider productRatingProvider;
     public ProductInfoDto update(ProductInfoDto productInfoDto) {
         final UUID productId = productInfoDto.getId();
         final Double result = productRatingProvider.getAvgRatingByProductId(productId);

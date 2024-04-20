@@ -19,6 +19,12 @@
     },
     "userLastName": {
       "type": ["string", "null"]
+    },
+    "likes_count" : {
+      "type": ["number", "null"]
+    },
+    "dislikes_count" : {
+      "type": ["number", "null"]
     }
   }
 }

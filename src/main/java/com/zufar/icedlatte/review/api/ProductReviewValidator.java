@@ -1,8 +1,11 @@
 package com.zufar.icedlatte.review.api;
 
+import com.zufar.icedlatte.openapi.dto.ProductReviewRateDto;
 import com.zufar.icedlatte.product.api.SingleProductProvider;
+import com.zufar.icedlatte.review.entity.ProductReviewRate;
 import com.zufar.icedlatte.review.exception.DeniedProductReviewCreationException;
 import com.zufar.icedlatte.review.exception.DeniedProductReviewDeletionException;
+import com.zufar.icedlatte.review.exception.DeniedProductReviewRateUpdateException;
 import com.zufar.icedlatte.review.exception.EmptyProductReviewException;
 import com.zufar.icedlatte.review.repository.ProductReviewRepository;
 import com.zufar.icedlatte.security.api.SecurityPrincipalProvider;
@@ -57,4 +60,26 @@ public class ProductReviewValidator {
         }
     }
 
+    public void validateProductReviewRateUpdateAllowed(final UUID productId, final ProductReviewRateDto request,
+                                                       final ProductReviewRate productReviewRate) {
+        var userId = securityPrincipalProvider.getUserId();
+        var reviewId = request.getProductReviewId();
+        var reviewOwner = productReviewRate.getReview().getUser().getId();
+        if (userId.equals(reviewOwner)) {
+            log.warn("User cannot rate their product review");
+            throw new DeniedProductReviewRateUpdateException(userId, reviewId);
+        }
+        var productIdOfReview = productReviewRate.getReview().getProductInfo().getProductId();
+        if (!productId.equals(productIdOfReview)) {
+            log.warn("Review's product id {} does not correspond to the product id {}",
+                    productIdOfReview, productId);
+            throw new DeniedProductReviewRateUpdateException(userId, reviewId);
+        }
+        var isLike = request.getIsLike();
+        var prevIsLike = productReviewRate.getIsLike();
+        if (prevIsLike == isLike) {
+            log.warn("Rating product review with the same value twice is forbidden");
+            throw new DeniedProductReviewRateUpdateException(userId, reviewId);
+        }
+    }
 }
