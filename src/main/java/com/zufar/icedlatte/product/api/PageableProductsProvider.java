@@ -12,9 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
+import java.math.BigDecimal;
 import java.util.Set;
 
 import static com.zufar.icedlatte.common.util.Utils.createPageableObject;
@@ -31,13 +30,13 @@ public class PageableProductsProvider {
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, readOnly = true)
     public ProductListWithPaginationInfoDto getProducts(final Pageable pageable,
-                                                        final Integer priceFrom,
-                                                        final Integer priceTo,
-                                                        final Integer minimumAverageRating,
+                                                        final BigDecimal minPrice,
+                                                        final BigDecimal maxPrice,
+                                                        final BigDecimal minimumAverageRating,
                                                         final Set<String> brandNames,
                                                         final Set<String> sellerNames) {
         Page<ProductInfoDto> productsWithPageInfo = productInfoRepository
-                .findAllProducts(priceFrom, priceTo, minimumAverageRating, pageable)
+                .findAllProducts(minPrice, maxPrice, minimumAverageRating, brandNames, sellerNames, pageable)
                 .map(productInfoDtoConverter::toDto)
                 .map(productUpdater::update);
 

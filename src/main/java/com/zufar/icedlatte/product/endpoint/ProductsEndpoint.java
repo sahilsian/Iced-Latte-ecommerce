@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -53,15 +54,15 @@ public class ProductsEndpoint implements com.zufar.icedlatte.openapi.product.api
                                                                         @RequestParam(name = "size", defaultValue = "50") Integer size,
                                                                         @RequestParam(name = "sort_attribute", defaultValue = "name") String sortAttribute,
                                                                         @RequestParam(name = "sort_direction", defaultValue = "desc") String sortDirection,
-                                                                        @RequestParam(name = "price_from", required = false) Integer priceFrom,
-                                                                        @RequestParam(name = "price_to", required = false) Integer priceTo,
-                                                                        @RequestParam(name = "minimum_average_rating", required = false) Integer minimumAverageRating,
+                                                                        @RequestParam(name = "min_price", required = false) BigDecimal minPrice,
+                                                                        @RequestParam(name = "max_price", required = false) BigDecimal maxPrice,
+                                                                        @RequestParam(name = "minimum_average_rating", required = false) BigDecimal minimumAverageRating,
                                                                         @RequestParam(name = "brand_names", required = false) Set<String> brandNames,
                                                                         @RequestParam(name = "seller_names", required = false) Set<String> sellersNames) {
         log.info("Received the request to get products with these pagination and sorting attributes: page - {}, size - {}, sort_attribute - {}, sort_direction - {}",
                 page, size, sortAttribute, sortDirection);
         Pageable pageable = createPageableObject(page, size, sortAttribute, sortDirection);
-        ProductListWithPaginationInfoDto productPaginationDto = productsProvider.getProducts(pageable, priceFrom, priceTo, minimumAverageRating, brandNames, sellersNames);
+        ProductListWithPaginationInfoDto productPaginationDto = productsProvider.getProducts(pageable, minPrice, maxPrice, minimumAverageRating, brandNames, sellersNames);
         log.info("Products were retrieved successfully with these pagination and sorting attributes: page - {}, size - {}, sort_attribute - {}, sort_direction - {}",
                 page, size, sortAttribute, sortDirection);
         return ResponseEntity.ok()

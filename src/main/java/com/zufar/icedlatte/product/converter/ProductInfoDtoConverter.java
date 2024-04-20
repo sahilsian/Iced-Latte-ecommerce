@@ -13,13 +13,11 @@ import org.springframework.data.domain.Page;
 public interface ProductInfoDtoConverter {
 
     @Named("toProductInfoDto")
-    @Mapping(target = "id", source = "entity.productId")
+    @Mapping(target = "id", source = "productId")
     ProductInfoDto toDto(final ProductInfo entity);
 
-    ProductInfo toProductInfo(final ProductInfoDto dto);
-
-    @Mapping(target = "products", source = "pageProductResponseDto.content")
-    @Mapping(target = "page", source = "pageProductResponseDto.number")
-    @Mapping(target = "size", source = "pageProductResponseDto.size")
+    @Mapping(target = "products", source = "content")
+    @Mapping(target = "page", source = "number")
+    @Mapping(target = "size", source = "size")
     ProductListWithPaginationInfoDto toProductPaginationDto(final Page<ProductInfoDto> pageProductResponseDto);
 }

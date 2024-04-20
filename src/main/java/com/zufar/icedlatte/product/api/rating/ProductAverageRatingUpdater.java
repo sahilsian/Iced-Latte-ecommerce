@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Slf4j
@@ -17,7 +18,7 @@ public class ProductAverageRatingUpdater {
     public ProductInfoDto update(ProductInfoDto productInfoDto) {
         final UUID productId = productInfoDto.getId();
         final Double result = productRatingProvider.getAvgRatingByProductId(productId);
-        productInfoDto.setAverageRating(result == null ? 0 : result);
+        productInfoDto.setAverageRating(result == null ? BigDecimal.ZERO : BigDecimal.valueOf(result));
         return productInfoDto;
     }
 }
