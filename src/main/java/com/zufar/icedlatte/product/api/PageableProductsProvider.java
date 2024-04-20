@@ -32,11 +32,12 @@ public class PageableProductsProvider {
     public ProductListWithPaginationInfoDto getProducts(final Pageable pageable,
                                                         final BigDecimal minPrice,
                                                         final BigDecimal maxPrice,
-                                                        final BigDecimal minimumAverageRating,
+                                                        final Integer minimumAverageRating,
                                                         final Set<String> brandNames,
                                                         final Set<String> sellerNames) {
+        BigDecimal minimumAverageRatingValue = minimumAverageRating == null ? null : BigDecimal.valueOf(minimumAverageRating);
         Page<ProductInfoDto> productsWithPageInfo = productInfoRepository
-                .findAllProducts(minPrice, maxPrice, minimumAverageRating, brandNames, sellerNames, pageable)
+                .findAllProducts(minPrice, maxPrice, minimumAverageRatingValue, brandNames, sellerNames, pageable)
                 .map(productInfoDtoConverter::toDto)
                 .map(productUpdater::update);
 

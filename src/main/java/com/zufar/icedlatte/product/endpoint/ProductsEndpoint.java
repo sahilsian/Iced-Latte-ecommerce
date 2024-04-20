@@ -56,7 +56,7 @@ public class ProductsEndpoint implements com.zufar.icedlatte.openapi.product.api
                                                                         @RequestParam(name = "sort_direction", defaultValue = "desc") String sortDirection,
                                                                         @RequestParam(name = "min_price", required = false) BigDecimal minPrice,
                                                                         @RequestParam(name = "max_price", required = false) BigDecimal maxPrice,
-                                                                        @RequestParam(name = "minimum_average_rating", required = false) BigDecimal minimumAverageRating,
+                                                                        @RequestParam(name = "minimum_average_rating", required = false) Integer minimumAverageRating,
                                                                         @RequestParam(name = "brand_names", required = false) Set<String> brandNames,
                                                                         @RequestParam(name = "seller_names", required = false) Set<String> sellersNames) {
         log.info("Received the request to get products with these pagination and sorting attributes: page - {}, size - {}, sort_attribute - {}, sort_direction - {}",
