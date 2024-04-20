@@ -55,15 +55,13 @@ paths:
       operationId: "getProducts"
       parameters:
         - name: "page"
-          description: "The page number (starting from 0) for pagination. 
-          Possible allowed values: 1) page=0 or 2) page=1 or 3) any other non negative value."
+          description: "The page number (starting from 0) for pagination. Possible allowed values: 1) page=0 or 2) page=1 or 3) any other non negative value."
           in: "query"
           required: false
           schema:
             type: "integer"
             format: "int32"
             default: 0
-            minimum: 0
           examples:
             example1:
               description: "Retrieve the first page of product's list."
@@ -72,16 +70,13 @@ paths:
               description: "Retrieve the second page of product's list."
               value: "page=1"
         - name: "size"
-          description: "The number of products per page. 
-          Possible allowed values: 1) size=3 or 2) size=15 or 3) any other non negative value."
+          description: "The number of products per page. Possible allowed values: 1) size=3 or 2) size=15 or 3) any other non negative value."
           in: "query"
           required: false
           schema:
             type: "integer"
             format: "int32"
             default: 50
-            minimum: 1
-            maximum: 100
           examples:
             example1:
               description: "Display only 3 products per page in the product list."
@@ -90,8 +85,7 @@ paths:
               description: "Display only 15 products per page in the product list."
               value: "size=15"
         - name: "sort_attribute"
-          description: "The field name of the product by which the results should be sorted. 
-          Possible allowed values: 1) sort_attribute=name or 2) sort_attribute=price or 3) sort_attribute=quantity or 4) sort_attribute=averageRating or 5) sort_attribute=reviewsCount."
+          description: "The field name of the product by which the results should be sorted. Possible allowed values: 1) sort_attribute=name or 2) sort_attribute=price or 3) sort_attribute=quantity or 4) sort_attribute=averageRating or 5) sort_attribute=reviewsCount."
           in: "query"
           required: false
           schema:
@@ -114,8 +108,7 @@ paths:
               description: "Display the product list sorted by the provided sort attribute 'reviewsCount' (the product's reviewsCount)."
               value: "sort_attribute=reviewsCount"
         - name: "sort_direction"
-          description: "The direction of sorting.
-          Possible allowed values: 1) sort_direction=asc or 2) sort_direction=disc."
+          description: "The direction of sorting. Possible allowed values: 1) sort_direction=asc or 2) sort_direction=disc."
           in: "query"
           required: false
           schema:
@@ -129,14 +122,12 @@ paths:
               description: "Display the product list in descending order."
               value: "sort_direction=disc"
         - name: "min_price"
-          description: "Filter products by the lower limit of the product's price.
-          Possible allowed values: 1) min_price=5 or 2) min_price=17.25 or 3) any other non negative integer or decimal number value."
+          description: "Filter products by the lower limit of the product's price. Possible allowed values: 1) min_price=5 or 2) min_price=17.25 or 3) any other non negative integer or decimal number value."
           in: "query"
           required: false
           schema:
             type: "number"
             format: "decimal"
-            minimum: 0
           examples:
             example1:
               description: "Display the product list filtered by the lower limit of the product's price (min_price=5)."
@@ -145,14 +136,12 @@ paths:
               description: "Display the product list filtered by the lower limit of the product's price (min_price=17.25)."
               value: "min_price=17.25"
         - name: "max_price"
-          description: "Filter products by the upper limit of the product's price.
-          Possible allowed values: 1) max_price=5 or 2) max_price=17.25 or 3) any other non negative integer or decimal number value."
+          description: "Filter products by the upper limit of the product's price. Possible allowed values: 1) max_price=5 or 2) max_price=17.25 or 3) any other non negative integer or decimal number value."
           in: "query"
           required: false
           schema:
             type: "number"
             format: "decimal"
-            minimum: 0
           examples:
             example1:
               description: "Display the product list filtered by the upper limit of the product's price (max_price=5)."
@@ -168,8 +157,6 @@ paths:
           schema:
             type: "integer"
             format: "int32"
-            minimum: 1
-            maximum: 4
           examples:
             example1:
               description: "Display the product list filtered by the minimum average rating of a product (minimum_average_rating=1)."
@@ -184,8 +171,7 @@ paths:
               description: "Display the product list filtered by the minimum average rating of a product (minimum_average_rating=4)."
               value: "minimum_average_rating=4"
         - name: "brand_names"
-          description: "Filter products by selected brand names (comma-separated list).
-          Possible allowed values: 1) brand_names=Starbucks or 2) brand_names=Starbucks,Folgers or 3) any other comma-separated list"
+          description: "Filter products by selected brand names (comma-separated list). Possible allowed values: 1) brand_names=Starbucks or 2) brand_names=Starbucks,Folgers or 3) any other comma-separated list"
           examples:
             example1:
               description: "Display the product list filtered by selected brand names (brand_names=Starbucks,Folgers)."
@@ -201,8 +187,7 @@ paths:
               type: "string"
             uniqueItems: true
         - name: "seller_names"
-          description: "Filter products by selected seller names (comma-separated list).
-          Possible allowed values: 1) seller_names=BeanBrewers,JavaBeanCoffee,MorningMug or 2) seller_names=BeanBrewers or 3) any other comma-separated list"
+          description: "Filter products by selected seller names (comma-separated list). Possible allowed values: 1) seller_names=BeanBrewers,JavaBeanCoffee,MorningMug or 2) seller_names=BeanBrewers or 3) any other comma-separated list"
           in: "query"
           required: false
           schema:
@@ -225,7 +210,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ProductListWithPaginationInfoDto"
         "400":
-          description: "Invalid parameters provided for pagination or sorting."
+          description: "Invalid parameters provided for pagination or/and sorting or/and filtering."
         "500":
           description: "Internal Server Error."
 

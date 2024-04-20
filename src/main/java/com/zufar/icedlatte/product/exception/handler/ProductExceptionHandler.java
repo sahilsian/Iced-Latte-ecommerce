@@ -3,10 +3,10 @@ package com.zufar.icedlatte.product.exception.handler;
 import com.zufar.icedlatte.common.exception.dto.ApiErrorResponse;
 import com.zufar.icedlatte.common.exception.handler.ApiErrorResponseCreator;
 import com.zufar.icedlatte.common.exception.handler.ErrorDebugMessageCreator;
+import com.zufar.icedlatte.product.exception.GetProductsBadRequestException;
 import com.zufar.icedlatte.product.exception.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -31,9 +31,9 @@ public class ProductExceptionHandler {
         return apiErrorResponse;
     }
 
-    @ExceptionHandler(PropertyReferenceException.class)
+    @ExceptionHandler(GetProductsBadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrorResponse handlePropertyReferenceException(final PropertyReferenceException exception) {
+    public ApiErrorResponse handleGetProductsBadRequestException(final GetProductsBadRequestException exception) {
         ApiErrorResponse apiErrorResponse = apiErrorResponseCreator.buildResponse(exception, HttpStatus.BAD_REQUEST);
 
         log.warn("Handle product invalid property exception: failed: message: {}, debugMessage: {}.",
