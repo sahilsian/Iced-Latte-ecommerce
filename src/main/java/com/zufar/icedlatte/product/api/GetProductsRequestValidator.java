@@ -74,6 +74,6 @@ public class GetProductsRequestValidator {
     }
 
     private static String createErrorMessage(String errorMessage) {
-        return String.format("Error: { %s }. ", errorMessage);
+        return String.format(" Error: { %s }. ", errorMessage);
     }
 }
