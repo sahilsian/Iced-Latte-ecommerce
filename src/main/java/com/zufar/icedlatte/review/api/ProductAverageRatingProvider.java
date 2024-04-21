@@ -1,6 +1,7 @@
 package com.zufar.icedlatte.review.api;
 
 import com.zufar.icedlatte.openapi.dto.ProductReviewRatingStats;
+import com.zufar.icedlatte.openapi.dto.RatingMap;
 import com.zufar.icedlatte.product.exception.ProductNotFoundException;
 import com.zufar.icedlatte.review.converter.ProductReviewDtoConverter;
 import com.zufar.icedlatte.review.dto.ProductRatingCount;
@@ -18,7 +19,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ProductReviewsStatisticsProvider {
+public class ProductAverageRatingProvider {
 
     private final ProductReviewRepository reviewRepository;
     private final ProductReviewDtoConverter productReviewDtoConverter;
@@ -27,7 +28,6 @@ public class ProductReviewsStatisticsProvider {
     public Double getAvgRatingByProductId(final UUID productId) {
         return reviewRepository.getAvgRatingByProductId(productId);
     }
-
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, readOnly = true)
     public ProductReviewRatingStats getRatingAndReviewStat(final UUID productId) {
@@ -39,7 +39,8 @@ public class ProductReviewsStatisticsProvider {
         }
         String formattedAvgRating = String.format("%.1f", avgRating);
         Integer reviewsCount = reviewRepository.getReviewCountProductById(productId);
-        return new ProductReviewRatingStats(productId, formattedAvgRating, reviewsCount,
-                productReviewDtoConverter.convertToProductRatingMap(productRatingCountPairs));
+        RatingMap productRatingMap = productReviewDtoConverter.convertToProductRatingMap(productRatingCountPairs);
+
+        return new ProductReviewRatingStats(productId, formattedAvgRating, reviewsCount, productRatingMap);
     }
 }

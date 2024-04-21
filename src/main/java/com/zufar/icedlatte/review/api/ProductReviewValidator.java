@@ -1,12 +1,7 @@
 package com.zufar.icedlatte.review.api;
 
-import com.zufar.icedlatte.openapi.dto.ProductReviewRateDto;
-import com.zufar.icedlatte.product.api.SingleProductProvider;
-import com.zufar.icedlatte.review.entity.ProductReviewRate;
-import com.zufar.icedlatte.review.exception.DeniedProductReviewCreationException;
-import com.zufar.icedlatte.review.exception.DeniedProductReviewDeletionException;
-import com.zufar.icedlatte.review.exception.DeniedProductReviewRateUpdateException;
-import com.zufar.icedlatte.review.exception.EmptyProductReviewException;
+import com.zufar.icedlatte.product.repository.ProductInfoRepository;
+import com.zufar.icedlatte.review.exception.*;
 import com.zufar.icedlatte.review.repository.ProductReviewRepository;
 import com.zufar.icedlatte.security.api.SecurityPrincipalProvider;
 import lombok.RequiredArgsConstructor;
@@ -20,37 +15,54 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProductReviewValidator {
 
-    private final SingleProductProvider singleProductProvider;
     private final SecurityPrincipalProvider securityPrincipalProvider;
     private final ProductReviewProvider productReviewProvider;
-    private final ProductReviewRepository reviewRepository;
+    private final ProductReviewRepository productReviewRepository;
+    private final ProductInfoRepository productInfoRepository;
 
-    public void validateReview(final UUID userId, final UUID productId, final String text) {
-        if (text.isEmpty()) {
+    /**
+     * Check if the product review's text is not empty
+     */
+    public void validateReviewText(final String productReviewText) {
+        if (productReviewText.isEmpty()) {
             throw new EmptyProductReviewException();
         }
-        validateReviewExists(userId, productId);
     }
 
     /**
-     * Check if product exists
+     * Check if the product exists
      */
     public void validateProductExists(final UUID productId) {
-        singleProductProvider.getProductEntityById(productId);
+        var productInfo = productInfoRepository.findById(productId);
+        if (productInfo.isEmpty()) {
+            throw new ProductNotFoundForReviewException(productId);
+        }
     }
 
     /**
-     * Check if user has already created a review for this product
+     * Check if the user has already created a review for this product
      */
     public void validateReviewExists(final UUID userId,
                                      final UUID productId) {
-        var review = reviewRepository.findByUserIdAndProductInfoProductId(userId, productId);
-        if (review.isPresent()) {
-            throw new DeniedProductReviewCreationException(productId, userId, review.get().getId());
+        var productReview = productReviewRepository.findByUserIdAndProductInfoProductId(userId, productId);
+        if (productReview.isEmpty()) {
+            throw new DeniedProductReviewCreationException(productId, userId, productReview.get().getId());
         }
     }
 
+    /**
+     * Check if the user has already created a review for this product
+     */
+    public void validateReviewExists(final UUID productReviewId) {
+        var productReview = productReviewRepository.findById(productReviewId);
+        if (productReview.isEmpty()) {
+            throw new ProductReviewNotFoundException(productReviewId);
+        }
+    }
 
+    /**
+     * Check if the product's review deletion is allowed
+     */
     public void validateProductReviewDeletionAllowed(final UUID productReviewId) {
         var currentUserId = securityPrincipalProvider.getUserId();
         var creatorId = productReviewProvider.getReviewEntityById(productReviewId).getUser().getId();
@@ -60,26 +72,16 @@ public class ProductReviewValidator {
         }
     }
 
-    public void validateProductReviewRateUpdateAllowed(final UUID productId, final ProductReviewRateDto request,
-                                                       final ProductReviewRate productReviewRate) {
-        var userId = securityPrincipalProvider.getUserId();
-        var reviewId = request.getProductReviewId();
-        var reviewOwner = productReviewRate.getReview().getUser().getId();
-        if (userId.equals(reviewOwner)) {
-            log.warn("User cannot rate their product review");
-            throw new DeniedProductReviewRateUpdateException(userId, reviewId);
-        }
-        var productIdOfReview = productReviewRate.getReview().getProductInfo().getProductId();
-        if (!productId.equals(productIdOfReview)) {
-            log.warn("Review's product id {} does not correspond to the product id {}",
-                    productIdOfReview, productId);
-            throw new DeniedProductReviewRateUpdateException(userId, reviewId);
-        }
-        var isLike = request.getIsLike();
-        var prevIsLike = productReviewRate.getIsLike();
-        if (prevIsLike == isLike) {
-            log.warn("Rating product review with the same value twice is forbidden");
-            throw new DeniedProductReviewRateUpdateException(userId, reviewId);
+    /**
+     * Check if the product's review deletion is allowed
+     */
+    public void validateProductIdIsValid(final UUID productId,
+                                         final UUID productReviewId) {
+        var product = productInfoRepository.findById(productId);
+        var productReview = productReviewProvider.getReviewEntityById(productReviewId);
+
+        if (!product.get().getProductId().equals(productReview.getProductInfo().getProductId())) {
+            throw new ProductIdsAreNotMatchException(productReviewId);
         }
     }
 }

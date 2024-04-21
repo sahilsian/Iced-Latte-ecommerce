@@ -98,6 +98,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private boolean isUnauthorizedGetReviewsUrl(HttpServletRequest request) {
         boolean isReviewsUrl = SecurityConstants.ALLOWED_PRODUCT_REVIEWS_URLS.stream()
                 .anyMatch(securedUrl -> new AntPathRequestMatcher(securedUrl).matches(request));
+
         return isReviewsUrl && HttpMethod.GET.name().equals(request.getMethod());
     }
 }

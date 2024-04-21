@@ -35,14 +35,15 @@ public class ProductReviewCreator {
     public ProductReviewDto create(final UUID productId,
                                    final ProductReviewRequest productReviewRequest) {
         var userId = securityPrincipalProvider.getUserId();
-        var productReviewText = productReviewRequest.getText().trim();
+        var productReviewText = productReviewRequest.getText();
 
-        productReviewValidator.validateReview(userId, productId, productReviewText);
+        productReviewValidator.validateReviewText(productReviewText);
+        productReviewValidator.validateReviewExists(userId, productId);
 
         var productReview = ProductReview.builder()
                 .user(singleUserProvider.getUserEntityById(userId))
                 .productInfo(singleProductProvider.getProductEntityById(productId))
-                .text(productReviewText)
+                .text(productReviewText.trim())
                 .productRating(productReviewRequest.getRating())
                 .build();
 

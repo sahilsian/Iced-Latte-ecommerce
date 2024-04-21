@@ -196,17 +196,24 @@ paths:
         "500":
           description: "Internal server error"
 
-  /api/v1/products/{productId}/reviews/rate:
+  /api/v1/products/{productId}/reviews/{productReviewId}/likes:
     post:
       tags:
         - "Product Review"
       summary: "Like or dislike a product review, available for authorized users only"
-      operationId: "rateProductReview"
+      operationId: "addProductReviewLike"
       parameters:
         - name: "productId"
           in: "path"
           required: true
           description: "Unique identifier of the product."
+          schema:
+            type: "string"
+            format: "uuid"
+        - name: "productReviewId"
+          in: "path"
+          required: true
+          description: "Unique identifier of the product's review."
           schema:
             type: "string"
             format: "uuid"
@@ -214,38 +221,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ProductReviewRateDto"
+              $ref: "#/components/schemas/ProductReviewLikeDto"
       responses:
         "200":
           description: "Review was successfully liked/disliked"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProductReviewRateDto"
-        "401":
-          description: "Unauthorized access"
-        "500":
-          description: "Internal server error"
-    get:
-      tags:
-        - "Product Review"
-      summary: "Return list of product reviews which were rated by authorized user"
-      operationId: "getProductReviewRates"
-      parameters:
-        - name: "productId"
-          in: "path"
-          required: true
-          description: "Unique identifier of the product."
-          schema:
-            type: "string"
-            format: "uuid"
-      responses:
-        "200":
-          description: "List of reviews was successfully fetched"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ListOfReviewRates"
+                $ref: "#/components/schemas/ProductReviewLikeDto"
         "401":
           description: "Unauthorized access"
         "500":
@@ -293,18 +276,18 @@ components:
       description: "Object used to group product's reviews and ratings by user"
       required:
         - productReviewId
-        - rating
+        - productRating
         - text
         - createdAt
         - userName
-        - userLastName
-        - likes_count
-        - dislikes_count
+        - userLastname
+        - likesCount
+        - dislikesCount
       properties:
         productReviewId:
           type: "string"
           format: "uuid"
-        rating:
+        productRating:
           type: "integer"
           format: "int32"
         text:
@@ -314,12 +297,12 @@ components:
           format: "date-time"
         userName:
           type: "string"
-        userLastName:
+        userLastname:
           type: "string"
-        likes_count:
+        likesCount:
           type: "integer"
           format: "int32"
-        dislikes_count:
+        dislikesCount:
           type: "integer"
           format: "int32"
 
@@ -372,19 +355,10 @@ components:
         - "star4"
         - "star5"
 
-    ProductReviewRateDto:
+    ProductReviewLikeDto:
       type: object
       properties:
-        productReviewId:
-          type: "string"
-          format: "uuid"
         isLike:
           type: "boolean"
       required:
-        - productReviewId
         - isLike
-
-    ListOfReviewRates:
-      type: array
-      items:
-        $ref: "#/components/schemas/ProductReviewRateDto"

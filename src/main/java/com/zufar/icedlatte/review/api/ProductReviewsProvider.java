@@ -1,6 +1,6 @@
 package com.zufar.icedlatte.review.api;
 
-import com.zufar.icedlatte.openapi.dto.ProductReviewResponse;
+import com.zufar.icedlatte.openapi.dto.ProductReviewDto;
 import com.zufar.icedlatte.openapi.dto.ProductReviewsAndRatingsWithPagination;
 import com.zufar.icedlatte.review.converter.ProductReviewDtoConverter;
 import com.zufar.icedlatte.review.repository.ProductReviewRepository;
@@ -37,14 +37,14 @@ public class ProductReviewsProvider {
                                                                     final String sortDirection) {
         productReviewValidator.validateProductExists(productId);
         Pageable pageable = createPageableObject(page, size, sortAttribute, sortDirection);
-        Page<ProductReviewResponse> responsePage = reviewRepository
+        Page<ProductReviewDto> responsePage = reviewRepository
                 .findByProductInfoProductId(productId, pageable)
                 .map(productReviewDtoConverter::toProductReviewDto);
         return productReviewDtoConverter.toProductReviewsAndRatingsWithPagination(responsePage);
     }
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, readOnly = true)
-    public ProductReviewResponse getProductReviewForUser(final UUID productId) {
+    public ProductReviewDto getProductReviewForUser(final UUID productId) {
         productReviewValidator.validateProductExists(productId);
         var userId = securityPrincipalProvider.getUserId();
         return reviewRepository.findByUserIdAndProductInfoProductId(userId, productId)
