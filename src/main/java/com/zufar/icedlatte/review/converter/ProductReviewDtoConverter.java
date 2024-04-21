@@ -15,7 +15,7 @@ public class ProductReviewDtoConverter {
     public static final ProductReviewDto EMPTY_PRODUCT_REVIEW_RESPONSE =
             new ProductReviewDto(null, null, null, null, null, null);
 
-    public ProductReviewDto toReviewResponse(ProductReview productReview) {
+    public ProductReviewDto toProductReviewDto(ProductReview productReview) {
         return new ProductReviewDto(
                 productReview.getId(),
                 productReview.getProductRating(),

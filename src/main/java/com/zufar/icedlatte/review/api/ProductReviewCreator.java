@@ -33,7 +33,7 @@ public class ProductReviewCreator {
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
     public ProductReviewDto create(final UUID productId,
-                                        final ProductReviewRequest productReviewRequest) {
+                                   final ProductReviewRequest productReviewRequest) {
         var userId = securityPrincipalProvider.getUserId();
         var productReviewText = productReviewRequest.getText().trim();
 
@@ -51,6 +51,6 @@ public class ProductReviewCreator {
         productInfoRepository.updateAverageRating(productId);
         productInfoRepository.updateReviewsCount(productId);
 
-        return productReviewDtoConverter.toReviewResponse(productReview);
+        return productReviewDtoConverter.toProductReviewDto(productReview);
     }
 }

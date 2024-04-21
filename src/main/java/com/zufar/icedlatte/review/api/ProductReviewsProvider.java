@@ -42,7 +42,7 @@ public class ProductReviewsProvider {
         Pageable pageable = createPageableObject(page, size, sortAttribute, sortDirection);
         Page<ProductReviewDto> responsePage = reviewRepository
                 .findByProductInfoProductId(productId, pageable)
-                .map(productReviewDtoConverter::toReviewResponse);
+                .map(productReviewDtoConverter::toProductReviewDto);
         return productReviewDtoConverter.toProductReviewsAndRatingsWithPagination(responsePage);
     }
 
@@ -51,7 +51,7 @@ public class ProductReviewsProvider {
         productReviewValidator.validateProductExists(productId);
         var userId = securityPrincipalProvider.getUserId();
         return reviewRepository.findByUserIdAndProductInfoProductId(userId, productId)
-                .map(productReviewDtoConverter::toReviewResponse)
+                .map(productReviewDtoConverter::toProductReviewDto)
                 .orElse(EMPTY_PRODUCT_REVIEW_RESPONSE);
     }
 
