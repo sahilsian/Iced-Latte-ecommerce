@@ -1,7 +1,7 @@
 package com.zufar.icedlatte.review.api;
 
 import com.zufar.icedlatte.openapi.dto.ProductReviewRequest;
-import com.zufar.icedlatte.openapi.dto.ProductReviewResponse;
+import com.zufar.icedlatte.openapi.dto.ProductReviewDto;
 import com.zufar.icedlatte.product.api.SingleProductProvider;
 import com.zufar.icedlatte.product.repository.ProductInfoRepository;
 import com.zufar.icedlatte.review.converter.ProductReviewDtoConverter;
@@ -32,7 +32,7 @@ public class ProductReviewCreator {
     private final ProductInfoRepository productInfoRepository;
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
-    public ProductReviewResponse create(final UUID productId,
+    public ProductReviewDto create(final UUID productId,
                                         final ProductReviewRequest productReviewRequest) {
         var userId = securityPrincipalProvider.getUserId();
         var productReviewText = productReviewRequest.getText().trim();

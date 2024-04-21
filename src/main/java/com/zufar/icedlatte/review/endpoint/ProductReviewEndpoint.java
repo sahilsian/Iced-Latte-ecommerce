@@ -2,7 +2,7 @@ package com.zufar.icedlatte.review.endpoint;
 
 import com.zufar.icedlatte.openapi.dto.ProductReviewRatingStats;
 import com.zufar.icedlatte.openapi.dto.ProductReviewRequest;
-import com.zufar.icedlatte.openapi.dto.ProductReviewResponse;
+import com.zufar.icedlatte.openapi.dto.ProductReviewDto;
 import com.zufar.icedlatte.openapi.dto.ProductReviewsAndRatingsWithPagination;
 import com.zufar.icedlatte.review.api.ProductReviewsProvider;
 import com.zufar.icedlatte.review.api.ProductReviewCreator;
@@ -37,7 +37,7 @@ public class ProductReviewEndpoint implements com.zufar.icedlatte.openapi.produc
 
     @Override
     @PostMapping(value = "/{productId}/reviews")
-    public ResponseEntity<ProductReviewResponse> addNewProductReview(@PathVariable final UUID productId,
+    public ResponseEntity<ProductReviewDto> addNewProductReview(@PathVariable final UUID productId,
                                                                      final ProductReviewRequest productReviewRequest) {
         log.info("Received the request to add a new product review for the product with the productId = '{}'", productId);
         var review = productReviewCreator.create(productId, productReviewRequest);
@@ -71,9 +71,9 @@ public class ProductReviewEndpoint implements com.zufar.icedlatte.openapi.produc
 
     @Override
     @GetMapping(value = "/{productId}/review")
-    public ResponseEntity<ProductReviewResponse> getProductReview(@PathVariable final UUID productId) {
+    public ResponseEntity<ProductReviewDto> getProductReview(@PathVariable final UUID productId) {
         log.info("Received the request to get product review and rating for the product with the productId = '{}'", productId);
-        ProductReviewResponse result = productReviewsProvider.getProductReviewForUser(productId);
+        ProductReviewDto result = productReviewsProvider.getProductReviewForUser(productId);
         log.info("Product review and rating were retrieved successfully for the product with the productId = '{}'", productId);
         return ResponseEntity.ok().body(result);
     }
