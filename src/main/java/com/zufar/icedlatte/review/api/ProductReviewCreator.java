@@ -37,6 +37,7 @@ public class ProductReviewCreator {
         var userId = securityPrincipalProvider.getUserId();
         var productReviewText = productReviewRequest.getText();
 
+        productReviewValidator.validateProductExists(productId);
         productReviewValidator.validateReviewText(productReviewText);
         productReviewValidator.validateReviewExistsForUser(userId, productId);
 
