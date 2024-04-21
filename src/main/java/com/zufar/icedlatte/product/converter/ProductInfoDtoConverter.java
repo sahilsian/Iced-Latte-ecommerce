@@ -9,17 +9,27 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.Named;
 import org.springframework.data.domain.Page;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ProductInfoDtoConverter {
 
     @Named("toProductInfoDto")
-    @Mapping(target = "id", source = "entity.productId")
+    @Mapping(target = "id", source = "productId")
+    @Mapping(target = "averageRating", source = "averageRating", qualifiedByName = "roundAverageRatingValue")
     ProductInfoDto toDto(final ProductInfo entity);
 
-    ProductInfo toProductInfo(final ProductInfoDto dto);
-
-    @Mapping(target = "products", source = "pageProductResponseDto.content")
-    @Mapping(target = "page", source = "pageProductResponseDto.number")
-    @Mapping(target = "size", source = "pageProductResponseDto.size")
+    @Mapping(target = "products", source = "content")
+    @Mapping(target = "page", source = "number")
+    @Mapping(target = "size", source = "size")
     ProductListWithPaginationInfoDto toProductPaginationDto(final Page<ProductInfoDto> pageProductResponseDto);
+
+    @Named("roundAverageRatingValue")
+    default BigDecimal roundAverageRatingValue(BigDecimal averageRating) {
+        if (averageRating != null) {
+            averageRating = averageRating.setScale(1, RoundingMode.HALF_DOWN);
+        }
+        return averageRating;
+    }
 }

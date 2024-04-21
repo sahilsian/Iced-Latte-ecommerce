@@ -87,12 +87,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   }
 
     private boolean isSecuredUrl(HttpServletRequest request) {
-        if (isGetReviews(request)) return false;
-        return Stream.of(SecurityConstants.SHOPPING_CART_URL, SecurityConstants.PAYMENT_URL, SecurityConstants.USERS_URL, SecurityConstants.FAVOURITES_URL, SecurityConstants.AUTH_URL, SecurityConstants.ORDERS_URL, SecurityConstants.SHIPPING_URL, SecurityConstants.REVIEWS_URL, SecurityConstants.REVIEW_URL).anyMatch(securedUrl -> new AntPathRequestMatcher(securedUrl).matches(request));
+        if (isUnauthorizedGetReviewsUrl(request)) return false;
+        return Stream.of(SecurityConstants.SHOPPING_CART_URL, SecurityConstants.PAYMENT_URL,
+                SecurityConstants.USERS_URL, SecurityConstants.FAVOURITES_URL,
+                SecurityConstants.AUTH_URL, SecurityConstants.ORDERS_URL,
+                SecurityConstants.SHIPPING_URL, SecurityConstants.REVIEWS_URL,
+                SecurityConstants.REVIEW_URL).anyMatch(securedUrl -> new AntPathRequestMatcher(securedUrl).matches(request));
     }
 
-    private boolean isGetReviews(HttpServletRequest request) {
-        boolean isReviewsUrl = Stream.of(SecurityConstants.REVIEWS_URL).anyMatch(securedUrl -> new AntPathRequestMatcher(securedUrl).matches(request));
+    private boolean isUnauthorizedGetReviewsUrl(HttpServletRequest request) {
+        boolean isReviewsUrl = SecurityConstants.ALLOWED_PRODUCT_REVIEWS_URLS.stream()
+                .anyMatch(securedUrl -> new AntPathRequestMatcher(securedUrl).matches(request));
+
         return isReviewsUrl && HttpMethod.GET.name().equals(request.getMethod());
     }
 }

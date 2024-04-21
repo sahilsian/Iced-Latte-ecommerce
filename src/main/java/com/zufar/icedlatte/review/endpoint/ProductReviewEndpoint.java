@@ -2,11 +2,14 @@ package com.zufar.icedlatte.review.endpoint;
 
 import com.zufar.icedlatte.openapi.dto.ProductReviewRatingStats;
 import com.zufar.icedlatte.openapi.dto.ProductReviewRequest;
-import com.zufar.icedlatte.openapi.dto.ProductReviewResponse;
+import com.zufar.icedlatte.openapi.dto.ProductReviewDto;
+import com.zufar.icedlatte.openapi.dto.ProductReviewLikeDto;
 import com.zufar.icedlatte.openapi.dto.ProductReviewsAndRatingsWithPagination;
+import com.zufar.icedlatte.review.api.ProductReviewLikesUpdater;
 import com.zufar.icedlatte.review.api.ProductReviewsProvider;
 import com.zufar.icedlatte.review.api.ProductReviewCreator;
 import com.zufar.icedlatte.review.api.ProductReviewDeleter;
+import com.zufar.icedlatte.review.api.ProductAverageRatingProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,11 +37,13 @@ public class ProductReviewEndpoint implements com.zufar.icedlatte.openapi.produc
     private final ProductReviewCreator productReviewCreator;
     private final ProductReviewDeleter productReviewDeleter;
     private final ProductReviewsProvider productReviewsProvider;
+    private final ProductAverageRatingProvider productAverageRatingProvider;
+    private final ProductReviewLikesUpdater productReviewLikesUpdater;
 
     @Override
     @PostMapping(value = "/{productId}/reviews")
-    public ResponseEntity<ProductReviewResponse> addNewProductReview(@PathVariable final UUID productId,
-                                                                     final ProductReviewRequest productReviewRequest) {
+    public ResponseEntity<ProductReviewDto> addNewProductReview(@PathVariable final UUID productId,
+                                                                final ProductReviewRequest productReviewRequest) {
         log.info("Received the request to add a new product review for the product with the productId = '{}'", productId);
         var review = productReviewCreator.create(productId, productReviewRequest);
         log.info("New product review was added with productReviewId = '{}' for the product with the productId = '{}'", review.getProductReviewId(), productId);
@@ -71,9 +76,9 @@ public class ProductReviewEndpoint implements com.zufar.icedlatte.openapi.produc
 
     @Override
     @GetMapping(value = "/{productId}/review")
-    public ResponseEntity<ProductReviewResponse> getProductReview(@PathVariable final UUID productId) {
+    public ResponseEntity<ProductReviewDto> getProductReview(@PathVariable final UUID productId) {
         log.info("Received the request to get product review and rating for the product with the productId = '{}'", productId);
-        ProductReviewResponse result = productReviewsProvider.getProductReviewForUser(productId);
+        ProductReviewDto result = productReviewsProvider.getProductReviewForUser(productId);
         log.info("Product review and rating were retrieved successfully for the product with the productId = '{}'", productId);
         return ResponseEntity.ok().body(result);
     }
@@ -82,8 +87,19 @@ public class ProductReviewEndpoint implements com.zufar.icedlatte.openapi.produc
     @GetMapping("/{productId}/reviews/statistics")
     public ResponseEntity<ProductReviewRatingStats> getRatingAndReviewStat(@PathVariable final UUID productId) {
         log.info("Received the request to get the statistics of product's review and rating for the product with the productId = '{}'", productId);
-        final ProductReviewRatingStats stats = productReviewsProvider.getRatingAndReviewStat(productId);
+        final ProductReviewRatingStats stats = productAverageRatingProvider.getRatingAndReviewStat(productId);
         log.info("Statistics for product's review and rating for the product with the productId = '{}' was retrieved successfully", productId);
         return ResponseEntity.ok().body(stats);
+    }
+
+    @Override
+    @PostMapping(value = "/{productId}/reviews/{productReviewId}/rate")
+    public ResponseEntity<ProductReviewDto> addProductReviewLike(@PathVariable final UUID productId,
+                                                                 @PathVariable final UUID productReviewId,
+                                                                 final ProductReviewLikeDto request) {
+        log.info("Received the request to rate a product review for the product with the productId = '{}'.", productId);
+        var productReview = productReviewLikesUpdater.update(productId, productReviewId, request.getIsLike());
+        log.info("Product review with id = '{}' was successfully {}.", productReviewId, request.getIsLike() ? "liked" : "disliked");
+        return ResponseEntity.ok().body(productReview);
     }
 }

@@ -1,10 +1,10 @@
 package com.zufar.icedlatte.product.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -44,6 +44,18 @@ public class ProductInfo {
 
     @Column(name = "active", nullable = false)
     private Boolean active;
+
+    @Column(name = "average_rating")
+    private BigDecimal averageRating;
+
+    @Column(name = "reviews_count")
+    private Integer reviewsCount;
+
+    @Column(name = "brand_name", nullable = false)
+    private String brandName;
+
+    @Column(name = "seller_name", nullable = false)
+    private String sellerName;
 
     @Override
     public boolean equals(Object object) {

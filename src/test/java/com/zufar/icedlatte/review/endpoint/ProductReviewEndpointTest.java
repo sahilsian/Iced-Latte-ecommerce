@@ -25,7 +25,6 @@ import static com.zufar.icedlatte.test.config.RestUtils.getJwtToken;
 import static com.zufar.icedlatte.test.config.RestUtils.getRequestBody;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -96,7 +95,7 @@ class ProductReviewEndpointTest {
 
         assertRestApiBodySchemaResponse(response, HttpStatus.OK, REVIEW_RESPONSE_SCHEMA)
                 .body("text", equalTo(EXPECTED_REVIEW))
-                .body("rating", equalTo(3))
+                .body("productRating", equalTo(3))
                 .body("productReviewId", notNullValue());
 
         removeReview(AFFOGATO_ID, response);
@@ -119,13 +118,13 @@ class ProductReviewEndpointTest {
         assertRestApiBodySchemaResponse(response, HttpStatus.OK, REVIEWS_WITH_RATINGS_RESPONSE_SCHEMA)
                 .body("totalElements", equalTo(3))
                 .body("totalPages", equalTo(1))
-                .body("reviewsWithRatings[0].rating", equalTo(5))
+                .body("reviewsWithRatings[0].productRating", equalTo(5))
                 .body("reviewsWithRatings[0].text", startsWith(START_OF_REVIEW_FOR_AMERICANO))
                 .body("reviewsWithRatings[0].userName", equalTo("John"))
-                .body("reviewsWithRatings[1].rating", equalTo(3))
+                .body("reviewsWithRatings[1].productRating", equalTo(3))
                 .body("reviewsWithRatings[1].text", startsWith(START_OF_REVIEW_FOR_AMERICANO))
                 .body("reviewsWithRatings[1].userName", equalTo("Jane"))
-                .body("reviewsWithRatings[2].rating", equalTo(1))
+                .body("reviewsWithRatings[2].productRating", equalTo(1))
                 .body("reviewsWithRatings[2].text", startsWith(START_OF_REVIEW_FOR_AMERICANO))
                 .body("reviewsWithRatings[2].userName", equalTo("Michael"));
     }
@@ -139,14 +138,14 @@ class ProductReviewEndpointTest {
 
         assertRestApiBodySchemaResponse(response, HttpStatus.OK, REVIEW_RESPONSE_SCHEMA)
                 .body("text", nullValue())
-                .body("rating", nullValue());
+                .body("productRating", nullValue());
 
         // review exists
         response = given(specification)
                 .get("/{productId}/review", AMERICANO_ID);
         assertRestApiBodySchemaResponse(response, HttpStatus.OK, REVIEW_RESPONSE_SCHEMA)
                 .body("text", startsWith(START_OF_REVIEW_FOR_AMERICANO))
-                .body("rating", equalTo(3));
+                .body("productRating", equalTo(3));
     }
 
     @Test

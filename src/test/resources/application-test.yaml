@@ -63,6 +63,14 @@ spring:
       port: 6380
 
 #
+# Temporary Cache
+#
+temporary-cache:
+  time:
+    token: 5
+  get-token-enabled: true
+
+#
 # JWT Security Properties
 #
 jwt:

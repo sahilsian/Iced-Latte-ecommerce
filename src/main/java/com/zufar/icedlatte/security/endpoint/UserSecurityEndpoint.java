@@ -125,4 +125,12 @@ public class UserSecurityEndpoint implements SecurityApi {
         log.info("Password changed for user");
         return ResponseEntity.ok().build();
     }
+
+    // for testing only
+    @PostMapping("/email/code")
+    public ResponseEntity<String> getEmailVerificationCode(@RequestBody final UserRegistrationRequest request) {
+        String token = emailTokenSender.getEmailVerificationCode(request);
+        return ResponseEntity.ok()
+                .body(token);
+    }
 }

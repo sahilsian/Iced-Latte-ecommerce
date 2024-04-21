@@ -1,11 +1,8 @@
 package com.zufar.icedlatte.review.api;
 
-import com.zufar.icedlatte.openapi.dto.ProductReviewRatingStats;
-import com.zufar.icedlatte.openapi.dto.ProductReviewResponse;
+import com.zufar.icedlatte.openapi.dto.ProductReviewDto;
 import com.zufar.icedlatte.openapi.dto.ProductReviewsAndRatingsWithPagination;
-import com.zufar.icedlatte.product.exception.ProductNotFoundException;
 import com.zufar.icedlatte.review.converter.ProductReviewDtoConverter;
-import com.zufar.icedlatte.review.entity.ProductReview;
 import com.zufar.icedlatte.review.repository.ProductReviewRepository;
 import com.zufar.icedlatte.security.api.SecurityPrincipalProvider;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +14,6 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 import static com.zufar.icedlatte.common.util.Utils.createPageableObject;
@@ -41,32 +37,18 @@ public class ProductReviewsProvider {
                                                                     final String sortDirection) {
         productReviewValidator.validateProductExists(productId);
         Pageable pageable = createPageableObject(page, size, sortAttribute, sortDirection);
-        Page<ProductReviewResponse> responsePage = reviewRepository
+        Page<ProductReviewDto> responsePage = reviewRepository
                 .findByProductInfoProductId(productId, pageable)
-                .map(productReviewDtoConverter::toReviewResponse);
+                .map(productReviewDtoConverter::toProductReviewDto);
         return productReviewDtoConverter.toProductReviewsAndRatingsWithPagination(responsePage);
     }
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, readOnly = true)
-    public ProductReviewResponse getProductReviewForUser(final UUID productId) {
+    public ProductReviewDto getProductReviewForUser(final UUID productId) {
         productReviewValidator.validateProductExists(productId);
         var userId = securityPrincipalProvider.getUserId();
         return reviewRepository.findByUserIdAndProductInfoProductId(userId, productId)
-                .map(productReviewDtoConverter::toReviewResponse)
+                .map(productReviewDtoConverter::toProductReviewDto)
                 .orElse(EMPTY_PRODUCT_REVIEW_RESPONSE);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, readOnly = true)
-    public ProductReviewRatingStats getRatingAndReviewStat(final UUID productId) {
-        List<Object[]> productRatingCountPairs = reviewRepository.getRatingsMapByProductId(productId);
-        Double avgRating = reviewRepository.getAvgRatingByProductId(productId);
-        if (productRatingCountPairs == null || avgRating == null) {
-            log.error("The product with productId = {} was not found.", productId);
-            throw new ProductNotFoundException(productId);
-        }
-        String formattedAvgRating = String.format("%.1f", avgRating);
-        Integer reviewsCount = reviewRepository.getReviewCountProductById(productId);
-        return new ProductReviewRatingStats(productId, formattedAvgRating, reviewsCount,
-                productReviewDtoConverter.convertToProductRatingMap(productRatingCountPairs));
     }
 }
