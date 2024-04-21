@@ -17,7 +17,7 @@
     "userName": {
       "type": ["string", "null"]
     },
-    "userLastName": {
+    "userLastname": {
       "type": ["string", "null"]
     }
   }

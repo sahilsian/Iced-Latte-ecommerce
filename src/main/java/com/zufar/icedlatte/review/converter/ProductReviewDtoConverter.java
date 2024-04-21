@@ -44,7 +44,7 @@ public class ProductReviewDtoConverter {
 
         for (ProductRatingCount productRatingCount : productRatingCountPairs) {
             var productRating = productRatingCount.productRating();
-            var count = productRatingCount.count();
+            var count = (int) productRatingCount.count();
 
             switch (productRating) {
                 case 5:
