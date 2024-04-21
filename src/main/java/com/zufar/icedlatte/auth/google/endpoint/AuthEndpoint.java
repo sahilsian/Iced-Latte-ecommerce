@@ -9,16 +9,13 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
+import com.zufar.icedlatte.security.api.UserAuthenticationService;
 import com.zufar.icedlatte.security.api.UserRegistrationService;
-import com.zufar.icedlatte.security.dto.UserAuthenticationRequest;
+import com.zufar.icedlatte.security.dto.UserAuthenticationResponse;
 import com.zufar.icedlatte.security.dto.UserRegistrationRequest;
 import com.zufar.icedlatte.user.api.SingleUserProvider;
 import com.zufar.icedlatte.user.entity.UserEntity;
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
@@ -29,14 +26,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.google.gson.Gson;
+import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @RestController
@@ -59,9 +61,6 @@ public class AuthEndpoint {
   @Value("${google.scope}")
   public String scope;
 
-  @Value("${google.authenticateUri}")
-  public String authenticateUri;
-
   @Value("${google.redirectUri}")
   String redirectUri;
 
@@ -69,6 +68,8 @@ public class AuthEndpoint {
 
   private final UserRegistrationService userRegistrationService;
   private final SingleUserProvider singleUserProvider;
+  private final UserDetailsService userDetailsService;
+  private final UserAuthenticationService userAuthenticationService;
 
   @GetMapping()
   public ResponseEntity<?> googleAuth() {
@@ -99,8 +100,8 @@ public class AuthEndpoint {
   }
 
   @GetMapping("/callback")
-  public ResponseEntity<?> googleAuthCallback(@RequestParam("code") String code)
-      throws IOException, GeneralSecurityException, InterruptedException {
+  public ResponseEntity<UserAuthenticationResponse> googleAuthCallback(
+      @RequestParam("code") String code) throws IOException, GeneralSecurityException {
     log.warn("Received callback the request a google auth");
 
     // get token
@@ -128,16 +129,23 @@ public class AuthEndpoint {
       log.info("User email: {}", email);
 
       // find or create user
-      String password = findOrCreateUser(email);
+      findOrCreateUser(email);
       log.info("Success logged with email={}", email);
+      UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+      UserAuthenticationResponse authenticationResponse =
+          userAuthenticationService.authenticate(userDetails, email);
 
-      // login in main form
-      sendPostRequest(authenticateUri, new UserAuthenticationRequest(email, password));
+      HttpHeaders httpHeaders = new HttpHeaders();
+      httpHeaders.set("Authorization", "Bearer " + authenticationResponse.token());
+      httpHeaders.set("Content-Type", "application/json");
 
-      // redirect on main page
-      return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT)
-          .header("Location", redirectUri)
-          .build();
+      return new RestTemplate()
+          .exchange(
+              redirectUri,
+              HttpMethod.POST,
+              new HttpEntity<>(authenticationResponse, httpHeaders),
+              UserAuthenticationResponse.class);
+
     } else {
       log.error("Invalid ID token.");
       return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -155,35 +163,11 @@ public class AuthEndpoint {
         .build();
   }
 
-  private String findOrCreateUser(String email) {
+  private void findOrCreateUser(String email) {
     Optional<UserEntity> userEntity = singleUserProvider.findUserByEmail(email);
     if (userEntity.isEmpty()) {
       String password = UUID.randomUUID().toString();
       userRegistrationService.register(new UserRegistrationRequest(email, email, email, password));
-      return password;
-    } else {
-      return userEntity.get().getPassword();
-    }
-  }
-
-  public static void sendPostRequest(
-      String authenticateUri, UserAuthenticationRequest userAuthenticationRequest) throws InterruptedException {
-    HttpClient client = HttpClient.newHttpClient();
-
-    Gson gson = new Gson();
-    String json = gson.toJson(userAuthenticationRequest);
-
-    HttpRequest request =
-        HttpRequest.newBuilder()
-            .uri(URI.create(authenticateUri))
-            .header("Content-Type", "application/json")
-            .POST(HttpRequest.BodyPublishers.ofString(json))
-            .build();
-    try {
-      client.send(request, HttpResponse.BodyHandlers.ofString());
-    } catch (IOException | InterruptedException e) {
-      log.error("Error sending request", e);
-      throw new InterruptedException();
     }
   }
 }

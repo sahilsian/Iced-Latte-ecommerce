@@ -11,6 +11,18 @@ volumes:
   backend_logs: {}
 
 services:
+
+  iced-latte-frontend:
+    image: 'zufarexplainedit/iced-latte-frontend:latest'
+    container_name: iced-latte-frontend
+    environment:
+      - .env
+    restart: 'always'
+    ports:
+      - '3000:3000'
+    networks:
+      - iced-latte-network
+
   iced-latte-backend:
     image: 'zufarexplainedit/iced-latte-backend:latest'
     container_name: iced-latte-backend
