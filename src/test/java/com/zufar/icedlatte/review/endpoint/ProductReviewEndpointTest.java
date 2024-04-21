@@ -94,7 +94,7 @@ class ProductReviewEndpointTest {
 
         assertRestApiBodySchemaResponse(response, HttpStatus.OK, REVIEW_RESPONSE_SCHEMA)
                 .body("text", equalTo(EXPECTED_REVIEW))
-                .body("rating", equalTo(3))
+                .body("productRating", equalTo(3))
                 .body("productReviewId", notNullValue());
 
         removeReview(AFFOGATO_ID, response);
@@ -137,14 +137,14 @@ class ProductReviewEndpointTest {
 
         assertRestApiBodySchemaResponse(response, HttpStatus.OK, REVIEW_RESPONSE_SCHEMA)
                 .body("text", nullValue())
-                .body("rating", nullValue());
+                .body("productRating", nullValue());
 
         // review exists
         response = given(specification)
                 .get("/{productId}/review", AMERICANO_ID);
         assertRestApiBodySchemaResponse(response, HttpStatus.OK, REVIEW_RESPONSE_SCHEMA)
                 .body("text", startsWith(START_OF_REVIEW_FOR_AMERICANO))
-                .body("rating", equalTo(3));
+                .body("productRating", equalTo(3));
     }
 
     @Test
