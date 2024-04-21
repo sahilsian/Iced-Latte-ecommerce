@@ -120,7 +120,7 @@ class ProductReviewEndpointTest {
                 .body("reviewsWithRatings[0].productRating", equalTo(5))
                 .body("reviewsWithRatings[0].text", startsWith(START_OF_REVIEW_FOR_AMERICANO))
                 .body("reviewsWithRatings[0].userName", equalTo("John"))
-                .body("reviewsWithRatings[1].rating", equalTo(3))
+                .body("reviewsWithRatings[1].productRating", equalTo(3))
                 .body("reviewsWithRatings[1].text", startsWith(START_OF_REVIEW_FOR_AMERICANO))
                 .body("reviewsWithRatings[1].userName", equalTo("Jane"))
                 .body("reviewsWithRatings[2].productRating", equalTo(1))
