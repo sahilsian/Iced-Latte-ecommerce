@@ -4,7 +4,6 @@ import com.zufar.icedlatte.favorite.dto.FavoriteItemDto;
 import com.zufar.icedlatte.favorite.dto.FavoriteListDto;
 import com.zufar.icedlatte.favorite.entity.FavoriteItemEntity;
 import com.zufar.icedlatte.favorite.entity.FavoriteListEntity;
-import com.zufar.icedlatte.openapi.dto.ListOfFavoriteProductsDto;
 import com.zufar.icedlatte.openapi.dto.ProductInfoDto;
 import com.zufar.icedlatte.product.entity.ProductInfo;
 import org.mapstruct.InjectionStrategy;
@@ -39,21 +38,18 @@ public interface FavoriteListDtoConverter {
     }
 
     private static ProductInfoDto convertProductInfoDto(ProductInfo productInfo) {
-        ProductInfoDto productInfoDto = new ProductInfoDto();
-        productInfoDto.setId(productInfo.getProductId());
-        productInfoDto.setName(productInfo.getName());
-        productInfoDto.setPrice(productInfo.getPrice());
-        productInfoDto.setQuantity(productInfo.getQuantity());
-        productInfoDto.setActive(productInfo.getActive());
-        productInfoDto.setDescription(productInfo.getDescription());
-        return productInfoDto;
-    }
+        return new ProductInfoDto(
+                productInfo.getProductId(),
+                productInfo.getName(),
+                productInfo.getDescription(),
+                productInfo.getPrice(),
+                productInfo.getQuantity(),
+                productInfo.getActive(),
+                productInfo.getAverageRating(),
+                productInfo.getReviewsCount(),
+                productInfo.getBrandName(),
+                productInfo.getSellerName()
 
-    default ListOfFavoriteProductsDto toListProductDto(FavoriteListDto favoriteList) {
-        ListOfFavoriteProductsDto listOfFavoriteProductsDto = new ListOfFavoriteProductsDto();
-        for (FavoriteItemDto item : favoriteList.favoriteItems()) {
-            listOfFavoriteProductsDto.addProductsItem(item.productInfo());
-        }
-        return listOfFavoriteProductsDto;
+        );
     }
 }

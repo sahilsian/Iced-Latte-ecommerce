@@ -68,14 +68,14 @@ public class OrderDtoTestStub {
     public static OrderItem createFirstOrderItem(Order order) {
         UUID firstProductId = UUID.fromString("a834c24e-886d-470f-bf19-7454a60f0639");
         ProductInfo firstProductInfo = new ProductInfo(
-                firstProductId, "First test name", "First test description", BigDecimal.valueOf(1.1), 30, true);
+                firstProductId, "First test name", "First test description", BigDecimal.valueOf(1.1), 30, true, BigDecimal.ZERO, 0, "brandName", "sellerName");
         return new OrderItem(firstProductId, order, firstProductInfo, 5);
     }
 
     public static OrderItem createSecondOrderItem(Order order) {
         UUID secondProductId = UUID.fromString("2ade78e3-aa45-4b6b-adf4-86f8302ced7d");
         ProductInfo secondProductInfo = new ProductInfo(
-                secondProductId, "Second test name", "Second test description", BigDecimal.valueOf(2.2), 70, true);
+                secondProductId, "Second test name", "Second test description", BigDecimal.valueOf(2.2), 70, true, BigDecimal.ZERO, 0, "brandName", "sellerName");
         return new OrderItem(secondProductId, order, secondProductInfo, 3);
     }
 }
