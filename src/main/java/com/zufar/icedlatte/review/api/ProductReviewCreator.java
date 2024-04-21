@@ -38,7 +38,7 @@ public class ProductReviewCreator {
         var productReviewText = productReviewRequest.getText();
 
         productReviewValidator.validateReviewText(productReviewText);
-        productReviewValidator.validateReviewExists(userId, productId);
+        productReviewValidator.validateReviewExistsForUser(userId, productId);
 
         var productReview = ProductReview.builder()
                 .user(singleUserProvider.getUserEntityById(userId))

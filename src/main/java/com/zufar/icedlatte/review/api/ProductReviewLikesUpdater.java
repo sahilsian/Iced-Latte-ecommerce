@@ -34,7 +34,7 @@ public class ProductReviewLikesUpdater {
         var userId = securityPrincipalProvider.getUserId();
 
         productReviewValidator.validateProductExists(productId);
-        productReviewValidator.validateReviewExists(productReviewId);
+        productReviewValidator.validateReviewExistsForUser(productReviewId);
         productReviewValidator.validateProductIdIsValid(productId, productReviewId);
 
         var productReviewLikeEntity = productReviewLikeRepository

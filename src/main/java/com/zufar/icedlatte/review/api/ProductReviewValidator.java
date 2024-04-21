@@ -42,10 +42,10 @@ public class ProductReviewValidator {
     /**
      * Check if the user has already created a review for this product
      */
-    public void validateReviewExists(final UUID userId,
-                                     final UUID productId) {
+    public void validateReviewExistsForUser(final UUID userId,
+                                            final UUID productId) {
         var productReview = productReviewRepository.findByUserIdAndProductInfoProductId(userId, productId);
-        if (productReview.isEmpty()) {
+        if (productReview.isPresent()) {
             throw new DeniedProductReviewCreationException(productId, userId, productReview.get().getId());
         }
     }
@@ -53,7 +53,7 @@ public class ProductReviewValidator {
     /**
      * Check if the user has already created a review for this product
      */
-    public void validateReviewExists(final UUID productReviewId) {
+    public void validateReviewExistsForUser(final UUID productReviewId) {
         var productReview = productReviewRepository.findById(productReviewId);
         if (productReview.isEmpty()) {
             throw new ProductReviewNotFoundException(productReviewId);
@@ -77,10 +77,15 @@ public class ProductReviewValidator {
      */
     public void validateProductIdIsValid(final UUID productId,
                                          final UUID productReviewId) {
-        var product = productInfoRepository.findById(productId);
-        var productReview = productReviewProvider.getReviewEntityById(productReviewId);
-
-        if (!product.get().getProductId().equals(productReview.getProductInfo().getProductId())) {
+        var productInfo = productInfoRepository.findById(productId);
+        if (productInfo.isEmpty()) {
+            throw new ProductNotFoundForReviewException(productId);
+        }
+        var productReview = productReviewRepository.findById(productReviewId);
+        if (productReview.isEmpty()) {
+            throw new ProductReviewNotFoundException(productReviewId);
+        }
+        if (!productInfo.get().getProductId().equals(productReview.get().getProductInfo().getProductId())) {
             throw new ProductIdsAreNotMatchException(productReviewId);
         }
     }
