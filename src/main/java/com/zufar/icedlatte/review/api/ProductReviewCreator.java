@@ -46,6 +46,8 @@ public class ProductReviewCreator {
                 .productInfo(singleProductProvider.getProductEntityById(productId))
                 .text(productReviewText.trim())
                 .productRating(productReviewRequest.getRating())
+                .likesCount(0)
+                .dislikesCount(0)
                 .build();
 
         reviewRepository.saveAndFlush(productReview);
