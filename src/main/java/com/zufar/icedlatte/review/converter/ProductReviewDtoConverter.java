@@ -1,12 +1,10 @@
 package com.zufar.icedlatte.review.converter;
 
 import com.zufar.icedlatte.openapi.dto.ProductReviewDto;
-import com.zufar.icedlatte.openapi.dto.ProductReviewLikeDto;
 import com.zufar.icedlatte.openapi.dto.ProductReviewsAndRatingsWithPagination;
 import com.zufar.icedlatte.openapi.dto.RatingMap;
 import com.zufar.icedlatte.review.dto.ProductRatingCount;
 import com.zufar.icedlatte.review.entity.ProductReview;
-import com.zufar.icedlatte.review.entity.ProductReviewLike;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +14,12 @@ import java.util.List;
 public class ProductReviewDtoConverter {
 
     public static final ProductReviewDto EMPTY_PRODUCT_REVIEW_RESPONSE =
-            new ProductReviewDto(null, null, null, null, null, null, null, null);
+            new ProductReviewDto(null, null,null, null, null, null, null, null, null);
 
     public ProductReviewDto toProductReviewDto(ProductReview productReview) {
         return new ProductReviewDto(
                 productReview.getId(),
+                productReview.getProductInfo().getProductId(),
                 productReview.getProductRating(),
                 productReview.getText(),
                 productReview.getCreatedAt(),
@@ -68,9 +67,5 @@ public class ProductReviewDtoConverter {
             }
         }
         return productRatingMap;
-    }
-
-    public ProductReviewLikeDto toProductReviewLikeDto(ProductReviewLike entity) {
-        return new ProductReviewLikeDto(entity.getIsLike());
     }
 }

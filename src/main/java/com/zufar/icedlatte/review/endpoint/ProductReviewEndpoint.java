@@ -94,12 +94,12 @@ public class ProductReviewEndpoint implements com.zufar.icedlatte.openapi.produc
 
     @Override
     @PostMapping(value = "/{productId}/reviews/{productReviewId}/rate")
-    public ResponseEntity<ProductReviewLikeDto> addProductReviewLike(@PathVariable final UUID productId,
-                                                                     @PathVariable final UUID productReviewId,
-                                                                     final ProductReviewLikeDto request) {
+    public ResponseEntity<ProductReviewDto> addProductReviewLike(@PathVariable final UUID productId,
+                                                                 @PathVariable final UUID productReviewId,
+                                                                 final ProductReviewLikeDto request) {
         log.info("Received the request to rate a product review for the product with the productId = '{}'.", productId);
-        var reviewRate = productReviewLikesUpdater.update(productId, productReviewId, request.getIsLike());
+        var productReview = productReviewLikesUpdater.update(productId, productReviewId, request.getIsLike());
         log.info("Product review with id = '{}' was successfully {}.", productReviewId, request.getIsLike() ? "liked" : "disliked");
-        return ResponseEntity.ok().body(reviewRate);
+        return ResponseEntity.ok().body(productReview);
     }
 }

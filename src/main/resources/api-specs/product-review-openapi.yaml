@@ -228,7 +228,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProductReviewLikeDto"
+                $ref: "#/components/schemas/ProductReviewDto"
         "401":
           description: "Unauthorized access"
         "500":
@@ -276,6 +276,7 @@ components:
       description: "Object used to group product's reviews and ratings by user"
       required:
         - productReviewId
+        - productId
         - productRating
         - text
         - createdAt
@@ -285,6 +286,9 @@ components:
         - dislikesCount
       properties:
         productReviewId:
+          type: "string"
+          format: "uuid"
+        productId:
           type: "string"
           format: "uuid"
         productRating:

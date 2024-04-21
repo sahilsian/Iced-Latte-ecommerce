@@ -1,7 +1,8 @@
 package com.zufar.icedlatte.review.api;
 
-import com.zufar.icedlatte.openapi.dto.ProductReviewLikeDto;
+import com.zufar.icedlatte.openapi.dto.ProductReviewDto;
 import com.zufar.icedlatte.review.converter.ProductReviewDtoConverter;
+import com.zufar.icedlatte.review.entity.ProductReview;
 import com.zufar.icedlatte.review.entity.ProductReviewLike;
 import com.zufar.icedlatte.review.repository.ProductReviewLikeRepository;
 import com.zufar.icedlatte.review.repository.ProductReviewRepository;
@@ -22,15 +23,15 @@ public class ProductReviewLikesUpdater {
 
     private final ProductReviewLikeRepository productReviewLikeRepository;
     private final ProductReviewRepository productReviewRepository;
-
     private final SecurityPrincipalProvider securityPrincipalProvider;
     private final ProductReviewDtoConverter productReviewDtoConverter;
     private final ProductReviewValidator productReviewValidator;
+    private final ProductReviewProvider productReviewProvider;
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
-    public ProductReviewLikeDto update(final UUID productId,
-                                       final UUID productReviewId,
-                                       final Boolean productReviewLike) {
+    public ProductReviewDto update(final UUID productId,
+                                   final UUID productReviewId,
+                                   final Boolean productReviewLike) {
         var userId = securityPrincipalProvider.getUserId();
 
         productReviewValidator.validateProductExists(productId);
@@ -52,11 +53,13 @@ public class ProductReviewLikesUpdater {
                                 .build()
                 );
 
-        productReviewLikeRepository.save(productReviewLikeEntity);
+        productReviewLikeRepository.saveAndFlush(productReviewLikeEntity);
 
         productReviewRepository.updateLikesCount(productReviewId);
         productReviewRepository.updateDislikesCount(productReviewId);
 
-        return productReviewDtoConverter.toProductReviewLikeDto(productReviewLikeEntity);
+        ProductReview productReview = productReviewProvider.getReviewEntityById(productReviewId);
+
+        return productReviewDtoConverter.toProductReviewDto(productReview);
     }
 }
