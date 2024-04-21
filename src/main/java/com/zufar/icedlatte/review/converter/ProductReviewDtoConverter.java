@@ -3,6 +3,7 @@ package com.zufar.icedlatte.review.converter;
 import com.zufar.icedlatte.openapi.dto.ProductReviewDto;
 import com.zufar.icedlatte.openapi.dto.ProductReviewsAndRatingsWithPagination;
 import com.zufar.icedlatte.openapi.dto.RatingMap;
+import com.zufar.icedlatte.review.dto.ProductRatingCount;
 import com.zufar.icedlatte.review.entity.ProductReview;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -13,16 +14,19 @@ import java.util.List;
 public class ProductReviewDtoConverter {
 
     public static final ProductReviewDto EMPTY_PRODUCT_REVIEW_RESPONSE =
-            new ProductReviewDto(null, null, null, null, null, null);
+            new ProductReviewDto(null, null,null, null, null, null, null, null, null);
 
     public ProductReviewDto toProductReviewDto(ProductReview productReview) {
         return new ProductReviewDto(
                 productReview.getId(),
+                productReview.getProductInfo().getProductId(),
                 productReview.getProductRating(),
                 productReview.getText(),
                 productReview.getCreatedAt(),
                 productReview.getUser().getFirstName(),
-                productReview.getUser().getLastName());
+                productReview.getUser().getLastName(),
+                productReview.getLikesCount(),
+                productReview.getDislikesCount());
     }
 
     public ProductReviewsAndRatingsWithPagination toProductReviewsAndRatingsWithPagination(final Page<ProductReviewDto> page) {
@@ -35,12 +39,13 @@ public class ProductReviewDtoConverter {
         return result;
     }
 
-    public RatingMap convertToProductRatingMap(List<Object[]> productRatingCountPairs) {
+    public RatingMap convertToProductRatingMap(List<ProductRatingCount> productRatingCountPairs) {
         var productRatingMap = new RatingMap(0, 0, 0, 0, 0);
 
-        for (Object[] productRatingAndCountPair : productRatingCountPairs) {
-            var productRating = (Integer) productRatingAndCountPair[0];
-            var count = ((Long) productRatingAndCountPair[1]).intValue();
+        for (ProductRatingCount productRatingCount : productRatingCountPairs) {
+            var productRating = productRatingCount.productRating();
+            var count = (int) productRatingCount.count();
+
             switch (productRating) {
                 case 5:
                     productRatingMap.setStar5(count);

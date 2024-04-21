@@ -51,6 +51,12 @@ public class ProductReview {
     @Column(name = "rating", nullable = false)
     private Integer productRating;
 
+    @Column(name = "likes_count", nullable = false)
+    private Integer likesCount;
+
+    @Column(name = "dislikes_count", nullable = false)
+    private Integer dislikesCount;
+
     @Override
     public String toString() {
         return "Product Review {" +

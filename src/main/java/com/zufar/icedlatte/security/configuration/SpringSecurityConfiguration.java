@@ -39,7 +39,7 @@ public class SpringSecurityConfiguration {
                                 .requestMatchers(SecurityConstants.FAVOURITES_URL).authenticated()
                                 .requestMatchers(SecurityConstants.ORDERS_URL).authenticated()
                                 .requestMatchers(SecurityConstants.SHIPPING_URL).authenticated()
-                                .requestMatchers(HttpMethod.GET, SecurityConstants.REVIEWS_URL).permitAll()
+                                .requestMatchers(HttpMethod.GET, SecurityConstants.ALLOWED_PRODUCT_REVIEWS_URLS.toArray(new String[0])).permitAll()
                                 .anyRequest().permitAll()
                 )
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

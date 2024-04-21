@@ -3,9 +3,7 @@ package com.zufar.icedlatte.review.exception.handler;
 import com.zufar.icedlatte.common.exception.dto.ApiErrorResponse;
 import com.zufar.icedlatte.common.exception.handler.ApiErrorResponseCreator;
 import com.zufar.icedlatte.common.exception.handler.ErrorDebugMessageCreator;
-import com.zufar.icedlatte.review.exception.DeniedProductReviewCreationException;
-import com.zufar.icedlatte.review.exception.DeniedProductReviewDeletionException;
-import com.zufar.icedlatte.review.exception.EmptyProductReviewException;
+import com.zufar.icedlatte.review.exception.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -49,6 +47,28 @@ public class ProductReviewExceptionHandler {
         ApiErrorResponse apiErrorResponse = apiErrorResponseCreator.buildResponse(exception, HttpStatus.BAD_REQUEST);
 
         log.warn("Handle denied product review creation exception: failed: message: {}, debugMessage: {}.",
+                apiErrorResponse.message(), errorDebugMessageCreator.buildErrorDebugMessage(exception));
+
+        return apiErrorResponse;
+    }
+
+    @ExceptionHandler(ProductNotFoundForReviewException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrorResponse handleProductNotFoundForReviewException(final ProductNotFoundForReviewException exception) {
+        ApiErrorResponse apiErrorResponse = apiErrorResponseCreator.buildResponse(exception, HttpStatus.BAD_REQUEST);
+
+        log.warn("Handle product not found for the provided review exception: failed: message: {}, debugMessage: {}.",
+                apiErrorResponse.message(), errorDebugMessageCreator.buildErrorDebugMessage(exception));
+
+        return apiErrorResponse;
+    }
+
+    @ExceptionHandler(ProductIdsAreNotMatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrorResponse handleProductIdsAreNotMatchException(final ProductIdsAreNotMatchException exception) {
+        ApiErrorResponse apiErrorResponse = apiErrorResponseCreator.buildResponse(exception, HttpStatus.BAD_REQUEST);
+
+        log.warn("Handle product ids are not match exception: failed: message: {}, debugMessage: {}.",
                 apiErrorResponse.message(), errorDebugMessageCreator.buildErrorDebugMessage(exception));
 
         return apiErrorResponse;

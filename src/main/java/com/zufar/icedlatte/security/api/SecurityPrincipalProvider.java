@@ -4,7 +4,6 @@ import com.zufar.icedlatte.user.converter.UserDtoConverter;
 import com.zufar.icedlatte.openapi.dto.UserDto;
 import com.zufar.icedlatte.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -26,11 +25,5 @@ public class SecurityPrincipalProvider {
 
     public UUID getUserId() {
         return get().getId();
-    }
-
-    public boolean isAnonymous() {
-        return SecurityContextHolder
-                .getContext()
-                .getAuthentication() instanceof AnonymousAuthenticationToken;
     }
 }
