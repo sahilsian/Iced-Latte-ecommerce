@@ -110,6 +110,7 @@
         <jakarta.mail-api.version>2.1.2</jakarta.mail-api.version>
         <guava.version>32.0.0-jre</guava.version>
         <gson.version>2.10.1</gson.version>
+        <google-oauth.version>1.35.0</google-oauth.version>
     </properties>
 
     <!-- Dependencies -->
@@ -276,6 +277,18 @@
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
             <scope>compile</scope>
+        </dependency>
+
+        <!-- Google OAuth -->
+        <dependency>
+            <groupId>com.google.auth</groupId>
+            <artifactId>google-auth-library-oauth2-http</artifactId>
+            <version>1.23.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.api-client</groupId>
+            <artifactId>google-api-client</artifactId>
+            <version>2.3.0</version>
         </dependency>
 
         <dependency>
