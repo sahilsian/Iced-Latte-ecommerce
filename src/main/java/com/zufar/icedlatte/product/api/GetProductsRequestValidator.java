@@ -61,7 +61,7 @@ public class GetProductsRequestValidator {
                     "'PageSize' value should be non negative integer number value which is bigger than 1.", pageSize);
             errorMessages.append(createErrorMessage(errorMessage));
         }
-        if (sortAttribute != null && !ALLOWED_SORT_ATTRIBUTES_VALUES.contains(sortAttribute.toLowerCase())) {
+        if (sortAttribute != null && !ALLOWED_SORT_ATTRIBUTES_VALUES.contains(sortAttribute)) {
             String errorMessage = String.format("'%s' is incorrect 'sortAttribute' value. Allowed 'sortAttribute' values are '%s'.",
                     sortAttribute, ALLOWED_SORT_ATTRIBUTES_VALUES);
             errorMessages.append(createErrorMessage(errorMessage));
