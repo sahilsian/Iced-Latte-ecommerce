@@ -103,7 +103,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProductReviewResponse"
+                $ref: "#/components/schemas/ProductReviewDto"
         "400":
           description: "Bad request, e.g. review exists"
         "401":
@@ -164,7 +164,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProductReviewResponse"
+                $ref: "#/components/schemas/ProductReviewDto"
         "401":
           description: "Unauthorized access"
         "500":
@@ -274,7 +274,7 @@ components:
         reviewsWithRatings:
           type: "array"
           items:
-            $ref: "#/components/schemas/ProductReviewResponse"
+            $ref: "#/components/schemas/ProductReviewDto"
         page:
           type: "integer"
           format: "int32"
@@ -288,7 +288,7 @@ components:
           type: "integer"
           format: "int32"
 
-    ProductReviewResponse:
+    ProductReviewDto:
       type: "object"
       description: "Object used to group product's reviews and ratings by user"
       required:
