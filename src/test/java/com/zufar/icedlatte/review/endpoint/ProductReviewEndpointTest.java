@@ -130,8 +130,21 @@ class ProductReviewEndpointTest {
     }
 
     @Test
-    @DisplayName("Should fetch review and rating successfully for an authorized user")
-    void shouldFetchReviewAndRatingSuccessfully() {
+    @DisplayName("Should like review successfully and return review object")
+    void shouldLikeReviewSuccessfully() {
+        String body = "{\"isLike\": true}";
+        Response responseRateReview = given(specification)
+                .body(body)
+                .post("/{productId}/reviews/{reviewId}/rate", ESPRESSO_ID, "38939e11-cf1f-42ff-bfbd-ba1c2bc867f8");
+
+        responseRateReview.then().statusCode(HttpStatus.OK.value());
+        responseRateReview.then().body("likesCount", equalTo(1));
+        responseRateReview.then().body("dislikesCount", equalTo(1));
+    }
+
+    @Test
+    @DisplayName("Should fetch review successfully for an authorized user")
+    void shouldFetchReviewSuccessfully() {
         // no review was created by Jane Smith
         Response response = given(specification)
                 .get("/{productId}/review", AFFOGATO_ID);
@@ -149,8 +162,8 @@ class ProductReviewEndpointTest {
     }
 
     @Test
-    @DisplayName("Should fetch review and rating stats successfully")
-    void shouldFetchReviewAndRatingStatsSuccessfully() {
+    @DisplayName("Should fetch review statistics successfully")
+    void shouldFetchReviewStatsSuccessfully() {
         // No authorization is required
         specification = given()
                 .log().all(true)
