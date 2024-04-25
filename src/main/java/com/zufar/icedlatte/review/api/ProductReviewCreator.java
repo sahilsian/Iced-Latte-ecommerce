@@ -6,6 +6,7 @@ import com.zufar.icedlatte.product.repository.ProductInfoRepository;
 import com.zufar.icedlatte.review.converter.ProductReviewDtoConverter;
 import com.zufar.icedlatte.review.entity.ProductReview;
 import com.zufar.icedlatte.review.repository.ProductReviewRepository;
+import com.zufar.icedlatte.review.validator.ProductReviewValidator;
 import com.zufar.icedlatte.security.api.SecurityPrincipalProvider;
 import com.zufar.icedlatte.user.api.SingleUserProvider;
 import lombok.RequiredArgsConstructor;

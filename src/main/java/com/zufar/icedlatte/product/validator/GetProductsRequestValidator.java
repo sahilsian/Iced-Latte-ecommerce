@@ -1,4 +1,4 @@
-package com.zufar.icedlatte.product.api;
+package com.zufar.icedlatte.product.validator;
 
 import com.zufar.icedlatte.common.validation.pagination.PaginationParametersValidator;
 import com.zufar.icedlatte.product.exception.GetProductsBadRequestException;

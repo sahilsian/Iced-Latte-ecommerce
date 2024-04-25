@@ -1,4 +1,4 @@
-package com.zufar.icedlatte.review.api;
+package com.zufar.icedlatte.review.validator;
 
 import com.zufar.icedlatte.common.validation.pagination.PaginationParametersValidator;
 import com.zufar.icedlatte.product.exception.GetProductsBadRequestException;
@@ -28,16 +28,15 @@ public class GetReviewsRequestValidator {
         StringBuilder paginationErrorMessages = paginationParametersValidator.validate(pageNumber, pageSize, sortAttribute, sortDirection, ALLOWED_SORT_ATTRIBUTES_VALUES);
         errorMessages.append(paginationErrorMessages);
 
-        StringBuilder getReviewsRequestParametersErrorMessages = validateGetReviewsRequestParameters(productRatings);
-        errorMessages.append(getReviewsRequestParametersErrorMessages);
-
+        StringBuilder productRatingsParameterErrorMessages = validateProductRatingsParameter(productRatings);
+        errorMessages.append(productRatingsParameterErrorMessages);
 
         if (!errorMessages.isEmpty()) {
             throw new GetProductsBadRequestException(errorMessages.toString());
         }
     }
 
-    private StringBuilder validateGetReviewsRequestParameters(final List<Integer> productRatings) {
+    private StringBuilder validateProductRatingsParameter(final List<Integer> productRatings) {
         final StringBuilder errorMessages = new StringBuilder();
         if ((productRatings != null && productRatings.stream().anyMatch(Objects::isNull))
                 || (productRatings != null && !ALLOWED_PRODUCT_RATING_VALUES.containsAll(productRatings))) {

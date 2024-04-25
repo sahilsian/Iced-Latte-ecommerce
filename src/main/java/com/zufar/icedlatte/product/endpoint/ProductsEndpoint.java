@@ -3,7 +3,7 @@ package com.zufar.icedlatte.product.endpoint;
 import com.zufar.icedlatte.openapi.dto.ProductIdsDto;
 import com.zufar.icedlatte.openapi.dto.ProductInfoDto;
 import com.zufar.icedlatte.openapi.dto.ProductListWithPaginationInfoDto;
-import com.zufar.icedlatte.product.api.GetProductsRequestValidator;
+import com.zufar.icedlatte.product.validator.GetProductsRequestValidator;
 import com.zufar.icedlatte.product.api.PageableProductsProvider;
 import com.zufar.icedlatte.product.api.ProductApi;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
