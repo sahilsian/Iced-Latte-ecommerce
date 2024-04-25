@@ -185,7 +185,6 @@ paths:
             type: "array"
             items:
               type: "string"
-            uniqueItems: true
         - name: "seller_names"
           description: "Filter products by selected seller names (comma-separated list). Possible allowed values: 1) seller_names=BeanBrewers,JavaBeanCoffee,MorningMug or 2) seller_names=BeanBrewers or 3) any other comma-separated list"
           in: "query"
@@ -194,7 +193,6 @@ paths:
             type: "array"
             items:
               type: "string"
-            uniqueItems: true
           examples:
             example1:
               description: "Display the product list filtered by selected brand names (seller_names=BeanBrewers,JavaBeanCoffee,MorningMug)."

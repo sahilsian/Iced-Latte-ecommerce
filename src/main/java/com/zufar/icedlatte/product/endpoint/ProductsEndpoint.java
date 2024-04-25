@@ -3,7 +3,7 @@ package com.zufar.icedlatte.product.endpoint;
 import com.zufar.icedlatte.openapi.dto.ProductIdsDto;
 import com.zufar.icedlatte.openapi.dto.ProductInfoDto;
 import com.zufar.icedlatte.openapi.dto.ProductListWithPaginationInfoDto;
-import com.zufar.icedlatte.product.api.GetProductsRequestValidator;
+import com.zufar.icedlatte.product.validator.GetProductsRequestValidator;
 import com.zufar.icedlatte.product.api.PageableProductsProvider;
 import com.zufar.icedlatte.product.api.ProductApi;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -59,11 +58,11 @@ public class ProductsEndpoint implements com.zufar.icedlatte.openapi.product.api
                                                                         @RequestParam(name = "min_price", required = false) BigDecimal minPrice,
                                                                         @RequestParam(name = "max_price", required = false) BigDecimal maxPrice,
                                                                         @RequestParam(name = "minimum_average_rating", required = false) Integer minimumAverageRating,
-                                                                        @RequestParam(name = "brand_names", required = false) Set<String> brandNames,
-                                                                        @RequestParam(name = "seller_names", required = false) Set<String> sellersNames) {
+                                                                        @RequestParam(name = "brand_names", required = false) List<String> brandNames,
+                                                                        @RequestParam(name = "seller_names", required = false) List<String> sellersNames) {
         log.info("Received the request to get products with these pagination and sorting attributes: " +
                 "page - {}, size - {}, sort_attribute - {}, sort_direction - {}", pageNumber, pageSize, sortAttribute, sortDirection);
-        getProductsRequestValidator.validate(pageNumber, pageSize, sortAttribute, sortDirection, minPrice, maxPrice, minimumAverageRating);
+        getProductsRequestValidator.validate(pageNumber, pageSize, sortAttribute, sortDirection, minPrice, maxPrice, minimumAverageRating, brandNames, sellersNames);
         Pageable pageable = createPageableObject(pageNumber, pageSize, sortAttribute, sortDirection);
         ProductListWithPaginationInfoDto productPaginationDto = productsProvider.getProducts(pageable, minPrice, maxPrice, minimumAverageRating, brandNames, sellersNames);
         log.info("Products were retrieved successfully with these pagination and sorting attributes: " +

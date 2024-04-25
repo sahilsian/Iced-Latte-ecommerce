@@ -19,7 +19,7 @@ public class ProductReviewDtoConverter {
     public ProductReviewDto toProductReviewDto(ProductReview productReview) {
         return new ProductReviewDto(
                 productReview.getId(),
-                productReview.getProductInfo().getProductId(),
+                productReview.getProductId(),
                 productReview.getProductRating(),
                 productReview.getText(),
                 productReview.getCreatedAt(),

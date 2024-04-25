@@ -1,7 +1,13 @@
-package com.zufar.icedlatte.review.api;
+package com.zufar.icedlatte.review.validator;
 
 import com.zufar.icedlatte.product.repository.ProductInfoRepository;
-import com.zufar.icedlatte.review.exception.*;
+import com.zufar.icedlatte.review.api.ProductReviewProvider;
+import com.zufar.icedlatte.review.exception.DeniedProductReviewCreationException;
+import com.zufar.icedlatte.review.exception.DeniedProductReviewDeletionException;
+import com.zufar.icedlatte.review.exception.EmptyProductReviewException;
+import com.zufar.icedlatte.review.exception.ProductIdsAreNotMatchException;
+import com.zufar.icedlatte.review.exception.ProductNotFoundForReviewException;
+import com.zufar.icedlatte.review.exception.ProductReviewNotFoundException;
 import com.zufar.icedlatte.review.repository.ProductReviewRepository;
 import com.zufar.icedlatte.security.api.SecurityPrincipalProvider;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +50,7 @@ public class ProductReviewValidator {
      */
     public void validateReviewExistsForUser(final UUID userId,
                                             final UUID productId) {
-        var productReview = productReviewRepository.findByUserIdAndProductInfoProductId(userId, productId);
+        var productReview = productReviewRepository.findByUserIdAndProductId(userId, productId);
         if (productReview.isPresent()) {
             throw new DeniedProductReviewCreationException(productId, userId, productReview.get().getId());
         }
@@ -85,7 +91,7 @@ public class ProductReviewValidator {
         if (productReview.isEmpty()) {
             throw new ProductReviewNotFoundException(productReviewId);
         }
-        if (!productInfo.get().getProductId().equals(productReview.get().getProductInfo().getProductId())) {
+        if (!productInfo.get().getProductId().equals(productReview.get().getProductId())) {
             throw new ProductIdsAreNotMatchException(productReviewId);
         }
     }

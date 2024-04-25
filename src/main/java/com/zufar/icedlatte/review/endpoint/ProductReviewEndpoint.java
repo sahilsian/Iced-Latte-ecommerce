@@ -5,13 +5,15 @@ import com.zufar.icedlatte.openapi.dto.ProductReviewRequest;
 import com.zufar.icedlatte.openapi.dto.ProductReviewDto;
 import com.zufar.icedlatte.openapi.dto.ProductReviewLikeDto;
 import com.zufar.icedlatte.openapi.dto.ProductReviewsAndRatingsWithPagination;
-import com.zufar.icedlatte.review.api.ProductReviewLikesUpdater;
-import com.zufar.icedlatte.review.api.ProductReviewsProvider;
+import com.zufar.icedlatte.review.validator.GetReviewsRequestValidator;
+import com.zufar.icedlatte.review.api.ProductAverageRatingProvider;
 import com.zufar.icedlatte.review.api.ProductReviewCreator;
 import com.zufar.icedlatte.review.api.ProductReviewDeleter;
-import com.zufar.icedlatte.review.api.ProductAverageRatingProvider;
+import com.zufar.icedlatte.review.api.ProductReviewLikesUpdater;
+import com.zufar.icedlatte.review.api.ProductReviewsProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,7 +25,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
+
+import static com.zufar.icedlatte.common.util.Utils.createPageableObject;
 
 @Slf4j
 @RestController
@@ -39,6 +44,7 @@ public class ProductReviewEndpoint implements com.zufar.icedlatte.openapi.produc
     private final ProductReviewsProvider productReviewsProvider;
     private final ProductAverageRatingProvider productAverageRatingProvider;
     private final ProductReviewLikesUpdater productReviewLikesUpdater;
+    private final GetReviewsRequestValidator getReviewsRequestValidator;
 
     @Override
     @PostMapping(value = "/{productId}/reviews")
@@ -63,13 +69,16 @@ public class ProductReviewEndpoint implements com.zufar.icedlatte.openapi.produc
     @Override
     @GetMapping(value = "/{productId}/reviews")
     public ResponseEntity<ProductReviewsAndRatingsWithPagination> getProductReviewsAndRatings(@PathVariable final UUID productId,
-                                                                                              @RequestParam(name = "page", defaultValue = "0") final Integer page,
-                                                                                              @RequestParam(name = "size", defaultValue = "10") final Integer size,
+                                                                                              @RequestParam(name = "page", defaultValue = "0") final Integer pageNumber,
+                                                                                              @RequestParam(name = "size", defaultValue = "10") final Integer pageSize,
                                                                                               @RequestParam(name = "sort_attribute", defaultValue = "createdAt") final String sortAttribute,
-                                                                                              @RequestParam(name = "sort_direction", defaultValue = "desc") final String sortDirection) {
-        log.info("Received the request to get reviews and ratings for the product with the productId = '{}' and with the next pagination and sorting attributes: page - {}, size - {}, sort_attribute - {}, sort_direction - {}",
-                productId, page, size, sortAttribute, sortDirection);
-        ProductReviewsAndRatingsWithPagination reviewsPaginationDto = productReviewsProvider.getProductReviews(productId, page, size, sortAttribute, sortDirection);
+                                                                                              @RequestParam(name = "sort_direction", defaultValue = "desc") final String sortDirection,
+                                                                                              @RequestParam(name = "product_ratings", required = false) List<Integer> productRatings) {
+        log.info("Received the request to get reviews and ratings for the product with the productId = '{}' and with the next pagination and sorting attributes: pageNumber - {}, pageSize - {}, sort_attribute - {}, sort_direction - {}",
+                productId, pageNumber, pageSize, sortAttribute, sortDirection);
+        Pageable pageable = createPageableObject(pageNumber, pageSize, sortAttribute, sortDirection);
+        getReviewsRequestValidator.validate(pageNumber, pageSize, sortAttribute, sortDirection, productRatings);
+        ProductReviewsAndRatingsWithPagination reviewsPaginationDto = productReviewsProvider.getProductReviews(productId, pageable, productRatings);
         log.info("Product reviews and ratings were retrieved successfully for the product with the productId = '{}'", productId);
         return ResponseEntity.ok().body(reviewsPaginationDto);
     }

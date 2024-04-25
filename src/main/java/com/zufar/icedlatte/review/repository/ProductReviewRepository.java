@@ -17,23 +17,28 @@ import java.util.UUID;
 @Repository
 public interface ProductReviewRepository extends JpaRepository<ProductReview, UUID> {
 
-    Optional<ProductReview> findByUserIdAndProductInfoProductId(UUID userId, UUID productId);
+    Optional<ProductReview> findByUserIdAndProductId(UUID userId, UUID productId);
 
-    Page<ProductReview> findByProductInfoProductId(@Param("productId") UUID productId, Pageable pageable);
+    @Query("SELECT review FROM ProductReview review " +
+            "WHERE review.productId = :productId AND " +
+            "(:productRatings IS NULL OR review.productRating IN :productRatings) ")
+    Page<ProductReview> findAllProductReviews(@Param("productId") UUID productId,
+                                              @Param("productRatings") List<Integer> productRatings,
+                                              Pageable pageable);
 
     @Query("SELECT COUNT(pr) " +
             "FROM ProductReview pr " +
-            "WHERE pr.productInfo.productId = :productId")
+            "WHERE pr.productId = :productId")
     Integer getReviewCountProductById(UUID productId);
 
     @Query("SELECT AVG(pr.productRating) " +
             "FROM ProductReview pr " +
-            "WHERE pr.productInfo.productId = :productId")
+            "WHERE pr.productId = :productId")
     Double getAvgRatingByProductId(UUID productId);
 
     @Query("SELECT new com.zufar.icedlatte.review.dto.ProductRatingCount(pr.productRating, COUNT(pr.productRating)) " +
             "FROM ProductReview pr " +
-            "WHERE pr.productInfo.productId = :productId " +
+            "WHERE pr.productId = :productId " +
             "GROUP BY pr.productRating")
     List<ProductRatingCount> getRatingsMapByProductId(UUID productId);
 
