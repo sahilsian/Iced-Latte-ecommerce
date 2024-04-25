@@ -42,24 +42,24 @@ public interface ProductReviewRepository extends JpaRepository<ProductReview, UU
             "GROUP BY pr.productRating")
     List<ProductRatingCount> getRatingsMapByProductId(UUID productId);
 
-    @Modifying
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(nativeQuery = true,
             value = "UPDATE product_reviews " +
                     "SET likes_count = (" +
-                    "SELECT count(product_reviews_likes.id)" +
-                    "FROM product_reviews_likes " +
-                    "WHERE product_reviews_likes.is_like = true AND product_reviews_likes.review_id = product_reviews.id" +
+                        "SELECT count(product_reviews_likes.id) " +
+                        "FROM product_reviews_likes " +
+                        "WHERE product_reviews_likes.is_like = true AND product_reviews_likes.review_id = product_reviews.id" +
                     ") " +
                     "WHERE product_reviews.id = :productReviewId")
     void updateLikesCount(final UUID productReviewId);
 
-    @Modifying
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(nativeQuery = true,
             value = "UPDATE product_reviews " +
                     "SET dislikes_count = (" +
-                    "SELECT count(product_reviews_likes.id)" +
-                    "FROM product_reviews_likes " +
-                    "WHERE product_reviews_likes.is_like = false AND product_reviews_likes.review_id = product_reviews.id" +
+                        "SELECT count(product_reviews_likes.id) " +
+                        "FROM product_reviews_likes " +
+                        "WHERE product_reviews_likes.is_like = false AND product_reviews_likes.review_id = product_reviews.id" +
                     ") " +
                     "WHERE product_reviews.id = :productReviewId")
     void updateDislikesCount(final UUID productReviewId);
