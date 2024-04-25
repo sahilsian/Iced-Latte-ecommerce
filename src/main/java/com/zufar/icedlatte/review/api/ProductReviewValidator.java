@@ -44,7 +44,7 @@ public class ProductReviewValidator {
      */
     public void validateReviewExistsForUser(final UUID userId,
                                             final UUID productId) {
-        var productReview = productReviewRepository.findByUserIdAndProductInfoProductId(userId, productId);
+        var productReview = productReviewRepository.findByUserIdAndProductId(userId, productId);
         if (productReview.isPresent()) {
             throw new DeniedProductReviewCreationException(productId, userId, productReview.get().getId());
         }
@@ -85,7 +85,7 @@ public class ProductReviewValidator {
         if (productReview.isEmpty()) {
             throw new ProductReviewNotFoundException(productReviewId);
         }
-        if (!productInfo.get().getProductId().equals(productReview.get().getProductInfo().getProductId())) {
+        if (!productInfo.get().getProductId().equals(productReview.get().getProductId())) {
             throw new ProductIdsAreNotMatchException(productReviewId);
         }
     }

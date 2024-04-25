@@ -1,17 +1,23 @@
 package com.zufar.icedlatte.product.api;
 
+import com.zufar.icedlatte.common.validation.pagination.PaginationParametersValidator;
 import com.zufar.icedlatte.product.exception.GetProductsBadRequestException;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class GetProductsRequestValidator {
 
-    private static final Set<String> ALLOWED_SORT_DIRECTION_VALUES = Set.of("asc", "desc");
     private static final Set<String> ALLOWED_SORT_ATTRIBUTES_VALUES = Set.of("name", "price", "quantity", "averageRating", "reviewsCount", "brandName", "sellerName");
     private static final Set<Integer> ALLOWED_MINIMUM_AVERAGE_RATING_VALUES = Set.of(1, 2, 3, 4);
+
+    private final PaginationParametersValidator paginationParametersValidator;
 
     public void validate(final Integer pageNumber,
                          final Integer pageSize,
@@ -19,18 +25,45 @@ public class GetProductsRequestValidator {
                          final String sortDirection,
                          final BigDecimal minPrice,
                          final BigDecimal maxPrice,
-                         final Integer minimumAverageRating) {
+                         final Integer minimumAverageRating,
+                         final List<String> brandNames,
+                         final List<String> sellersNames) {
         StringBuilder errorMessages = new StringBuilder();
 
-        validatePaginationAttributes(pageNumber, pageSize, sortAttribute, sortDirection, errorMessages);
-        validateGetProductsRequestParameters(minPrice, maxPrice, minimumAverageRating, errorMessages);
+        StringBuilder paginationErrorMessages = paginationParametersValidator.validate(pageNumber, pageSize, sortAttribute, sortDirection, ALLOWED_SORT_ATTRIBUTES_VALUES);
+        errorMessages.append(paginationErrorMessages);
+
+        StringBuilder minMaxPriceParameterMessages = validateMinMaxPriceParameter(minPrice, maxPrice);
+        errorMessages.append(minMaxPriceParameterMessages);
+
+        StringBuilder getBrandNameListParameterErrorMessages = validateBrandNameList(brandNames);
+        errorMessages.append(getBrandNameListParameterErrorMessages);
+
+        StringBuilder getSellerNameListParameterErrorMessages = validateSellerNameList(sellersNames);
+        errorMessages.append(getSellerNameListParameterErrorMessages);
+
+        StringBuilder minimumAverageRatingParameterErrorMessages = validateMinimumAverageRatingParameter(minimumAverageRating);
+        errorMessages.append(minimumAverageRatingParameterErrorMessages);
 
         if (!errorMessages.isEmpty()) {
             throw new GetProductsBadRequestException(errorMessages.toString());
         }
     }
 
-    private void validateGetProductsRequestParameters(BigDecimal minPrice, BigDecimal maxPrice, Integer minimumAverageRating, StringBuilder errorMessages) {
+    private StringBuilder validateMinimumAverageRatingParameter(final Integer minimumAverageRating) {
+        StringBuilder errorMessages = new StringBuilder();
+
+        if (minimumAverageRating != null && !ALLOWED_MINIMUM_AVERAGE_RATING_VALUES.contains(minimumAverageRating)) {
+            String errorMessage = String.format("'%s' is incorrect 'minimumAverageRating' value. Allowed 'minimumAverageRating' values are '%s'.",
+                            minimumAverageRating, ALLOWED_MINIMUM_AVERAGE_RATING_VALUES);
+            errorMessages.append(createErrorMessage(errorMessage));
+        }
+        return errorMessages;
+    }
+
+    private static StringBuilder validateMinMaxPriceParameter(BigDecimal minPrice, BigDecimal maxPrice) {
+        final StringBuilder errorMessages = new StringBuilder();
+
         if (minPrice != null && minPrice.signum() < 0) {
             String errorMessage = String.format("'%s' is incorrect 'minPrice' value. 'MinPrice' value should be non negative integer or decimal number value.", minPrice);
             errorMessages.append(createErrorMessage(errorMessage));
@@ -43,34 +76,37 @@ public class GetProductsRequestValidator {
             String errorMessage = String.format("'%s' and '%s' are incorrect 'minPrice' and 'maxPrice' values. 'MaxPrice' value should be bigger than 'MinPrice' value.", minPrice, maxPrice);
             errorMessages.append(createErrorMessage(errorMessage));
         }
-        if (minimumAverageRating != null && !ALLOWED_MINIMUM_AVERAGE_RATING_VALUES.contains(minimumAverageRating)) {
-            String errorMessage = String.format("'%s' is incorrect 'minimumAverageRating' value. Allowed 'minimumAverageRating' values are '%s'.",
-                            minimumAverageRating, ALLOWED_MINIMUM_AVERAGE_RATING_VALUES);
-            errorMessages.append(createErrorMessage(errorMessage));
-        }
+        return errorMessages;
     }
 
-    private void validatePaginationAttributes(Integer pageNumber, Integer pageSize, String sortAttribute, String sortDirection, StringBuilder errorMessages) {
-        if (pageNumber != null && pageNumber < 0) {
-            String errorMessage = String.format("'%s' is the incorrect 'PageNumber' attribute value. " +
-                    "'PageNumber' value should be non negative integer number value.", pageNumber);
+    private static StringBuilder validateBrandNameList(List<String> brandNames) {
+        final StringBuilder errorMessages = new StringBuilder();
+        if ((brandNames != null && brandNames.stream().anyMatch(StringUtils::isAllBlank))) {
+            String errorMessage = String.format("Some values of 'brandNames' list = '%s' are null. The list 'brandNames' must have no null values.",
+                    brandNames);
             errorMessages.append(createErrorMessage(errorMessage));
         }
-        if (pageSize != null && pageSize < 1) {
-            String errorMessage = String.format("'%s' is the incorrect 'PageSize' attribute value. " +
-                    "'PageSize' value should be non negative integer number value which is bigger than 1.", pageSize);
+        if ((brandNames != null && brandNames.stream().distinct().count() < brandNames.size())) {
+            String errorMessage = String.format("The 'brandNames' list = '%s' has duplicates. The 'brandNames' list values must be unique.",
+                    brandNames);
             errorMessages.append(createErrorMessage(errorMessage));
         }
-        if (sortAttribute != null && !ALLOWED_SORT_ATTRIBUTES_VALUES.contains(sortAttribute)) {
-            String errorMessage = String.format("'%s' is incorrect 'sortAttribute' value. Allowed 'sortAttribute' values are '%s'.",
-                    sortAttribute, ALLOWED_SORT_ATTRIBUTES_VALUES);
+        return errorMessages;
+    }
+
+    private static StringBuilder validateSellerNameList(List<String> sellerNames) {
+        final StringBuilder errorMessages = new StringBuilder();
+        if ((sellerNames != null && sellerNames.stream().anyMatch(StringUtils::isAllBlank))) {
+            String errorMessage = String.format("Some values of 'sellerNames' list = '%s' are null. The list 'sellerNames' must have no null values.",
+                    sellerNames);
             errorMessages.append(createErrorMessage(errorMessage));
         }
-        if (sortDirection != null && !ALLOWED_SORT_DIRECTION_VALUES.contains(sortDirection.toLowerCase())) {
-            String errorMessage = String.format("'%s' is incorrect 'sortDirection' value. Allowed 'sortDirection' values are '%s'.",
-                    sortDirection, ALLOWED_SORT_DIRECTION_VALUES);
+        if ((sellerNames != null && sellerNames.stream().distinct().count() < sellerNames.size())) {
+            String errorMessage = String.format("The 'sellerNames' list = '%s' has duplicates. The 'sellerNames' list values must be unique.",
+                    sellerNames);
             errorMessages.append(createErrorMessage(errorMessage));
         }
+        return errorMessages;
     }
 
     private static String createErrorMessage(String errorMessage) {

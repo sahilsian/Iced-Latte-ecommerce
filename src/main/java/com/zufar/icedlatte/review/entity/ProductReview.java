@@ -1,6 +1,5 @@
 package com.zufar.icedlatte.review.entity;
 
-import com.zufar.icedlatte.product.entity.ProductInfo;
 import com.zufar.icedlatte.user.entity.UserEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,9 +36,8 @@ public class ProductReview {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserEntity user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
-    private ProductInfo productInfo;
+    @Column(name = "product_id")
+    private UUID productId;
 
     @CreationTimestamp
     @Column(name = "created_at", insertable = false, updatable = false, nullable = false)

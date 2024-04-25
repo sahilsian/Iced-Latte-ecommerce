@@ -3,7 +3,12 @@ package com.zufar.icedlatte.review.exception.handler;
 import com.zufar.icedlatte.common.exception.dto.ApiErrorResponse;
 import com.zufar.icedlatte.common.exception.handler.ApiErrorResponseCreator;
 import com.zufar.icedlatte.common.exception.handler.ErrorDebugMessageCreator;
-import com.zufar.icedlatte.review.exception.*;
+import com.zufar.icedlatte.review.exception.DeniedProductReviewCreationException;
+import com.zufar.icedlatte.review.exception.DeniedProductReviewDeletionException;
+import com.zufar.icedlatte.review.exception.EmptyProductReviewException;
+import com.zufar.icedlatte.review.exception.GetReviewsBadRequestException;
+import com.zufar.icedlatte.review.exception.ProductIdsAreNotMatchException;
+import com.zufar.icedlatte.review.exception.ProductNotFoundForReviewException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -69,6 +74,17 @@ public class ProductReviewExceptionHandler {
         ApiErrorResponse apiErrorResponse = apiErrorResponseCreator.buildResponse(exception, HttpStatus.BAD_REQUEST);
 
         log.warn("Handle product ids are not match exception: failed: message: {}, debugMessage: {}.",
+                apiErrorResponse.message(), errorDebugMessageCreator.buildErrorDebugMessage(exception));
+
+        return apiErrorResponse;
+    }
+
+    @ExceptionHandler(GetReviewsBadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrorResponse handleGetReviewsBadRequestException(final GetReviewsBadRequestException exception) {
+        ApiErrorResponse apiErrorResponse = apiErrorResponseCreator.buildResponse(exception, HttpStatus.BAD_REQUEST);
+
+        log.warn("Handle get product's reviews invalid parameters exception: failed: message: {}, debugMessage: {}.",
                 apiErrorResponse.message(), errorDebugMessageCreator.buildErrorDebugMessage(exception));
 
         return apiErrorResponse;

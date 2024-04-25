@@ -9,17 +9,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 public interface ProductInfoRepository extends JpaRepository<ProductInfo, UUID> {
 
     @Query("SELECT product FROM ProductInfo product " +
             "WHERE (" +
-                "(:minPrice IS NULL AND :maxPrice IS NULL) OR " +
-                "(:minPrice IS NULL AND :maxPrice >= product.price) OR " +
-                "(:maxPrice IS NULL AND :minPrice <= product.price) OR " +
-                "(product.price BETWEEN :minPrice AND :maxPrice)" +
+            "(:minPrice IS NULL AND :maxPrice IS NULL) OR " +
+            "(:minPrice IS NULL AND :maxPrice >= product.price) OR " +
+            "(:maxPrice IS NULL AND :minPrice <= product.price) OR " +
+            "(product.price BETWEEN :minPrice AND :maxPrice)" +
             ") " +
             "AND (:minimumAverageRating IS NULL OR " + ":minimumAverageRating <= product.averageRating) " +
             "AND (:brandNames IS NULL OR " + "product.brandName IN :brandNames) " +
@@ -27,8 +27,8 @@ public interface ProductInfoRepository extends JpaRepository<ProductInfo, UUID> 
     Page<ProductInfo> findAllProducts(@Param(value = "minPrice") BigDecimal minPrice,
                                       @Param(value = "maxPrice") BigDecimal maxPrice,
                                       @Param(value = "minimumAverageRating") BigDecimal minimumAverageRating,
-                                      @Param(value = "brandNames") Set <String> brandNames,
-                                      @Param(value = "sellerNames") Set <String> sellerNames,
+                                      @Param(value = "brandNames") List<String> brandNames,
+                                      @Param(value = "sellerNames") List<String> sellerNames,
                                       Pageable pageable);
 
     @Modifying
