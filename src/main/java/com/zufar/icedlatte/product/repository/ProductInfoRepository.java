@@ -16,10 +16,10 @@ public interface ProductInfoRepository extends JpaRepository<ProductInfo, UUID> 
 
     @Query("SELECT product FROM ProductInfo product " +
             "WHERE (" +
-            "(:minPrice IS NULL AND :maxPrice IS NULL) OR " +
-            "(:minPrice IS NULL AND :maxPrice >= product.price) OR " +
-            "(:maxPrice IS NULL AND :minPrice <= product.price) OR " +
-            "(product.price BETWEEN :minPrice AND :maxPrice)" +
+                "(:minPrice IS NULL AND :maxPrice IS NULL) OR " +
+                "(:minPrice IS NULL AND :maxPrice >= product.price) OR " +
+                "(:maxPrice IS NULL AND :minPrice <= product.price) OR " +
+                "(product.price BETWEEN :minPrice AND :maxPrice)" +
             ") " +
             "AND (:minimumAverageRating IS NULL OR " + ":minimumAverageRating <= product.averageRating) " +
             "AND (:brandNames IS NULL OR " + "product.brandName IN :brandNames) " +

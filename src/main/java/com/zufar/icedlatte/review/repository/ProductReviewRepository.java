@@ -17,14 +17,14 @@ import java.util.UUID;
 @Repository
 public interface ProductReviewRepository extends JpaRepository<ProductReview, UUID> {
 
+    Optional<ProductReview> findByUserIdAndProductId(UUID userId, UUID productId);
+
     @Query("SELECT review FROM ProductReview review " +
             "WHERE review.productId = :productId AND " +
             "(:productRatings IS NULL OR review.productRating IN :productRatings) ")
     Page<ProductReview> findAllProductReviews(@Param("productId") UUID productId,
                                               @Param("productRatings") List<Integer> productRatings,
                                               Pageable pageable);
-
-    Optional<ProductReview> findByUserIdAndProductId(UUID userId, UUID productId);
 
     @Query("SELECT COUNT(pr) " +
             "FROM ProductReview pr " +
