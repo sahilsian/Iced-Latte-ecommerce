@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserAuthenticationService {
 
-    private static final int USER_ACCOUNT_LOCKOUT_DURATION_MINUTES = 30;
+    private static final int USER_ACCOUNT_LOCKOUT_DURATION_MINUTES = 60;
     private static final String INVALID_CREDENTIALS_ERROR_MESSAGE = "Invalid credentials for user's account with email = '%s'";
 
     private final JwtTokenProvider jwtTokenProvider;
