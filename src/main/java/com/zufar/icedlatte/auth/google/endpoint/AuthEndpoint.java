@@ -43,7 +43,7 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 @RequiredArgsConstructor
 @Validated
-@RequestMapping(value = AuthEndpoint.GOOGLE_AUTH)
+@RequestMapping(value = "/api/v1/auth/google")
 public class AuthEndpoint {
 
     @Value("${google.auth.server.url}")
@@ -61,8 +61,6 @@ public class AuthEndpoint {
     @Value("${google.redirectUri}")
     String redirectUri;
 
-    public static final String GOOGLE_AUTH = "https://iced-latte.uk/backend/api/v1/auth/google/callback";
-
     private final UserRegistrationService userRegistrationService;
     private final UserDetailsService userDetailsService;
     private final UserAuthenticationService userAuthenticationService;
@@ -78,7 +76,7 @@ public class AuthEndpoint {
                 "include_granted_scopes=true&" +
                 "response_type=code&" +
                 "state=state_parameter_passthrough_value&" +
-                "redirect_uri=" + GOOGLE_AUTH + "&" +
+                "redirect_uri=https://iced-latte.uk/backend/api/v1/auth/google/callback&" +
                 "client_id=" + clientId;
 
         return ResponseEntity
@@ -156,7 +154,7 @@ public class AuthEndpoint {
                 .build();
 
         return authorizationCodeFlow.newTokenRequest(code)
-                .setRedirectUri(GOOGLE_AUTH)
+                .setRedirectUri("https://iced-latte.uk/backend/api/v1/auth/google/callback")
                 .execute();
     }
 }
