@@ -78,7 +78,7 @@ public class AuthEndpoint {
                 "state=state_parameter_passthrough_value&" +
                 "redirect_uri=https://iced-latte.uk/backend/api/v1/auth/google/callback&" +
                 "client_id=" + clientId;
-
+        log.info("authorizationUrl = '{}'", authorizationUrl);
         return ResponseEntity
                 .status(HttpStatus.TEMPORARY_REDIRECT)
                 .header("Location", authorizationUrl)
@@ -89,26 +89,44 @@ public class AuthEndpoint {
     public ResponseEntity<UserAuthenticationResponse> googleAuthCallback(@RequestParam("code") String code) {
         try {
             log.warn("Received callback the request a google auth");
-            TokenResponse token = createTokenResponse(code);
-            GoogleIdToken idToken = createGoogleIdToken(token);
+            log.info("code = '{}'", code);
+
+
+            GoogleIdToken idToken = createGoogleIdToken(code);
 
             if (idToken == null) {
                 log.error("Invalid ID token.");
                 return ResponseEntity
                         .status(HttpStatus.FORBIDDEN)
                         .build();
+            } else {
+                log.info("idToken is valid!!!");
             }
 
             GoogleIdToken.Payload payload = idToken.getPayload();
             String email = payload.getEmail();
-            log.info("User email: {}", email);
 
             Optional<UserEntity> userEntity = userRepository.findByEmail(email);
+
+            log.info("User email: {}", email);
+
             if (userEntity.isEmpty()) {
+                String firstName = (String) payload.get("given_name");
+                String lastName = (String) payload.get("family_name");
                 String password = UUID.randomUUID().toString();
-                userRegistrationService.register(new UserRegistrationRequest(email, email, email, password));
+                log.info("Email: {}", email);
+                log.info("First Name: {}", firstName);
+                log.info("Last Name: {}", lastName);
+                
+                userRegistrationService.register(new UserRegistrationRequest(firstName, lastName, email, password));
+                log.info("Success logged with email={}", email);
+            } else {
+                log.error("Error during Google authentication callback. The user's email is empty.");
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .build();
             }
-            log.info("Success logged with email={}", email);
+
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
             UserAuthenticationResponse authenticationResponse =
@@ -131,7 +149,8 @@ public class AuthEndpoint {
         }
     }
 
-    private GoogleIdToken createGoogleIdToken(TokenResponse token) throws GeneralSecurityException, IOException {
+    private GoogleIdToken createGoogleIdToken(String code) throws GeneralSecurityException, IOException {
+        TokenResponse token = createTokenResponse(code);
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier
                 .Builder(GoogleNetHttpTransport.newTrustedTransport(), GsonFactory.getDefaultInstance())
                 .setAudience(Collections.singletonList(clientId))
