@@ -26,10 +26,10 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: Build and tag a new docker image
-        run: docker build -t ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}${{ DOCKER_IMAGE_TAG }} .
+        run: docker build -t ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ secrets.DOCKER_IMAGE_TAG }} .
 
       - name: Push a new docker image into Dockerhub
-        run: docker push ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}${{ DOCKER_IMAGE_TAG }}
+        run: docker push ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ secrets.DOCKER_IMAGE_TAG }}
 
   deploy-app-to-server:
     name: Deploy application to remote server via SSH
@@ -44,12 +44,12 @@ jobs:
           username: ${{ secrets.DEV_SSH_USER }}
           key: ${{ secrets.DEV_SSH_PRIV_KEY }}
           script: |
-            docker pull ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}${{ DOCKER_IMAGE_TAG }}
+            docker pull ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ secrets.DOCKER_IMAGE_TAG }}
             docker stop ${{ env.DOCKER_CONTAINER_NAME }} || true
             docker rm ${{ env.DOCKER_CONTAINER_NAME }} || true
-            docker rmi ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}${{ DOCKER_IMAGE_TAG }} || true
+            docker rmi ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ secrets.DOCKER_IMAGE_TAG }} || true
             docker run -d \
-              --name ${{ env.DOCKER_CONTAINER_NAME }} ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}${{ DOCKER_IMAGE_TAG }} \
+              --name ${{ env.DOCKER_CONTAINER_NAME }} ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ secrets.DOCKER_IMAGE_TAG }} \
               --network=${{ env.DOCKER_NETWORK }} \
               -e APP_SERVER_PORT=${{ secrets.APP_SERVER_PORT }} \
               -e DATASOURCE_PORT=${{ secrets.DATASOURCE_PORT }} \
