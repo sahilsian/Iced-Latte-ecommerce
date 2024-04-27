@@ -5,12 +5,6 @@ on:
     branches:
       - development
 
-env:
-  DOCKER_CONTAINER_NAME: latte-backend
-  DOCKER_NETWORK: iced-latte-network
-  DOCKER_IMAGE_NAME: iced-latte-backend
-  DOCKER_HUB_ACCOUNT_NAME: zufarexplainedit
-
 jobs:
   build-and-push-docker-image:
     name: Build and push a new docker image
@@ -25,14 +19,14 @@ jobs:
       - name: Login to the Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ env.DOCKER_HUB_ACCOUNT_NAME }}
+          username: ${{ secrets.DOCKER_HUB_ACCOUNT_NAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: Build and tag a new docker image
-        run: docker build -t ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} .
+        run: docker build -t ${{ secrets.DOCKER_HUB_ACCOUNT_NAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} .
 
       - name: Push a new docker image into Dockerhub
-        run: docker push ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
+        run: docker push ${{ secrets.DOCKER_HUB_ACCOUNT_NAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
 
   deploy-app-to-server:
     name: Deploy application to remote server via SSH
@@ -50,13 +44,13 @@ jobs:
           username: ${{ secrets.DEV_SSH_USER }}
           key: ${{ secrets.DEV_SSH_PRIV_KEY }}
           script: |
-            docker pull ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
-            docker stop ${{ env.DOCKER_CONTAINER_NAME }} || true
-            docker rm ${{ env.DOCKER_CONTAINER_NAME }} || true
-            docker rmi ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} || true
+            docker pull ${{ secrets.DOCKER_HUB_ACCOUNT_NAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
+            docker stop ${{ secrets.DOCKER_CONTAINER_NAME }} || true
+            docker rm ${{ secrets.DOCKER_CONTAINER_NAME }} || true
+            docker rmi ${{ secrets.DOCKER_HUB_ACCOUNT_NAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} || true
             docker run -d \
-              --name ${{ env.DOCKER_CONTAINER_NAME }} \
-              --network=${{ env.DOCKER_NETWORK }} \
+              --name ${{ secrets.DOCKER_CONTAINER_NAME }} \
+              --network=${{ secrets.DOCKER_NETWORK }} \
               -e APP_SERVER_PORT=${{ secrets.APP_SERVER_PORT }} \
               -e DATASOURCE_PORT=${{ secrets.DATASOURCE_PORT }} \
               -e DATASOURCE_NAME=${{ secrets.DATASOURCE_NAME }} \
@@ -72,6 +66,6 @@ jobs:
               -e AWS_PRODUCT_BUCKET=${{ secrets.AWS_PRODUCT_BUCKET }} \
               -e AWS_DEFAULT_PRODUCT_IMAGES_PATH=${{ secrets.AWS_DEFAULT_PRODUCT_IMAGES_PATH }} \
               -e REDIS_PORT=${{ secrets.REDIS_PORT }} \
-              -v /opt/project/Iced-Latte/backend_data:/usr/app/logs \
-              -v /opt/project/Iced-Latte/backend_data/products:/usr/app/products \
-              ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
+              -v ${{ secrets.APP_DATA_PATH_ON_THE_REMOTE_SERVER }}:/usr/app/logs \
+              -v ${{ secrets.APP_DATA_PATH_ON_THE_REMOTE_SERVER }}/products:/usr/app/products \
+              ${{ secrets.DOCKER_HUB_ACCOUNT_NAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
