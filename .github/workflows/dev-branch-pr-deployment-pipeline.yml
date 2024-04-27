@@ -55,7 +55,7 @@ jobs:
             docker rm ${{ env.DOCKER_CONTAINER_NAME }} || true
             docker rmi ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} || true
             docker run -d \
-              --name ${{ env.DOCKER_CONTAINER_NAME }} ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} \
+              --name ${{ env.DOCKER_CONTAINER_NAME }} \
               --network=${{ env.DOCKER_NETWORK }} \
               -e APP_SERVER_PORT=${{ secrets.APP_SERVER_PORT }} \
               -e DATASOURCE_PORT=${{ secrets.DATASOURCE_PORT }} \
@@ -73,4 +73,5 @@ jobs:
               -e AWS_DEFAULT_PRODUCT_IMAGES_PATH=${{ secrets.AWS_DEFAULT_PRODUCT_IMAGES_PATH }} \
               -e REDIS_PORT=${{ secrets.REDIS_PORT }} \
               -v /opt/project/Iced-Latte/backend_data:/usr/app/logs \
-              -v /opt/project/Iced-Latte/backend_data/products:/usr/app/products
+              -v /opt/project/Iced-Latte/backend_data/products:/usr/app/products \
+              ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
