@@ -104,7 +104,7 @@ public class AuthEndpoint {
             }
 
             GoogleIdToken.Payload payload = idToken.getPayload();
-            String email = payload.getEmail();
+            String email = (String) payload.get("email");
 
             Optional<UserEntity> userEntity = userRepository.findByEmail(email);
 
@@ -113,11 +113,14 @@ public class AuthEndpoint {
             if (userEntity.isEmpty()) {
                 String firstName = (String) payload.get("given_name");
                 String lastName = (String) payload.get("family_name");
+                String pictureUrl = (String) payload.get("picture");
+                String gender = (String) payload.get("gender");
                 String password = UUID.randomUUID().toString();
                 log.info("Email: {}", email);
                 log.info("First Name: {}", firstName);
                 log.info("Last Name: {}", lastName);
-                
+                log.info("PictureUrl: {}", pictureUrl);
+                log.info("Gender: {}", gender);
                 userRegistrationService.register(new UserRegistrationRequest(firstName, lastName, email, password));
                 log.info("Success logged with email={}", email);
             } else {
