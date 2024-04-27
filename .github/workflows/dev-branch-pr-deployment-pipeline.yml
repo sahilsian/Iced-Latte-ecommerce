@@ -51,31 +51,30 @@ jobs:
           key: ${{ secrets.DEV_SSH_PRIV_KEY }}
           envs: DOCKER_IMAGE_TAG
           script: |
-            for CONTAINER_NAME in ${{ env.DOCKER_CONTAINER_NAME }}; do
-              docker stop $CONTAINER_NAME || true
-              docker rm $CONTAINER_NAME || true
-              docker rmi ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/$CONTAINER_NAME || true
-              docker pull ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/$CONTAINER_NAME || true
-              docker run -d --name $CONTAINER_NAME \
-              --network=${{ env.DOCKER_NETWORK }} \
-              -e APP_SERVER_PORT=${{ secrets.APP_SERVER_PORT }} \
-              -e DATASOURCE_PORT=${{ secrets.DATASOURCE_PORT }} \
-              -e DATASOURCE_NAME=${{ secrets.DATASOURCE_NAME }} \
-              -e DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }} \
-              -e DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }} \
-              -e DATASOURCE_HOST=${{ secrets.DATASOURCE_HOST }} \
-              -e APP_JWT_SECRET=${{ secrets.APP_JWT_SECRET }} \
-              -e APP_JWT_REFRESH_SECRET=${{ secrets.APP_JWT_REFRESH_SECRET }} \
-              -e AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} \
-              -e AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }} \
-              -e AWS_REGION=${{ secrets.AWS_REGION }} \
-              -e AWS_USER_BUCKET=${{ secrets.AWS_USER_BUCKET }} \
-              -e AWS_PRODUCT_BUCKET=${{ secrets.AWS_PRODUCT_BUCKET }} \
-              -e AWS_DEFAULT_PRODUCT_IMAGES_PATH=${{ secrets.AWS_DEFAULT_PRODUCT_IMAGES_PATH }} \
-              -e REDIS_PORT=${{ secrets.REDIS_PORT }} \
-              -v /opt/project/Iced-Latte/backend_data:/usr/app/logs \
-              -v /opt/project/Iced-Latte/backend_data/products:/usr/app/products \
-              ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/$CONTAINER_NAME:${DOCKER_IMAGE_TAG}
-            done
+            docker pull ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} || true
+            docker stop ${{ secrets.DOCKER_CONTAINER_NAME }} || true
+            docker rm ${{ secrets.DOCKER_CONTAINER_NAME }} || true
+            docker rmi docker rmi ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} || true
+            docker run -d \
+            --name ${{ secrets.DOCKER_CONTAINER_NAME }} ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} \
+            --network=${{ env.DOCKER_NETWORK }} \
+            -e APP_SERVER_PORT=${{ secrets.APP_SERVER_PORT }} \
+            -e DATASOURCE_PORT=${{ secrets.DATASOURCE_PORT }} \
+            -e DATASOURCE_NAME=${{ secrets.DATASOURCE_NAME }} \
+            -e DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }} \
+            -e DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }} \
+            -e DATASOURCE_HOST=${{ secrets.DATASOURCE_HOST }} \
+            -e APP_JWT_SECRET=${{ secrets.APP_JWT_SECRET }} \
+            -e APP_JWT_REFRESH_SECRET=${{ secrets.APP_JWT_REFRESH_SECRET }} \
+            -e AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} \
+            -e AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }} \
+            -e AWS_REGION=${{ secrets.AWS_REGION }} \
+            -e AWS_USER_BUCKET=${{ secrets.AWS_USER_BUCKET }} \
+            -e AWS_PRODUCT_BUCKET=${{ secrets.AWS_PRODUCT_BUCKET }} \
+            -e AWS_DEFAULT_PRODUCT_IMAGES_PATH=${{ secrets.AWS_DEFAULT_PRODUCT_IMAGES_PATH }} \
+            -e REDIS_PORT=${{ secrets.REDIS_PORT }} \
+            -v /opt/project/Iced-Latte/backend_data:/usr/app/logs \
+            -v /opt/project/Iced-Latte/backend_data/products:/usr/app/products \
+            ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/$CONTAINER_NAME:${DOCKER_IMAGE_TAG}
 
 
