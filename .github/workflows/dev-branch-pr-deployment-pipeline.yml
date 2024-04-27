@@ -23,10 +23,10 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: Build and tag a new docker image
-        run: docker build -t ${{ vars.DOCKER_HUB_ACCOUNT_NAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} .
+        run: docker build -t ${{ vars.DOCKER_HUB_ACCOUNT_NAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} .
 
       - name: Push a new docker image into Dockerhub
-        run: docker push ${{ vars.DOCKER_HUB_ACCOUNT_NAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
+        run: docker push ${{ vars.DOCKER_HUB_ACCOUNT_NAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
 
   deploy-app-to-server:
     name: Deploy application to remote server via SSH
@@ -44,28 +44,28 @@ jobs:
           username: ${{ secrets.DEV_SSH_USER }}
           key: ${{ secrets.DEV_SSH_PRIV_KEY }}
           script: |
-            docker stop ${{ secrets.DOCKER_CONTAINER_NAME }} || true
-            docker rm ${{ secrets.DOCKER_CONTAINER_NAME }} || true
-            docker rmi ${{ vars.DOCKER_HUB_ACCOUNT_NAME }}/${{ secrets.DOCKER_IMAGE_NAME }} || true
-            docker pull ${{ vars.DOCKER_HUB_ACCOUNT_NAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
+            docker stop ${{ vars.DOCKER_CONTAINER_NAME }} || true
+            docker rm ${{ vars.DOCKER_CONTAINER_NAME }} || true
+            docker rmi ${{ vars.DOCKER_HUB_ACCOUNT_NAME }}/${{ vars.DOCKER_IMAGE_NAME }} || true
+            docker pull ${{ vars.DOCKER_HUB_ACCOUNT_NAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
             docker run -d \
-              --name ${{ secrets.DOCKER_CONTAINER_NAME }} \
-              --network=${{ secrets.DOCKER_NETWORK }} \
-              -e APP_SERVER_PORT=${{ secrets.APP_SERVER_PORT }} \
-              -e DATASOURCE_PORT=${{ secrets.DATASOURCE_PORT }} \
-              -e DATASOURCE_NAME=${{ secrets.DATASOURCE_NAME }} \
-              -e DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }} \
-              -e DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }} \
-              -e DATASOURCE_HOST=${{ secrets.DATASOURCE_HOST }} \
-              -e APP_JWT_SECRET=${{ secrets.APP_JWT_SECRET }} \
-              -e APP_JWT_REFRESH_SECRET=${{ secrets.APP_JWT_REFRESH_SECRET }} \
-              -e AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} \
-              -e AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }} \
-              -e AWS_REGION=${{ secrets.AWS_REGION }} \
-              -e AWS_USER_BUCKET=${{ secrets.AWS_USER_BUCKET }} \
-              -e AWS_PRODUCT_BUCKET=${{ secrets.AWS_PRODUCT_BUCKET }} \
-              -e AWS_DEFAULT_PRODUCT_IMAGES_PATH=${{ secrets.AWS_DEFAULT_PRODUCT_IMAGES_PATH }} \
-              -e REDIS_PORT=${{ secrets.REDIS_PORT }} \
-              -v ${{ secrets.APP_DATA_PATH_ON_THE_REMOTE_SERVER }}:/usr/app/logs \
-              -v ${{ secrets.APP_DATA_PATH_ON_THE_REMOTE_SERVER }}/products:/usr/app/products \
-              ${{ vars.DOCKER_HUB_ACCOUNT_NAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
+              --name ${{ vars.DOCKER_CONTAINER_NAME }} \
+              --network=${{ vars.DOCKER_NETWORK }} \
+              -e APP_SERVER_PORT=${{ vars.APP_SERVER_PORT }} \
+              -e DATASOURCE_PORT=${{ vars.DATASOURCE_PORT }} \
+              -e DATASOURCE_NAME=${{ vars.DATASOURCE_NAME }} \
+              -e DATASOURCE_USERNAME=${{ vars.DATASOURCE_USERNAME }} \
+              -e DATASOURCE_PASSWORD=${{ vars.DATASOURCE_PASSWORD }} \
+              -e DATASOURCE_HOST=${{ vars.DATASOURCE_HOST }} \
+              -e APP_JWT_SECRET=${{ vars.APP_JWT_SECRET }} \
+              -e APP_JWT_REFRESH_SECRET=${{ vars.APP_JWT_REFRESH_SECRET }} \
+              -e AWS_ACCESS_KEY=${{ vars.AWS_ACCESS_KEY }} \
+              -e AWS_SECRET_KEY=${{ vars.AWS_SECRET_KEY }} \
+              -e AWS_REGION=${{ vars.AWS_REGION }} \
+              -e AWS_USER_BUCKET=${{ vars.AWS_USER_BUCKET }} \
+              -e AWS_PRODUCT_BUCKET=${{ vars.AWS_PRODUCT_BUCKET }} \
+              -e AWS_DEFAULT_PRODUCT_IMAGES_PATH=${{ vars.AWS_DEFAULT_PRODUCT_IMAGES_PATH }} \
+              -e REDIS_PORT=${{ vars.REDIS_PORT }} \
+              -v ${{ vars.APP_DATA_PATH_ON_THE_REMOTE_SERVER }}:/usr/app/logs \
+              -v ${{ vars.APP_DATA_PATH_ON_THE_REMOTE_SERVER }}/products:/usr/app/products \
+              ${{ vars.DOCKER_HUB_ACCOUNT_NAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
