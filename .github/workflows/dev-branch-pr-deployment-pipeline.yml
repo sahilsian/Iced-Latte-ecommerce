@@ -26,13 +26,13 @@ jobs:
         run: docker build -t ${{ vars.DOCKER_HUB_ACCOUNT_NAME }}/${{ vars.DOCKER_IMAGE_NAME }}:latest .
 
       - name: Tag a new docker image 01
-        run: docker tag ${{ vars.DOCKER_HUB_ACCOUNT_NAME }}/${{ vars.DOCKER_IMAGE_NAME }}:latest ${{ vars.DOCKER_HUB_ACCOUNT_NAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}-01 .
+        run: docker tag ${{ vars.DOCKER_HUB_ACCOUNT_NAME }}/${{ vars.DOCKER_IMAGE_NAME }}:latest ${{ vars.DOCKER_HUB_ACCOUNT_NAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}-01
 
       - name: Push a new docker image 01 into Dockerhub
         run: docker push ${{ vars.DOCKER_HUB_ACCOUNT_NAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}-01
 
       - name: Tag a new docker image 02
-        run: docker tag ${{ vars.DOCKER_HUB_ACCOUNT_NAME }}/${{ vars.DOCKER_IMAGE_NAME }}:latest ${{ vars.DOCKER_HUB_ACCOUNT_NAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}-02 .
+        run: docker tag ${{ vars.DOCKER_HUB_ACCOUNT_NAME }}/${{ vars.DOCKER_IMAGE_NAME }}:latest ${{ vars.DOCKER_HUB_ACCOUNT_NAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}-02
 
       - name: Push a new docker image 02 into Dockerhub
         run: docker push ${{ vars.DOCKER_HUB_ACCOUNT_NAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}-02
