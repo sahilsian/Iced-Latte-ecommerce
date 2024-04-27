@@ -30,6 +30,10 @@ public class ApplicationMigration implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        log.info("Product pictures upload was started, directory path: {}", directoryPath);
+        fileUploader.uploadDirectory(productPictureBucket, directoryPath);
+        Thread.sleep(5000);
+        log.info("Product pictures upload was finished");
         List<FileMetadataDto> fileMetadataDtos = awsProvider.getProductImagesFromAWS(productPictureBucket);
         log.info("Product pictures metadata was retrieved from AWS");
         fileMetadataSaver.saveAll(fileMetadataDtos);
