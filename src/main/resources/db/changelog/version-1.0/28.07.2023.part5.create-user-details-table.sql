@@ -1,8 +1,8 @@
 CREATE TABLE user_details
 (
     id                      UUID         NOT NULL PRIMARY KEY,
-    first_name              VARCHAR(55)  NOT NULL,
-    last_name               VARCHAR(55)  NOT NULL,
+    first_name              VARCHAR(128)  NOT NULL,
+    last_name               VARCHAR(128)  NOT NULL,
     birth_date              DATE,
     phone_number            VARCHAR(25),
     stripe_customer_token   VARCHAR(64) UNIQUE,
