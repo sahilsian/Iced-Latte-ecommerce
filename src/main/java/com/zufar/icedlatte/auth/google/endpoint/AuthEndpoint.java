@@ -70,7 +70,15 @@ public class AuthEndpoint {
     @GetMapping
     public ResponseEntity<String> googleAuth() {
         log.info("Received the request to initiate the Google authentication");
-        String authorizationUrl = buildAuthorizationUrl();
+
+        String authorizationUrl = authorizationServerUrl + "?" +
+                "scope=" + scope + "&" +
+                "access_type=offline&" +
+                "include_granted_scopes=true&" +
+                "response_type=code&" +
+                "state=state_parameter_passthrough_value&" +
+                "redirect_uri=https://iced-latte.uk/backend/api/v1/auth/google/callback&" +
+                "client_id=" + clientId;
         log.info("authorizationUrl = '{}'", authorizationUrl);
         return ResponseEntity
                 .status(HttpStatus.TEMPORARY_REDIRECT)
@@ -118,10 +126,6 @@ public class AuthEndpoint {
         }
     }
 
-    private String buildAuthorizationUrl() {
-        return String.format("%s?scope=%s&access_type=offline&include_granted_scopes=true&response_type=code&state=state_parameter_passthrough_value&redirect_uri=%s&client_id=%s", authorizationServerUrl, scope, redirectUri, clientId);
-    }
-
     private GoogleIdToken createGoogleIdToken(String code) throws GeneralSecurityException, IOException {
         TokenResponse token = createTokenResponse(code);
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(GoogleNetHttpTransport.newTrustedTransport(), GsonFactory.getDefaultInstance()).setAudience(Collections.singletonList(clientId)).build();
@@ -138,7 +142,9 @@ public class AuthEndpoint {
                 .setAccessType("offline")
                 .setApprovalPrompt("force")
                 .build();
-        return authorizationCodeFlow.newTokenRequest(code).setRedirectUri(redirectUri).execute();
+        return authorizationCodeFlow.newTokenRequest(code)
+                .setRedirectUri(redirectUri)
+                .execute();
     }
 
     private void registerNewUser(GoogleIdToken.Payload payload) {
