@@ -25,7 +25,6 @@ import com.zufar.icedlatte.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -62,9 +61,8 @@ public class AuthEndpoint {
     @Value("${google.redirectUri}")
     String redirectUri;
 
-    public static final String GOOGLE_AUTH = "/api/v1/3part-auth/google";
+    public static final String GOOGLE_AUTH = "https://iced-latte.uk/backend/api/v1/auth/google/callback";
 
-    private final Environment environment;
     private final UserRegistrationService userRegistrationService;
     private final UserDetailsService userDetailsService;
     private final UserAuthenticationService userAuthenticationService;
@@ -74,14 +72,13 @@ public class AuthEndpoint {
     public ResponseEntity<String> googleAuth() {
         log.info("Received the request to initiate the Google authentication");
 
-        String newRedirectUri = "http://localhost:" + environment.getProperty("server.port") + GOOGLE_AUTH + "/callback";
         String authorizationUrl = authorizationServerUrl + "?" +
                 "scope=" + scope + "&" +
                 "access_type=offline&" +
                 "include_granted_scopes=true&" +
                 "response_type=code&" +
                 "state=state_parameter_passthrough_value&" +
-                "redirect_uri=" + newRedirectUri + "&" +
+                "redirect_uri=" + GOOGLE_AUTH + "&" +
                 "client_id=" + clientId;
 
         return ResponseEntity
@@ -143,6 +140,7 @@ public class AuthEndpoint {
                 .build();
 
         String idToken = (String) token.get("id_token");
+        log.info("id_token = '{}'", idToken);
 
         return verifier.verify(idToken);
     }
@@ -150,12 +148,15 @@ public class AuthEndpoint {
     private TokenResponse createTokenResponse(String code) throws IOException, GeneralSecurityException {
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
+
         GoogleAuthorizationCodeFlow authorizationCodeFlow = new GoogleAuthorizationCodeFlow
                 .Builder(httpTransport, jsonFactory, clientId, clientSecret, List.of(scope))
-                .setAccessType("offline").setApprovalPrompt("force")
+                .setAccessType("offline")
+                .setApprovalPrompt("force")
                 .build();
+
         return authorizationCodeFlow.newTokenRequest(code)
-                .setRedirectUri("http://localhost" + ":" + environment.getProperty("server.port") + GOOGLE_AUTH + "/callback")
+                .setRedirectUri(GOOGLE_AUTH)
                 .execute();
     }
 }

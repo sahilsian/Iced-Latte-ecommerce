@@ -36,7 +36,7 @@ spring:
     url: ${spring.datasource.url}
     user: ${spring.datasource.username}
     password: ${spring.datasource.password}
-    drop-first: true
+    drop-first: false
 
   #
   # Aws Properties
@@ -197,6 +197,6 @@ google:
     server:
       url: "https://accounts.google.com/o/oauth2/v2/auth"
   scope: "https://www.googleapis.com/auth/userinfo.profile"
-  client-id: "sk-client-id"
-  client-secret: "sk-client-secret"
-  redirectUri: "http://localhost:3000/auth/login"
+  client-id: ${GOOGLE_AUTH_CLIENT_ID}
+  client-secret: ${GOOGLE_AUTH_CLIENT_SECRET}
+  redirectUri: ${GOOGLE_AUTH_REDIRECT_URI}
