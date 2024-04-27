@@ -28,10 +28,6 @@ jobs:
           username: ${{ env.DOCKER_HUB_ACCOUNT_NAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      - name: Set DOCKER_IMAGE_TAG
-        id: tag
-        run: echo "::set-output name=DOCKER_IMAGE_TAG::${{ github.sha }}"
-
       - name: Build and tag a new docker image
         run: docker build -t ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }} .
 
