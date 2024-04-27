@@ -93,8 +93,13 @@ public class AuthEndpoint {
             GoogleIdToken idToken = createGoogleIdToken(code);
             if (idToken == null) {
                 log.error("Invalid ID token.");
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+                return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN)
+                        .build();
+            } else {
+                log.info("idToken is valid!!!");
             }
+
             GoogleIdToken.Payload payload = idToken.getPayload();
             String email = (String) payload.get("email");
             log.info("User email: {}", email);
@@ -128,22 +133,29 @@ public class AuthEndpoint {
 
     private GoogleIdToken createGoogleIdToken(String code) throws GeneralSecurityException, IOException {
         TokenResponse token = createTokenResponse(code);
-        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(GoogleNetHttpTransport.newTrustedTransport(), GsonFactory.getDefaultInstance()).setAudience(Collections.singletonList(clientId)).build();
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier
+                .Builder(GoogleNetHttpTransport.newTrustedTransport(), GsonFactory.getDefaultInstance())
+                .setAudience(Collections.singletonList(clientId))
+                .build();
+
         String idToken = (String) token.get("id_token");
         log.info("id_token = '{}'", idToken);
+
         return verifier.verify(idToken);
     }
 
     private TokenResponse createTokenResponse(String code) throws IOException, GeneralSecurityException {
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
+
         GoogleAuthorizationCodeFlow authorizationCodeFlow = new GoogleAuthorizationCodeFlow
                 .Builder(httpTransport, jsonFactory, clientId, clientSecret, List.of(scope))
                 .setAccessType("offline")
                 .setApprovalPrompt("force")
                 .build();
+
         return authorizationCodeFlow.newTokenRequest(code)
-                .setRedirectUri(redirectUri)
+                .setRedirectUri("https://iced-latte.uk/backend/api/v1/auth/google/callback")
                 .execute();
     }
 
