@@ -21,7 +21,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set DOCKER_IMAGE_TAG
-        run: echo "DOCKER_IMAGE_TAG=$GITHUB_REF_NAME-${GITHUB_SHA:0:7}" >> $GITHUB_ENV
+        id: tag
+        run: echo "::set-output name=DOCKER_IMAGE_TAG::${GITHUB_REF_NAME}-${GITHUB_SHA:0:7}"
 
       - name: Login to the Docker Hub
         uses: docker/login-action@v3
@@ -34,6 +35,8 @@ jobs:
 
       - name: Push a new docker image into Dockerhub
         run: docker push ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
+    outputs:
+      DOCKER_IMAGE_TAG: ${{ steps.tag.outputs.DOCKER_IMAGE_TAG }}
 
   deploy-app-to-server:
     name: Deploy application to remote server via SSH
@@ -43,7 +46,7 @@ jobs:
       - name: Deploy image via SSH
         uses: appleboy/ssh-action@v1.0.0
         env:
-          DOCKER_IMAGE_TAG: ${{ env.DOCKER_IMAGE_TAG }}
+          DOCKER_IMAGE_TAG: ${{ needs.build-and-push-docker-image.outputs.DOCKER_IMAGE_TAG }}
         with:
           host: ${{ secrets.DEV_SSH_HOST }}
           port: ${{ secrets.DEV_SSH_PORT }}
@@ -51,29 +54,30 @@ jobs:
           key: ${{ secrets.DEV_SSH_PRIV_KEY }}
           envs: DOCKER_IMAGE_TAG
           script: |
-            docker pull ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} || true
+            docker pull ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:$DOCKER_IMAGE_TAG
             docker stop ${{ env.DOCKER_CONTAINER_NAME }} || true
             docker rm ${{ env.DOCKER_CONTAINER_NAME }} || true
-            docker rmi ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} || true
+            docker rmi ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:$DOCKER_IMAGE_TAG || true
             docker run -d \
-            --name ${{ env.DOCKER_CONTAINER_NAME }} ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} \
-            --network=${{ env.DOCKER_NETWORK }} \
-            -e APP_SERVER_PORT=${{ secrets.APP_SERVER_PORT }} \
-            -e DATASOURCE_PORT=${{ secrets.DATASOURCE_PORT }} \
-            -e DATASOURCE_NAME=${{ secrets.DATASOURCE_NAME }} \
-            -e DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }} \
-            -e DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }} \
-            -e DATASOURCE_HOST=${{ secrets.DATASOURCE_HOST }} \
-            -e APP_JWT_SECRET=${{ secrets.APP_JWT_SECRET }} \
-            -e APP_JWT_REFRESH_SECRET=${{ secrets.APP_JWT_REFRESH_SECRET }} \
-            -e AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} \
-            -e AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }} \
-            -e AWS_REGION=${{ secrets.AWS_REGION }} \
-            -e AWS_USER_BUCKET=${{ secrets.AWS_USER_BUCKET }} \
-            -e AWS_PRODUCT_BUCKET=${{ secrets.AWS_PRODUCT_BUCKET }} \
-            -e AWS_DEFAULT_PRODUCT_IMAGES_PATH=${{ secrets.AWS_DEFAULT_PRODUCT_IMAGES_PATH }} \
-            -e REDIS_PORT=${{ secrets.REDIS_PORT }} \
-            -v /opt/project/Iced-Latte/backend_data:/usr/app/logs \
-            -v /opt/project/Iced-Latte/backend_data/products:/usr/app/products 
+              --name ${{ env.DOCKER_CONTAINER_NAME }} ${{ env.DOCKER_HUB_ACCOUNT_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:$DOCKER_IMAGE_TAG \
+              --network=${{ env.DOCKER_NETWORK }} \
+              -e APP_SERVER_PORT=${{ secrets.APP_SERVER_PORT }} \
+              -e DATASOURCE_PORT=${{ secrets.DATASOURCE_PORT }} \
+              -e DATASOURCE_NAME=${{ secrets.DATASOURCE_NAME }} \
+              -e DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }} \
+              -e DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }} \
+              -e DATASOURCE_HOST=${{ secrets.DATASOURCE_HOST }} \
+              -e APP_JWT_SECRET=${{ secrets.APP_JWT_SECRET }} \
+              -e APP_JWT_REFRESH_SECRET=${{ secrets.APP_JWT_REFRESH_SECRET }} \
+              -e AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} \
+              -e AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }} \
+              -e AWS_REGION=${{ secrets.AWS_REGION }} \
+              -e AWS_USER_BUCKET=${{ secrets.AWS_USER_BUCKET }} \
+              -e AWS_PRODUCT_BUCKET=${{ secrets.AWS_PRODUCT_BUCKET }} \
+              -e AWS_DEFAULT_PRODUCT_IMAGES_PATH=${{ secrets.AWS_DEFAULT_PRODUCT_IMAGES_PATH }} \
+              -e REDIS_PORT=${{ secrets.REDIS_PORT }} \
+              -v /opt/project/Iced-Latte/backend_data:/usr/app/logs \
+              -v /opt/project/Iced-Latte/backend_data/products:/usr/app/products
+  
 
 
