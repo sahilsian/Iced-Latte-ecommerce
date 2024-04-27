@@ -61,8 +61,8 @@ jobs:
               -e DATASOURCE_HOST=${{ vars.DATASOURCE_HOST }} \
               -e APP_JWT_SECRET=${{ secrets.APP_JWT_SECRET }} \
               -e APP_JWT_REFRESH_SECRET=${{ secrets.APP_JWT_REFRESH_SECRET }} \
-              -e AWS_ACCESS_KEY=${{ vars.AWS_ACCESS_KEY }} \
-              -e AWS_SECRET_KEY=${{ vars.AWS_SECRET_KEY }} \
+              -e AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} \
+              -e AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }} \
               -e AWS_REGION=${{ vars.AWS_REGION }} \
               -e AWS_USER_BUCKET=${{ vars.AWS_USER_BUCKET }} \
               -e AWS_PRODUCT_BUCKET=${{ vars.AWS_PRODUCT_BUCKET }} \
