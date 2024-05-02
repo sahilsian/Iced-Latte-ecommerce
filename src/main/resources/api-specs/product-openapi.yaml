@@ -46,6 +46,37 @@ paths:
         "500":
           description: "Internal Server Error."
 
+  /api/v1/products/sellers:
+    get:
+      tags:
+        - "Product"
+      description: "Retrieve a list of all hardcoded sellers of products"
+      operationId: "getAllSellers"
+      responses:
+        "200":
+          description: "The list of all hardcoded sellers of products were provided."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SellersDto"
+        "500":
+          description: "Internal Server Error."
+  /api/v1/products/brands:
+    get:
+      tags:
+        - "Product"
+      description: "Retrieve a list of all hardcoded brands of products"
+      operationId: "getAllBrands"
+      responses:
+        "200":
+          description: "The list of all hardcoded brands of products were provided."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BrandsDto"
+        "500":
+          description: "Internal Server Error."
+
   /api/v1/products:
     get:
       tags:
@@ -319,3 +350,23 @@ components:
           items:
             type: "string"
             format: "uuid"
+
+    SellersDto:
+      type: "object"
+      required:
+        - sellers
+      properties:
+        sellers:
+          type: "array"
+          items:
+            type: "string"
+
+    BrandsDto:
+      type: "object"
+      required:
+        - brands
+      properties:
+        brands:
+          type: "array"
+          items:
+            type: "string"

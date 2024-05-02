@@ -1,8 +1,6 @@
 package com.zufar.icedlatte.product.endpoint;
 
-import com.zufar.icedlatte.openapi.dto.ProductIdsDto;
-import com.zufar.icedlatte.openapi.dto.ProductInfoDto;
-import com.zufar.icedlatte.openapi.dto.ProductListWithPaginationInfoDto;
+import com.zufar.icedlatte.openapi.dto.*;
 import com.zufar.icedlatte.product.validator.GetProductsRequestValidator;
 import com.zufar.icedlatte.product.api.PageableProductsProvider;
 import com.zufar.icedlatte.product.api.ProductApi;
@@ -81,5 +79,25 @@ public class ProductsEndpoint implements com.zufar.icedlatte.openapi.product.api
         log.info("Products with productIds: {} was retrieved successfully", stringIDs);
         return ResponseEntity.ok()
                 .body(products);
+    }
+
+    @Override
+    @GetMapping("/sellers")
+    public ResponseEntity<SellersDto> getAllSellers() {
+        log.info("Received the request to get a list of all hardcoded sellers of products");
+        SellersDto sellersDto = new SellersDto(List.of("JavaBeanCoffee", "FreshCup", "BrewedBliss", "EspressoEmporium", "MorningMug", "CoffeeCorner", "CuppaCafe", "BeanBrewers"));
+        log.info("The list of all hardcoded sellers of products was retrieved successfully");
+        return ResponseEntity.ok()
+                .body(sellersDto);
+    }
+
+    @Override
+    @GetMapping("/brands")
+    public ResponseEntity<BrandsDto> getAllBrands() {
+        log.info("Received the request to get a list of all hardcoded brands of products");
+        BrandsDto brandsDto = new BrandsDto(List.of("Folgers", "Illy", "Dunkin-Donuts", "Nescafe", "Lavazza", "Peets-Coffee", "Starbucks"));
+        log.info("The list of all hardcoded brands of products was retrieved successfully");
+        return ResponseEntity.ok()
+                .body(brandsDto);
     }
 }
