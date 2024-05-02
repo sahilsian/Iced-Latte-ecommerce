@@ -16,3 +16,6 @@ VALUES ('e5e5e5e5-e5e5-e5e5-e5e5-e5e5e5e5e5e5', '22 Potsdamer Platz', 'Berlin', 
 
 INSERT INTO address (id, line, city, country, postcode)
 VALUES ('f6f6f6f6-f6f6-f6f6-f6f6-f6f6f6f6f6f6', '15 Rue de Rivoli', 'Paris', 'France', '75004');
+
+INSERT INTO address (id, line, city, country, postcode)
+VALUES ('550e8400-e29b-41d4-a716-446655440000', '30 Lombard Street', 'San Francisco', 'USA', '94111');

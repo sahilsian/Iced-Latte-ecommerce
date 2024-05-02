@@ -17,3 +17,6 @@ INSERT INTO user_details (id, first_name, last_name, birth_date, phone_number, e
 
 INSERT INTO user_details (id, first_name, last_name, birth_date, phone_number, email, password, address_id, account_non_expired, account_non_locked, credentials_non_expired, enabled) VALUES
     ('66666666-6666-6666-6666-666666666666', 'Angelina', 'Jolie', '1975-06-04', '+12345678906', 'angelina@example.com', '$2a$10$0rWCw95gSFuuDP5TTqZ2sucLfQyKatrmyC2oifG/era5jWAczHnD2', 'f6f6f6f6-f6f6-f6f6-f6f6-f6f6f6f6f6f6', true, true, true, true);
+
+INSERT INTO user_details (id, first_name, last_name, birth_date, phone_number, email, password, address_id, account_non_expired, account_non_locked, credentials_non_expired, enabled)
+VALUES ('77777777-7777-7777-7777-777777777777', 'Olivia', 'Taylor', '1995-08-20', '+12345678907', 'olivia@example.com', '$2a$10$mg2qXOJJr2LJrU50RlcPFOH1DaOWP2HhxuoZwC2skDs5fjX/ZsOqK', '550e8400-e29b-41d4-a716-446655440000', true, true, true, true);
