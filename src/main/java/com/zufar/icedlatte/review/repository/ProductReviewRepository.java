@@ -48,7 +48,7 @@ public interface ProductReviewRepository extends JpaRepository<ProductReview, UU
                     "SET likes_count = (" +
                         "SELECT count(product_reviews_likes.id) " +
                         "FROM product_reviews_likes " +
-                        "WHERE product_reviews_likes.is_like = true AND product_reviews_likes.review_id = product_reviews.id" +
+                        "WHERE product_reviews_likes.is_like = true AND product_reviews_likes.review_id = :productReviewId" +
                     ") " +
                     "WHERE product_reviews.id = :productReviewId")
     void updateLikesCount(final UUID productReviewId);
@@ -59,7 +59,7 @@ public interface ProductReviewRepository extends JpaRepository<ProductReview, UU
                     "SET dislikes_count = (" +
                         "SELECT count(product_reviews_likes.id) " +
                         "FROM product_reviews_likes " +
-                        "WHERE product_reviews_likes.is_like = false AND product_reviews_likes.review_id = product_reviews.id" +
+                        "WHERE product_reviews_likes.is_like = false AND product_reviews_likes.review_id = :productReviewId" +
                     ") " +
                     "WHERE product_reviews.id = :productReviewId")
     void updateDislikesCount(final UUID productReviewId);
