@@ -6,50 +6,38 @@ import com.zufar.icedlatte.favorite.entity.FavoriteItemEntity;
 import com.zufar.icedlatte.favorite.entity.FavoriteListEntity;
 import com.zufar.icedlatte.openapi.dto.ProductInfoDto;
 import com.zufar.icedlatte.product.entity.ProductInfo;
-import org.mapstruct.InjectionStrategy;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingConstants;
-import org.mapstruct.ReportingPolicy;
-
-import java.util.HashSet;
-import java.util.Set;
+import org.mapstruct.*;
 import java.util.UUID;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
         uses = FavoriteItemDtoConverter.class, unmappedTargetPolicy = ReportingPolicy.IGNORE, injectionStrategy = InjectionStrategy.FIELD)
 public interface FavoriteListDtoConverter {
 
-    default FavoriteListDto toDto(final FavoriteListEntity favoriteListEntity) {
-        UUID id = favoriteListEntity.getId();
-        UUID userId = favoriteListEntity.getUserId();
-        Set<FavoriteItemDto> favoriteItemsDto = new HashSet<>();
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "userId", expression = "java(favoriteListEntity.getUser().getId())")
+    @Mapping(target = "updatedAt", source = "updatedAt")
+    @Mapping(target = "favoriteItems", source = "favoriteItems", qualifiedByName = "mapFavoriteItems")
+    FavoriteListDto toDto(final FavoriteListEntity favoriteListEntity);
 
-        for (FavoriteItemEntity itemEntity : favoriteListEntity.getFavoriteItems()) {
-            UUID favoriteItemEntityId = itemEntity.getId();
-            ProductInfo productInfo = itemEntity.getProductInfo();
+    @Mapping(target = "id", source = "productId")
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "description", source = "description")
+    @Mapping(target = "price", source = "price")
+    @Mapping(target = "quantity", source = "quantity")
+    @Mapping(target = "active", source = "active")
+    @Mapping(target = "averageRating", source = "averageRating")
+    @Mapping(target = "reviewsCount", source = "reviewsCount")
+    @Mapping(target = "brandName", source = "brandName")
+    @Mapping(target = "sellerName", source = "sellerName")
+    ProductInfoDto convertProductInfoDto(ProductInfo productInfo);
 
-            ProductInfoDto productInfoDto = convertProductInfoDto(productInfo);
+    @Named("mapFavoriteItems")
+    default FavoriteItemDto toFavoriteItemDto(FavoriteItemEntity itemEntity) {
+        UUID favoriteItemEntityId = itemEntity.getId();
+        ProductInfo productInfo = itemEntity.getProductInfo();
 
-            FavoriteItemDto favoriteItemDto = new FavoriteItemDto(favoriteItemEntityId, productInfoDto);
-            favoriteItemsDto.add(favoriteItemDto);
-        }
+        ProductInfoDto productInfoDto = convertProductInfoDto(productInfo);
 
-        return new FavoriteListDto(id, userId, favoriteItemsDto, favoriteListEntity.getUpdatedAt());
-    }
-
-    private static ProductInfoDto convertProductInfoDto(ProductInfo productInfo) {
-        return new ProductInfoDto(
-                productInfo.getProductId(),
-                productInfo.getName(),
-                productInfo.getDescription(),
-                productInfo.getPrice(),
-                productInfo.getQuantity(),
-                productInfo.getActive(),
-                productInfo.getAverageRating(),
-                productInfo.getReviewsCount(),
-                productInfo.getBrandName(),
-                productInfo.getSellerName()
-
-        );
+        return new FavoriteItemDto(favoriteItemEntityId, productInfoDto);
     }
 }

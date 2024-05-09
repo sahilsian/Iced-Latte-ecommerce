@@ -5,41 +5,37 @@ import com.zufar.icedlatte.openapi.dto.ProductReviewsAndRatingsWithPagination;
 import com.zufar.icedlatte.openapi.dto.RatingMap;
 import com.zufar.icedlatte.review.dto.ProductRatingCount;
 import com.zufar.icedlatte.review.entity.ProductReview;
+import org.mapstruct.*;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class ProductReviewDtoConverter {
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
+        uses = ProductReviewDtoConverter.class, unmappedTargetPolicy = ReportingPolicy.IGNORE, injectionStrategy = InjectionStrategy.FIELD)
+public interface ProductReviewDtoConverter {
 
-    public static final ProductReviewDto EMPTY_PRODUCT_REVIEW_RESPONSE =
-            new ProductReviewDto(null, null,null, null, null, null, null, null, null);
+    ProductReviewDto EMPTY_PRODUCT_REVIEW_RESPONSE =
+            new ProductReviewDto(null, null, null, null, null, null, null, null, null);
 
-    public ProductReviewDto toProductReviewDto(ProductReview productReview) {
-        return new ProductReviewDto(
-                productReview.getId(),
-                productReview.getProductId(),
-                productReview.getProductRating(),
-                productReview.getText(),
-                productReview.getCreatedAt(),
-                productReview.getUser().getFirstName(),
-                productReview.getUser().getLastName(),
-                productReview.getLikesCount(),
-                productReview.getDislikesCount());
-    }
+    @Mapping(target = "productReviewId", source = "id")
+    @Mapping(target = "productId", source = "productId")
+    @Mapping(target = "productRating", source = "productRating")
+    @Mapping(target = "text", source = "text")
+    @Mapping(target = "createdAt", source = "createdAt")
+    @Mapping(target = "userName", expression = "java(productReview.getUser().getFirstName())")
+    @Mapping(target = "userLastname", expression = "java(productReview.getUser().getLastName())")
+    @Mapping(target = "likesCount", source = "likesCount")
+    @Mapping(target = "dislikesCount", source = "dislikesCount")
+    ProductReviewDto toProductReviewDto(ProductReview productReview);
 
-    public ProductReviewsAndRatingsWithPagination toProductReviewsAndRatingsWithPagination(final Page<ProductReviewDto> page) {
-        var result = new ProductReviewsAndRatingsWithPagination();
-        result.setPage(page.getTotalPages());
-        result.setSize(page.getSize());
-        result.setTotalElements(page.getTotalElements());
-        result.setTotalPages(page.getTotalPages());
-        result.setReviewsWithRatings(page.getContent());
-        return result;
-    }
+    @Mapping(target = "page", expression = "java(page.getTotalPages())")
+    @Mapping(target = "size", expression = "java(page.getSize())")
+    @Mapping(target = "totalElements", expression = "java(page.getTotalElements())")
+    @Mapping(target = "totalPages", expression = "java(page.getTotalPages())")
+    @Mapping(target = "reviewsWithRatings", expression = "java(page.getContent())")
+    ProductReviewsAndRatingsWithPagination toProductReviewsAndRatingsWithPagination(final Page<ProductReviewDto> page);
 
-    public RatingMap convertToProductRatingMap(List<ProductRatingCount> productRatingCountPairs) {
+    default RatingMap convertToProductRatingMap(List<ProductRatingCount> productRatingCountPairs) {
         var productRatingMap = new RatingMap(0, 0, 0, 0, 0);
 
         for (ProductRatingCount productRatingCount : productRatingCountPairs) {

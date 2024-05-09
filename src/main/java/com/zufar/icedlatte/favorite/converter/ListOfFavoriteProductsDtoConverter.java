@@ -4,11 +4,7 @@ import com.zufar.icedlatte.favorite.dto.FavoriteItemDto;
 import com.zufar.icedlatte.favorite.dto.FavoriteListDto;
 import com.zufar.icedlatte.openapi.dto.ListOfFavoriteProductsDto;
 import com.zufar.icedlatte.openapi.dto.ProductInfoDto;
-import org.mapstruct.InjectionStrategy;
-import org.mapstruct.Mapper;
-import org.mapstruct.Named;
-import org.mapstruct.ReportingPolicy;
-import org.mapstruct.MappingConstants;
+import org.mapstruct.*;
 
 import java.util.List;
 import java.util.Set;
@@ -17,13 +13,8 @@ import java.util.Set;
         unmappedTargetPolicy = ReportingPolicy.IGNORE, injectionStrategy = InjectionStrategy.FIELD)
 public interface ListOfFavoriteProductsDtoConverter {
 
-    default ListOfFavoriteProductsDto toListProductDto(FavoriteListDto favoriteList) {
-        ListOfFavoriteProductsDto listOfFavoriteProductsDto = new ListOfFavoriteProductsDto();
-        for (FavoriteItemDto item : favoriteList.favoriteItems()) {
-            listOfFavoriteProductsDto.addProductsItem(item.productInfo());
-        }
-        return listOfFavoriteProductsDto;
-    }
+    @Mapping(target = "products", source = "favoriteItems", qualifiedByName = "toListProductInfoDto")
+    ListOfFavoriteProductsDto toListProductDto(FavoriteListDto favoriteList);
 
     @Named("toListProductInfoDto")
     default List<ProductInfoDto> toProductInfoDto(final Set<FavoriteItemDto> favoriteItems) {
