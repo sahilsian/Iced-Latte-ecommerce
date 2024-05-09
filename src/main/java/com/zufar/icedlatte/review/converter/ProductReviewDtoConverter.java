@@ -22,8 +22,8 @@ public interface ProductReviewDtoConverter {
     @Mapping(target = "productRating", source = "productRating")
     @Mapping(target = "text", source = "text")
     @Mapping(target = "createdAt", source = "createdAt")
-    @Mapping(target = "userName", expression = "java(productReview.getUser().getFirstName())")
-    @Mapping(target = "userLastname", expression = "java(productReview.getUser().getLastName())")
+    @Mapping(target = "userName", expression = "java(productReview.getUser() != null ? productReview.getUser().getFirstName() : null)")
+    @Mapping(target = "userLastname", expression = "java(productReview.getUser() != null ? productReview.getUser().getLastName() : null)")
     @Mapping(target = "likesCount", source = "likesCount")
     @Mapping(target = "dislikesCount", source = "dislikesCount")
     ProductReviewDto toProductReviewDto(ProductReview productReview);

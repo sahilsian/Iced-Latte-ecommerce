@@ -14,7 +14,7 @@ import java.util.UUID;
 public interface FavoriteListDtoConverter {
 
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "userId", expression = "java(favoriteListEntity.getUser().getId())")
+    @Mapping(target = "userId", expression = "java(favoriteListEntity.getUser() != null ? favoriteListEntity.getUser().getId() : null)")
     @Mapping(target = "updatedAt", source = "updatedAt")
     @Mapping(target = "favoriteItems", source = "favoriteItems", qualifiedByName = "mapFavoriteItems")
     FavoriteListDto toDto(final FavoriteListEntity favoriteListEntity);
