@@ -21,7 +21,7 @@ public interface FavoriteListDtoConverter {
 
     default FavoriteListDto toDto(final FavoriteListEntity favoriteListEntity) {
         UUID id = favoriteListEntity.getId();
-        UUID userId = favoriteListEntity.getUser().getId();
+        UUID userId = favoriteListEntity.getUserId();
         Set<FavoriteItemDto> favoriteItemsDto = new HashSet<>();
 
         for (FavoriteItemEntity itemEntity : favoriteListEntity.getFavoriteItems()) {

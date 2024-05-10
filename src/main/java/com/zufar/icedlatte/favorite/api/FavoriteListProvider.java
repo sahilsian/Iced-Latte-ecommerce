@@ -4,7 +4,6 @@ import com.zufar.icedlatte.favorite.converter.FavoriteListDtoConverter;
 import com.zufar.icedlatte.favorite.dto.FavoriteListDto;
 import com.zufar.icedlatte.favorite.entity.FavoriteListEntity;
 import com.zufar.icedlatte.favorite.repository.FavoriteRepository;
-import com.zufar.icedlatte.user.api.SingleUserProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -20,7 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FavoriteListProvider {
 
     private final FavoriteRepository favoriteRepository;
-    private final SingleUserProvider singleUserProvider;
     private final FavoriteListDtoConverter favoriteListDtoConverter;
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, readOnly = true)
@@ -31,13 +29,14 @@ public class FavoriteListProvider {
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, readOnly = true)
     public FavoriteListDto getFavoriteListDto(final UUID userId) {
-        FavoriteListEntity favoriteListEntity = favoriteRepository.findByUserId(userId).orElseGet(() -> createNewFavoriteList(userId));
+        FavoriteListEntity favoriteListEntity = favoriteRepository.findByUserId(userId)
+                .orElseGet(() -> createNewFavoriteList(userId));
         return favoriteListDtoConverter.toDto(favoriteListEntity);
     }
 
     private FavoriteListEntity createNewFavoriteList(UUID userId) {
         return FavoriteListEntity.builder()
-                .user(singleUserProvider.getUserEntityById(userId))
+                .userId(userId)
                 .favoriteItems(ConcurrentHashMap.newKeySet())
                 .updatedAt(OffsetDateTime.now())
                 .build();
