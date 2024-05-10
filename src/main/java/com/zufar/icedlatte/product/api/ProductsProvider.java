@@ -1,9 +1,5 @@
 package com.zufar.icedlatte.product.api;
 
-import com.zufar.icedlatte.filestorage.converter.FileMetadataDtoConverter;
-import com.zufar.icedlatte.filestorage.dto.FileMetadataDto;
-import com.zufar.icedlatte.filestorage.entity.FileMetadata;
-import com.zufar.icedlatte.filestorage.repository.FileMetadataRepository;
 import com.zufar.icedlatte.openapi.dto.ProductInfoDto;
 import com.zufar.icedlatte.product.converter.ProductInfoDtoConverter;
 import com.zufar.icedlatte.product.exception.ProductNotFoundException;
@@ -26,8 +22,6 @@ public class ProductsProvider {
 
     private final ProductInfoRepository productInfoRepository;
     private final ProductInfoDtoConverter productInfoDtoConverter;
-    private final FileMetadataRepository fileMetadataRepository;
-    private final FileMetadataDtoConverter fileMetadataDtoConverter;
     private final ProductUpdater productUpdater;
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, readOnly = true)
@@ -46,12 +40,5 @@ public class ProductsProvider {
         log.error("Products with ids = {} are not found.", String.join(", ",
                 uuids.stream().map(UUID::toString).collect(Collectors.joining())));
         throw new ProductNotFoundException(uuids);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, readOnly = true)
-    public FileMetadataDto getProductImageMetadata(final UUID productId) {
-        FileMetadata fileMetadata = fileMetadataRepository.findAvatarInfoByRelatedObjectId(productId)
-                .orElseThrow(() -> new ProductNotFoundException(productId));
-        return fileMetadataDtoConverter.toDto(fileMetadata);
     }
 }
