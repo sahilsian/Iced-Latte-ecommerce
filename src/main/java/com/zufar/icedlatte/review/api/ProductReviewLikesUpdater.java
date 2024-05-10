@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -32,35 +33,39 @@ public class ProductReviewLikesUpdater {
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
     public ProductReviewDto update(final UUID productId,
                                    final UUID productReviewId,
-                                   final Boolean productReviewLike) {
+                                   final Boolean newProductReviewLike) {
         var userId = securityPrincipalProvider.getUserId();
 
         productReviewValidator.validateProductExists(productId);
         productReviewValidator.validateReviewExistsForUser(productReviewId);
         productReviewValidator.validateProductIdIsValid(productId, productReviewId);
 
-        var productReviewLikeEntity = productReviewLikeRepository
-                .findByUserIdAndProductReviewId(userId, productReviewId)
-                .map(productReviewRate -> {
-                    productReviewRate.setIsLike(productReviewLike);
-                    return productReviewRate;
-                })
-                .orElseGet(() ->
-                        ProductReviewLike.builder()
-                                .userId(userId)
-                                .productId(productId)
-                                .productReviewId(productReviewId)
-                                .isLike(productReviewLike)
-                                .build()
-                );
+        Optional<ProductReviewLike> productReviewLike = productReviewLikeRepository.findByUserIdAndProductReviewId(userId, productReviewId);
 
-        productReviewLikeRepository.saveAndFlush(productReviewLikeEntity);
+        productReviewLike.ifPresentOrElse(
+                productReviewLikeEntity -> {
+                    if (productReviewLikeEntity.getIsLike().equals(newProductReviewLike)) {
+                        productReviewLikeRepository.deleteByProductIdAndProductReviewId(productId, productReviewId);
+                    } else {
+                        productReviewLikeEntity.setIsLike(newProductReviewLike);
+                        productReviewLikeRepository.saveAndFlush(productReviewLikeEntity);
+                    }
+                },
+                () -> {
+                    ProductReviewLike newReviewLike = ProductReviewLike.builder()
+                            .userId(userId)
+                            .productId(productId)
+                            .productReviewId(productReviewId)
+                            .isLike(newProductReviewLike)
+                            .build();
+                    productReviewLikeRepository.saveAndFlush(newReviewLike);
+                }
+        );
 
         productReviewRepository.updateLikesCount(productReviewId);
         productReviewRepository.updateDislikesCount(productReviewId);
 
         ProductReview productReview = productReviewProvider.getReviewEntityById(productReviewId);
-
         return productReviewDtoConverter.toProductReviewDto(productReview);
     }
 }
