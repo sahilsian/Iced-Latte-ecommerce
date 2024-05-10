@@ -36,10 +36,10 @@ public interface ProductReviewRepository extends JpaRepository<ProductReview, UU
             "WHERE pr.productId = :productId")
     Double getAvgRatingByProductId(UUID productId);
 
-    @Query("SELECT new com.zufar.icedlatte.review.dto.ProductRatingCount(pr.productRating, COUNT(pr.productRating)) " +
-            "FROM ProductReview pr " +
-            "WHERE pr.productId = :productId " +
-            "GROUP BY pr.productRating")
+    @Query("SELECT new com.zufar.icedlatte.review.dto.ProductRatingCount(productReview.productRating, COUNT(productReview.productRating)) " +
+            "FROM ProductReview productReview " +
+            "WHERE productReview.productId = :productId " +
+            "GROUP BY productReview.productRating")
     List<ProductRatingCount> getRatingsMapByProductId(UUID productId);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
