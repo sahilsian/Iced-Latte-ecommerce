@@ -14,17 +14,15 @@ Built using Spring Boot and PostgreSQL, it's crafted for educational purposes, o
 
 - [Tech Stack](#tech-stack)
 - [Quick Start](#quick-start)
-- [Features](#features)
 - [Deployment](#-deployment)
 - [Forking and tweaking](#-forking-and-tweaking)
 - [How to report a bug?](#-how-to-report-a-bug)
 - [Now to propose a new feature?](#-now-to-propose-a-new-feature)
 - [Contributions](#-contributions)
 - [Code of Conduct](#code-of-conduct)
-- [Community and Support](#community-and-support)
 - [Our top contributors](#-our-top-contributors)
 - [License](#-license)
-- [Contact 📞](#-contact-)
+- [Contact](#-contact-)
 
 
 ## Tech Stack
@@ -46,13 +44,6 @@ Built using Spring Boot and PostgreSQL, it's crafted for educational purposes, o
 
 Follow the setup instructions in [START.MD](START.md) to get the project up and running.
 
-## Features
-- User Authentication and Authorization
-- Product Catalog Management
-- Order Processing and Tracking
-- Stripe Payment Integration
-- Real-time Data Monitoring
-
 ## 🚢 Deployment
 
 No k8s, no AWS, we ship dockers directly via ssh and it's beautiful!
@@ -71,7 +62,6 @@ Forks are welcome.
 
 Three huge requests for everyone:
 
-- Please give kudos the original authors. "Works on vas3k.club engine" in the footer of your site will be enough.
 - Please share new features you implement with us, so other folks can also benefit from them, and your own codebase minimally diverges from the original one (so you can sync updates and security fixes) .
 - Do not use our issues and other official channels as a support desk. Use [chats](https://t.me/lucky_1uck).
 
@@ -98,8 +88,6 @@ Contributions are welcome.
 The main point of interaction is the [Issues page](https://github.com/Sunagatov/Iced-Latte/issues).
 
 Here's our contribution guidelines — [CONTRIBUTING.md](CONTRIBUTING.md).
-
-We also run the public [Github Project Board](https://github.com/Sunagatov/Iced-Latte/projects/3) to track progress and develop roadmaps.
 
 > The official development language at the moment is English, because 100% of our users speak it. We don't want to introduce unnecessary barriers for them. But we are used to writing commits and comments in Russian and we won't mind communicating with you in it.
 
@@ -128,14 +116,6 @@ We also run the public [Github Project Board](https://github.com/Sunagatov/Iced-
 
 - [¯\\_(ツ)\_/¯](https://github.com/Sunagatov/Iced-Latte/labels/%C2%AF%5C_%28%E3%83%84%29_%2F%C2%AF) - special label for **questionable issues**. (should be closed in 60 days of inactivity)
 - **[no label]** — ticket is new, unclear or still not reviewed. Feel free to comment it but **wait for our maintainers' decision** before starting to implement it.
-
-## Code of Conduct
-
-Please read our [Code of Conduct](CODE_OF_CONDUCT.md) to keep our community approachable and respectable.
-
-## Community and Support
-
-Join our community https://t.me/zufarexplained! Link to forums, chat, or community pages if available.
 
 ## 👍 Our top contributors
 
@@ -192,8 +172,10 @@ Let's press F to pay respects to these awesome contributors!
 
 In other words, you can use the code for private and commercial purposes with an author attribution (by including the original license file or mentioning the Club 🎩).
 
-## 📞 Contact
+## 📞 Contact (Community and Support)
 
-Feel free to contact us via email [zufar.sunagatov@gmail.com](mailto:zufar.sunagatov@gmail.com).
+Join our IT community [Zufar Explained IT](https://t.me/zufarexplained) on Telegram.
+
+Feel free to contact us via email: [zufar.sunagatov@gmail.com](mailto:zufar.sunagatov@gmail.com).
 
 ❤️
