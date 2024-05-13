@@ -1,6 +1,5 @@
 package com.zufar.icedlatte.favorite.converter;
 
-import com.zufar.icedlatte.favorite.dto.FavoriteItemDto;
 import com.zufar.icedlatte.favorite.dto.FavoriteListDto;
 import com.zufar.icedlatte.favorite.entity.FavoriteItemEntity;
 import com.zufar.icedlatte.favorite.entity.FavoriteListEntity;
@@ -19,7 +18,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FavoriteListDtoConverterTest {
 
@@ -49,9 +47,12 @@ public class FavoriteListDtoConverterTest {
 
         FavoriteListDto actualFavoriteListDto = converter.toDto(expectedFavoriteListEntity);
 
-        assertEquals(actualFavoriteListDto.id(), expectedFavoriteListEntity.getId());
-        assertEquals(actualFavoriteListDto.updatedAt(), expectedFavoriteListEntity.getUpdatedAt());
-        assertEquals(actualFavoriteListDto.userId(), Optional.of(expectedFavoriteListEntity.getUser()).get().getId());
+        assertThat(actualFavoriteListDto.id()).isEqualTo(expectedFavoriteListEntity.getId());
+        assertThat(actualFavoriteListDto.updatedAt()).isEqualTo(expectedFavoriteListEntity.getUpdatedAt());
+        assertThat(actualFavoriteListDto.userId()).isEqualTo(Optional.of(expectedFavoriteListEntity.getUser()).get().getId());
+        // fIXME: how to test favoriteItems?
+//        assertThat(actualFavoriteListDto.favoriteItems()).isEqualTo(expectedFavoriteListEntity.getFavoriteItems());
+
     }
 
     @Test

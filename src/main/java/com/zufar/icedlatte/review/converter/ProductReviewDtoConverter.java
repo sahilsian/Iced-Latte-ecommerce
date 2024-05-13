@@ -39,14 +39,14 @@ public interface ProductReviewDtoConverter {
 
     @Named("toUserName")
     default String convertToUserName(UserEntity user) {
-        Optional<UserEntity> userOptional = Optional.ofNullable(user);
+        Optional<UserEntity> userOptional = Optional.of(user);
         Optional<String> firstNameOptional = userOptional.map(UserEntity::getFirstName);
         return firstNameOptional.orElse(null);
     }
 
     @Named("toUserLastName")
     default String convertToUserLastName(UserEntity user) {
-        Optional<UserEntity> userOptional = Optional.ofNullable(user);
+        Optional<UserEntity> userOptional = Optional.of(user);
         Optional<String> lastNameOptional = userOptional.map(UserEntity::getLastName);
         return lastNameOptional.orElse(null);
     }
