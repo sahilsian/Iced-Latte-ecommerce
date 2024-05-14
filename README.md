@@ -1,16 +1,20 @@
-# Iced-Latte (Backend)
+<div style="text-align: center;">
+  <br>
+  <img src="iced-latte-avatar.jpg" alt="">
+  <h1>Iced-Latte</h1>
 
 [![ci Status](https://github.com/Sunagatov/Iced-Latte/actions/workflows/dev-branch-pr-deployment-pipeline.yml/badge.svg)](https://github.com/Sunagatov/Iced-Latte/actions)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/danilqa/node-file-router/blob/main/LICENSE)
-[![Known Vulnerabilities](https://snyk.io/test/github/Sunagatov/Iced-Latte/badge.svg)](https://snyk.io/test/github/Sunagatov/Iced-Latte)
-[![Docker Pulls](https://img.shields.io/docker/pulls/zufarexplainedit/iced-latte-backend.svg)](https://hub.docker.com/r/zufarexplainedit/iced-latte-backend/)
 [![GitHub issues](https://img.shields.io/github/issues/Sunagatov/Iced-Latte)](https://github.com/Sunagatov/Iced-Latte/issues)
-[![GitHub stars](https://img.shields.io/github/stars/Sunagatov/Iced-Latte)](https://github.com/Sunagatov/Iced-Latte/stargazers)
 
-**Iced-Latte (Backend)** is a REST API that performs the operations of an coffee online shop. 
-Built using Spring Boot and PostgreSQL, it's crafted for educational purposes, offering insights into modern application development with Java.
+[![Docker Pulls](https://img.shields.io/docker/pulls/zufarexplainedit/iced-latte-backend.svg)](https://hub.docker.com/r/zufarexplainedit/iced-latte-backend/)
+[![GitHub contributors](https://img.shields.io/github/contributors/Sunagatov/Iced-Latte)](https://github.com/Sunagatov/Iced-Latte/graphs/contributors)
+[![GitHub stars](https://img.shields.io/github/stars/Sunagatov/Iced-Latte)](https://github.com/Sunagatov/Iced-Latte/stargazers)
+</div>
 
 ## Table of Contents
+- [Introduction](#introduction)
+- [Github-Stars](#Github-Stars)
 
 - [Tech Stack](#tech-stack)
 - [Quick Start](#quick-start)
@@ -24,6 +28,15 @@ Built using Spring Boot and PostgreSQL, it's crafted for educational purposes, o
 - [License](#-license)
 - [Contact](#-contact-)
 
+## Introduction
+
+**🟥 Iced-Latte (Backend)** is a non-profit sandbox project where a team of IT enthusiasts are working on creating a modern marketplace (https://iced-latte.uk/) for selling coffee in order to pump up their soft and hard skills and have fun working on an interesting project.
+
+🟥 It's crucial to note that we operate without financial support from any party, and we don't compensate anyone financially either. Our efforts are fuelled solely by passion and dedication.
+
+### 🔥 Github-Stars 🔥
+
+Please support Iced Latte project by Giving Stars 🌟 on Github repositories - your ratings mean a lot to us!🙂
 
 ## Tech Stack
 
