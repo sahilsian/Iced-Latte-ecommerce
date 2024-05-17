@@ -6,6 +6,7 @@
 [![ci Status](https://github.com/Sunagatov/Iced-Latte/actions/workflows/dev-branch-pr-deployment-pipeline.yml/badge.svg)](https://github.com/Sunagatov/Iced-Latte/actions)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/danilqa/node-file-router/blob/main/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/Sunagatov/Iced-Latte)](https://github.com/Sunagatov/Iced-Latte/issues)
+[![Total Lines of Code](https://tokei.rs/b1/github/Sunagatov/Iced-Latte?category=lines)](https://github.com/Sunagatov/Iced-Latte)
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/zufarexplainedit/iced-latte-backend.svg)](https://hub.docker.com/r/zufarexplainedit/iced-latte-backend/)
 [![GitHub contributors](https://img.shields.io/github/contributors/Sunagatov/Iced-Latte)](https://github.com/Sunagatov/Iced-Latte/graphs/contributors)
