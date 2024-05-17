@@ -43,6 +43,9 @@ services:
       AWS_REGION: eu-west-1
       AWS_PRODUCT_BUCKET: products
       AWS_USER_BUCKET: users
+      GOOGLE_AUTH_CLIENT_ID: vbfgngfdndgndgndgndgndgndgndg
+      GOOGLE_AUTH_CLIENT_SECRET: vbfgngfdndgndgndgndgndgndgndg
+      GOOGLE_AUTH_REDIRECT_URI: vbfgngfdndgndgndgndgndgndgndg
     build:
       context: .
       dockerfile: Dockerfile.local
