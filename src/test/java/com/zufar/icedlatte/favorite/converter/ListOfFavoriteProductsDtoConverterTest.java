@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ListOfFavoriteProductsDtoConverterTest {
 
@@ -44,5 +45,7 @@ public class ListOfFavoriteProductsDtoConverterTest {
         ListOfFavoriteProductsDto actualListOfFavoriteProductsDto = converter.toListProductDto(expectedFavoriteListDto);
 
         assertThat(actualListOfFavoriteProductsDto.getProducts()).isEqualTo(converter.toProductInfoDto(expectedFavoriteListDto.favoriteItems()));
+
+        assertEquals(actualListOfFavoriteProductsDto.getProducts().get(0), productInfoDto);
     }
 }

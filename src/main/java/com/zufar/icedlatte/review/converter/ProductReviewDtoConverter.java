@@ -6,7 +6,12 @@ import com.zufar.icedlatte.openapi.dto.RatingMap;
 import com.zufar.icedlatte.review.dto.ProductRatingCount;
 import com.zufar.icedlatte.review.entity.ProductReview;
 import com.zufar.icedlatte.user.entity.UserEntity;
-import org.mapstruct.*;
+import org.mapstruct.InjectionStrategy;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.ReportingPolicy;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -16,18 +21,12 @@ import java.util.Optional;
         uses = ProductReviewDtoConverter.class, unmappedTargetPolicy = ReportingPolicy.IGNORE, injectionStrategy = InjectionStrategy.FIELD)
 public interface ProductReviewDtoConverter {
 
-    ProductReviewDto EMPTY_PRODUCT_REVIEW_RESPONSE =
+   public static final ProductReviewDto EMPTY_PRODUCT_REVIEW_RESPONSE =
             new ProductReviewDto(null, null, null, null, null, null, null, null, null);
 
     @Mapping(target = "productReviewId", source = "id")
-    @Mapping(target = "productId", source = "productId")
-    @Mapping(target = "productRating", source = "productRating")
-    @Mapping(target = "text", source = "text")
-    @Mapping(target = "createdAt", source = "createdAt")
     @Mapping(target = "userName", source = "user", qualifiedByName = "toUserName")
     @Mapping(target = "userLastname", source = "user", qualifiedByName = "toUserLastName")
-    @Mapping(target = "likesCount", source = "likesCount")
-    @Mapping(target = "dislikesCount", source = "dislikesCount")
     ProductReviewDto toProductReviewDto(ProductReview productReview);
 
     @Mapping(target = "page", expression = "java(page.getTotalPages())")

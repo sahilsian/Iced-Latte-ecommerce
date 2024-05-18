@@ -7,7 +7,12 @@ import com.zufar.icedlatte.favorite.entity.FavoriteListEntity;
 import com.zufar.icedlatte.openapi.dto.ProductInfoDto;
 import com.zufar.icedlatte.product.entity.ProductInfo;
 import com.zufar.icedlatte.user.entity.UserEntity;
-import org.mapstruct.*;
+import org.mapstruct.InjectionStrategy;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.ReportingPolicy;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -16,22 +21,11 @@ import java.util.UUID;
         uses = FavoriteItemDtoConverter.class, unmappedTargetPolicy = ReportingPolicy.IGNORE, injectionStrategy = InjectionStrategy.FIELD)
 public interface FavoriteListDtoConverter {
 
-    @Mapping(target = "id", source = "id")
     @Mapping(target = "userId", source = "user", qualifiedByName = "toUserId")
-    @Mapping(target = "updatedAt", source = "updatedAt")
     @Mapping(target = "favoriteItems", source = "favoriteItems", qualifiedByName = "mapFavoriteItems")
     FavoriteListDto toDto(final FavoriteListEntity favoriteListEntity);
 
     @Mapping(target = "id", source = "productId")
-    @Mapping(target = "name", source = "name")
-    @Mapping(target = "description", source = "description")
-    @Mapping(target = "price", source = "price")
-    @Mapping(target = "quantity", source = "quantity")
-    @Mapping(target = "active", source = "active")
-    @Mapping(target = "averageRating", source = "averageRating")
-    @Mapping(target = "reviewsCount", source = "reviewsCount")
-    @Mapping(target = "brandName", source = "brandName")
-    @Mapping(target = "sellerName", source = "sellerName")
     ProductInfoDto convertProductInfoDto(ProductInfo productInfo);
 
     @Named("toUserId")
