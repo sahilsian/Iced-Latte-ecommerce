@@ -68,7 +68,7 @@ Then, [Github Actions](.github/workflows/dev-branch-pr-deployment-pipeline.yml) 
 
 Explore the whole [.github](.github) folder for more insights.
 
-We're open for proposals on how to improve our deployments without overcomplicating it with modern devops bullshit.
+We're open for proposals on how to improve our deployments.
 
 ## 🛤 Forking and tweaking
 
@@ -184,7 +184,7 @@ Let's press F to pay respects to these awesome contributors!
 
 [MIT](LICENSE)
 
-In other words, you can use the code for private and commercial purposes with an author attribution (by including the original license file or mentioning the Club 🎩).
+In other words, you can use the code for private and commercial purposes with an author attribution (by including the original license file or mentioning the Iced-Latte project).
 
 ## 📞 Contact (Community and Support)
 
