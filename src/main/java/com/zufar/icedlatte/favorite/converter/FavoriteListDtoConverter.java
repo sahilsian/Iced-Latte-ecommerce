@@ -20,8 +20,6 @@ import java.util.UUID;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
         uses = FavoriteItemDtoConverter.class, unmappedTargetPolicy = ReportingPolicy.IGNORE, injectionStrategy = InjectionStrategy.FIELD)
 public interface FavoriteListDtoConverter {
-
-    @Mapping(target = "userId", source = "user", qualifiedByName = "toUserId")
     @Mapping(target = "favoriteItems", source = "favoriteItems", qualifiedByName = "mapFavoriteItems")
     FavoriteListDto toDto(final FavoriteListEntity favoriteListEntity);
 

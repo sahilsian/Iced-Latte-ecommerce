@@ -1,12 +1,10 @@
 package com.zufar.icedlatte.favorite.converter;
 
-import com.zufar.icedlatte.favorite.dto.FavoriteItemDto;
 import com.zufar.icedlatte.favorite.dto.FavoriteListDto;
 import com.zufar.icedlatte.favorite.entity.FavoriteItemEntity;
 import com.zufar.icedlatte.favorite.entity.FavoriteListEntity;
 import com.zufar.icedlatte.openapi.dto.ProductInfoDto;
 import com.zufar.icedlatte.product.entity.ProductInfo;
-import com.zufar.icedlatte.user.stub.UserDtoTestStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.mapstruct.factory.Mappers;
 import org.junit.jupiter.api.Test;
@@ -14,7 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -42,7 +39,6 @@ public class FavoriteListDtoConverterTest {
 
         FavoriteListEntity expectedFavoriteListEntity = FavoriteListEntity.builder()
                 .id(UUID.randomUUID())
-                .user(UserDtoTestStub.createUserEntity())
                 .favoriteItems(Set.of(favoriteItem))
                 .updatedAt(OffsetDateTime.now())
                 .build();
@@ -51,7 +47,6 @@ public class FavoriteListDtoConverterTest {
 
         assertEquals(actualFavoriteListDto.id(), expectedFavoriteListEntity.getId());
         assertEquals(actualFavoriteListDto.updatedAt(), expectedFavoriteListEntity.getUpdatedAt());
-        assertEquals(actualFavoriteListDto.userId(), Optional.of(expectedFavoriteListEntity.getUser()).get().getId());
     }
 
     @Test
