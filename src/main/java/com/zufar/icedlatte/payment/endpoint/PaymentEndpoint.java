@@ -25,6 +25,8 @@ import com.stripe.Stripe;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
 
+import java.math.BigDecimal;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -68,9 +70,20 @@ public class PaymentEndpoint implements com.zufar.icedlatte.openapi.payment.api.
                         .addLineItem(
                                 SessionCreateParams.LineItem.builder()
                                         .setQuantity(1L) // FIXME: extract this from DB entity
-                                        // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-                                        .setPrice("price_1PJxw8HA4AopuQMM9vv4KtF0") // FIXME: get price ID from DB / Stripe
-                                        .build())
+                                        .setPriceData(
+                                                SessionCreateParams.LineItem.PriceData.builder()
+                                                        .setCurrency("USD")
+                                                        // convert to cents
+                                                        .setUnitAmount((long) (4.99 * 100)) // FIXME: extract this from DB entity
+                                                        .setProductData(
+                                                                SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                                                                        .setName("Espresso") // FIXME: extract this from DB entity
+                                                                        .build()
+                                                        )
+                                                        .build()
+                                        )
+                                        .build()
+                        )
                         .build();
         Session session;
         try {
