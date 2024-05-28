@@ -1,0 +1,18 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+title Checkout Sequence
+participant "Frontend" as fe
+participant "Backend" as be
+participant "Stripe" as stripe
+database "PostgreSQL" as db
+
+fe -> be: POST /api/v1/payment
+be -> db: Create new order (status CREATED)
+be -> stripe: Create session and redirect to
+be <-- stripe: /stripe/callback?success=<boolean>
+be -> db: Update order status (status PAID)
+fe <-- be: Response with order status and id
+@enduml
