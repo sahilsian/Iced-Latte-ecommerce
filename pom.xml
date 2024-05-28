@@ -619,6 +619,48 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Check Style Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <configLocation>${basedir}/config/checkstyle/checkstyle.xml</configLocation>
+                    <violationSeverity>error</violationSeverity>
+                    <failsOnError>true</failsOnError>
+                    <consoleOutput>true</consoleOutput>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>10.17.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>xml-maven-plugin</artifactId>
+                <version>1.0.2</version>
+                <configuration>
+                    <transformationSets>
+                        <transformationSet>
+                            <dir>target/</dir>
+                            <stylesheet>${basedir}/config/checkstyle/checkstyle-author.xsl</stylesheet>
+                            <includes>checkstyle-result.xml</includes>
+                            <fileMappers>
+                                <fileMapper
+                                        implementation="org.codehaus.plexus.components.io.filemappers.RegExpFileMapper">
+                                    <pattern>\.xml$</pattern>
+                                    <replacement>.html</replacement>
+                                </fileMapper>
+                            </fileMappers>
+                        </transformationSet>
+                    </transformationSets>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
