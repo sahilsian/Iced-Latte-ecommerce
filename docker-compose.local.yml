@@ -15,8 +15,9 @@ services:
   iced-latte-frontend:
     image: 'zufarexplainedit/iced-latte-frontend:latest'
     container_name: iced-latte-frontend
-    environment:
-      - .env
+    build:
+      context: /Users/astriganova/Desktop/Projects/Iced-Latte-Frontend
+      dockerfile: Dockerfile
     restart: 'always'
     ports:
       - '3000:3000'
@@ -51,7 +52,7 @@ services:
       dockerfile: Dockerfile.local
     ports:
       - '8083:8083'
-      - '5005:5005'
+      - '5005:5005' # port for remote debugging
     networks:
       - iced-latte-network
     depends_on:
