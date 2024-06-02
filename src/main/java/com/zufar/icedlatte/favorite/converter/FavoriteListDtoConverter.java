@@ -6,50 +6,40 @@ import com.zufar.icedlatte.favorite.entity.FavoriteItemEntity;
 import com.zufar.icedlatte.favorite.entity.FavoriteListEntity;
 import com.zufar.icedlatte.openapi.dto.ProductInfoDto;
 import com.zufar.icedlatte.product.entity.ProductInfo;
+import com.zufar.icedlatte.user.entity.UserEntity;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Optional;
 import java.util.UUID;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
         uses = FavoriteItemDtoConverter.class, unmappedTargetPolicy = ReportingPolicy.IGNORE, injectionStrategy = InjectionStrategy.FIELD)
 public interface FavoriteListDtoConverter {
+    @Mapping(target = "favoriteItems", source = "favoriteItems", qualifiedByName = "mapFavoriteItems")
+    FavoriteListDto toDto(final FavoriteListEntity favoriteListEntity);
 
-    default FavoriteListDto toDto(final FavoriteListEntity favoriteListEntity) {
-        UUID id = favoriteListEntity.getId();
-        UUID userId = favoriteListEntity.getUserId();
-        Set<FavoriteItemDto> favoriteItemsDto = new HashSet<>();
+    @Mapping(target = "id", source = "productId")
+    ProductInfoDto convertProductInfoDto(ProductInfo productInfo);
 
-        for (FavoriteItemEntity itemEntity : favoriteListEntity.getFavoriteItems()) {
-            UUID favoriteItemEntityId = itemEntity.getId();
-            ProductInfo productInfo = itemEntity.getProductInfo();
-
-            ProductInfoDto productInfoDto = convertProductInfoDto(productInfo);
-
-            FavoriteItemDto favoriteItemDto = new FavoriteItemDto(favoriteItemEntityId, productInfoDto);
-            favoriteItemsDto.add(favoriteItemDto);
-        }
-
-        return new FavoriteListDto(id, userId, favoriteItemsDto, favoriteListEntity.getUpdatedAt());
+    @Named("toUserId")
+    default UUID convertToUserId(UserEntity user) {
+        Optional<UserEntity> userOptional = Optional.ofNullable(user);
+        Optional<UUID> userIdOptional = userOptional.map(UserEntity::getId);
+        return userIdOptional.orElse(null);
     }
 
-    private static ProductInfoDto convertProductInfoDto(ProductInfo productInfo) {
-        return new ProductInfoDto(
-                productInfo.getProductId(),
-                productInfo.getName(),
-                productInfo.getDescription(),
-                productInfo.getPrice(),
-                productInfo.getQuantity(),
-                productInfo.getActive(),
-                productInfo.getAverageRating(),
-                productInfo.getReviewsCount(),
-                productInfo.getBrandName(),
-                productInfo.getSellerName()
+    @Named("mapFavoriteItems")
+    default FavoriteItemDto toFavoriteItemDto(FavoriteItemEntity itemEntity) {
+        UUID favoriteItemEntityId = itemEntity.getId();
+        ProductInfo productInfo = itemEntity.getProductInfo();
 
-        );
+        ProductInfoDto productInfoDto = convertProductInfoDto(productInfo);
+
+        return new FavoriteItemDto(favoriteItemEntityId, productInfoDto);
     }
 }
