@@ -1,0 +1,47 @@
+@startuml
+
+title "Iced Latte Architecture - Component Diagram"
+
+interface "Browser" as browser
+
+browser -down-> [CloudFlare]
+[CloudFlare] -down-> browser
+
+package "IL subnet" {
+
+  interface "REST api" as api
+  interface "JDBC" as jdbc
+  interface "promtail" as loki_agent
+  
+  component [Nginx] #yellow
+  component [Frontend (NextJS)] #green
+  component [Nginx (the same)] #yellow
+  component [Frontend (NextJS)] #green
+  component [Backend (SpringBoot)] #green
+  component [DB (Postgres)] #green
+
+  browser --> [Nginx]
+  [Nginx] --> [Frontend (NextJS)]
+  [Frontend (NextJS)] -down-> [Nginx (the same)]
+  [Nginx (the same)] --> api
+  api -- [Backend (SpringBoot)]
+  [Backend (SpringBoot)] -up-> jdbc
+
+  jdbc -right- [DB (Postgres)]
+  [Backend (SpringBoot)] -right-> loki_agent
+}
+
+cloud "external" {
+  package "Grafana labs" {
+  loki_agent -down- [Loki]
+  [Backend (SpringBoot)] -down-> [Prometheus]
+}
+
+[Backend (SpringBoot)] -down-> [AWS S3 (pictures)]
+[Backend (SpringBoot)] .down.> [Google auth]
+
+}
+
+
+
+@enduml
