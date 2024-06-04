@@ -113,7 +113,7 @@ entity "shopping_cart_item" as ci {
  version : INT
 }
 
-enum "RESERVATION_STATUS" as rs {
+enum "RESERVATION_STATUS_type" as rs {
   CREATED
   CONFIRMED
   CANCELLED
@@ -126,7 +126,7 @@ entity "reservation" as rr {
  *product_id : UUID
  *reserved_quantity : INT
  *created_at : TIMESTAMP
- *status : RESERVATION_STATUS
+ *status : RESERVATION_STATUS_type
 }
 
 entity "favorite_list" as fl {
@@ -177,23 +177,21 @@ entity "user_details" as ud {
  *enabled : BOOLEAN
 }
 
+ud ||..o{ la
+ud ||..o{ rv
+pd ||..o{ rv
 
-or::id ||.up.o{ oi::order_id
-ud::email ||.up.o{ la::user_email
-ud::id ||.up.o{ rv::user_id
-pd::id ||.up.o{ rv::product_id
+rv ||..o{ rl
+pd ||..o{ rl
+ud ||..o{ rl
 
-rv::id ||.up.o{ rl::review_id
-pd::id ||.up.o{ rl::product_id
-ud::id ||.up.o{ rl::user_id
+rs ||..o{ rr
 
-rs ||.up.o{ rr::status
+ud ||..o{ fl
 
-ud::id ||.up.o{ fl::user_id
+fl ||..o{ fi
+pd ||..o{ fi
 
-fl::id ||.up.o{ fi::favorite_id
-pd::id ||.up.o{ fi::product_id
-
-ad::id ||.up.o{ ud::address_id
+ad ||..o{ ud
 
 @enduml

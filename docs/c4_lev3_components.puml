@@ -33,7 +33,7 @@ package "IL subnet" {
 
 cloud "external" {
   package "Grafana labs" {
-  loki_agent -down- [Loki]
+  loki_agent -down-> [Loki]
   [Backend (SpringBoot)] -down-> [Prometheus]
 }
 
