@@ -1,46 +1,44 @@
 @startuml
 
+skinparam linetype ortho
+
 title "Iced Latte Architecture - Component Diagram"
 
-interface "Browser" as browser
+actor "User\nBrowser" as browser
+component [CloudFlare] #darkorange
 
-browser -down-> [CloudFlare]
-[CloudFlare] -down-> browser
+browser --> [CloudFlare] : Resolve DNS
+[CloudFlare] --> browser
 
-package "IL subnet" {
+package "Iced Latte subnet" {
 
-  interface "REST api" as api
-  interface "JDBC" as jdbc
-  interface "promtail" as loki_agent
-  
-  component [Nginx] #yellow
-  component [Frontend (NextJS)] #green
-  component [Nginx (the same)] #yellow
-  component [Frontend (NextJS)] #green
-  component [Backend (SpringBoot)] #green
-  component [DB (Postgres)] #green
+  component [balancer (nginx)] #forestgreen
+  component [balancer (same)] #forestgreen
+  component [Frontend (NextJS)] #white
+  component [Backend (SpringBoot)] #yellowgreen
+  component [DB (Postgres)] #steelblue
 
-  browser --> [Nginx]
-  [Nginx] --> [Frontend (NextJS)]
-  [Frontend (NextJS)] -down-> [Nginx (the same)]
-  [Nginx (the same)] --> api
-  api -- [Backend (SpringBoot)]
-  [Backend (SpringBoot)] -up-> jdbc
 
-  jdbc -right- [DB (Postgres)]
-  [Backend (SpringBoot)] -right-> loki_agent
+  browser --> [balancer (nginx)]
+  [balancer (nginx)] --> [Frontend (NextJS)]
+  [Frontend (NextJS)] --> [balancer (same)]
+  [balancer (same)] --> [Backend (SpringBoot)]
+  [Backend (SpringBoot)] --> [DB (Postgres)]
 }
 
-cloud "external" {
-  package "Grafana labs" {
-  loki_agent -down-> [Loki]
+package "Grafana labs" {
+component [Loki] #orange
+component [Prometheus] #sandybrown
+
+  [Backend (SpringBoot)] -down--> [Loki]
   [Backend (SpringBoot)] -down-> [Prometheus]
 }
 
-[Backend (SpringBoot)] -down-> [AWS S3 (pictures)]
-[Backend (SpringBoot)] .down.> [Google auth]
+component [AWS S3 (pictures)] #tomato
+component [Google auth] #skyblue
 
-}
+[Backend (SpringBoot)] -right-> [AWS S3 (pictures)]
+[Backend (SpringBoot)] .right.> [Google auth]
 
 
 
