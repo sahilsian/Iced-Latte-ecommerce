@@ -31,4 +31,11 @@ public class ShoppingCartProvider {
         }
         return shoppingCartDtoConverter.toDto(shoppingCart);
     }
+
+
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
+    public void deleteByUserId(final UUID userId) {
+        ShoppingCart shoppingCart = shoppingCartRepository.findShoppingCartByUserId(userId);
+        shoppingCartRepository.delete(shoppingCart);
+    }
 }

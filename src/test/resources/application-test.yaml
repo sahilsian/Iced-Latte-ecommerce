@@ -105,3 +105,6 @@ google:
   client-secret: "sk-api-secret"
   authenticateUri: "http://localhost:8083/auth/login"
   redirectUri: "http://localhost:8083"
+
+stripe:
+  secret-key: "sk-test-secret"

@@ -26,6 +26,7 @@ Key variables which are used in the startup of the app. They are pre-configured 
 - `AWS_PRODUCT_BUCKET` AWS product's bucket name
 - `AWS_USER_BUCKET`  AWS product's bucket name
 - `AWS_DEFAULT_PRODUCT_IMAGES_PATH` Package with product's files 
+- `STRIPE_SECRET_KEY` Stripe secret key for payment integration
 
 Refer to [docker-compose.local.yml](./docker-compose.local.yml)
 
@@ -74,6 +75,45 @@ docker-compose -f docker-compose.local.yml logs [iced-latte-backend|iced-latte-p
 docker-compose -f docker-compose.local.yml down -v
 ```
 
+### Remote Debugging (e.g. in Docker)
+If you want to debug BE application running in Docker, use **Remote JVM Debug** configuration:
+1. Double press **Shift**
+2. Type `Edit Configurations`
+3. Click `+` and select `Remote JVM Debug`
+4. Select **Attach to Remote JVM**, make sure that port is `5005` and host is `localhost`
+5. Save configuration and click debug button
+6. Start containers as usual `docker compose -f docker-compose.local.yml up -d --build`
+7. Set a breakpoint, e.g. here [ProductsEndpoint#getProducts](src/main/java/com/zufar/icedlatte/product/endpoint/ProductsEndpoint.java#L67)
+8. Try it out:
+
+    ```bash
+    curl -X 'GET' \
+    'http://localhost:8083/api/v1/products?page=0&size=50&sort_attribute=name&sort_direction=desc' \
+    -H 'accept: application/json'
+    ```
+
+Enjoy!
+
+![](docs/images/remote_debug.png)
+
+### Local Frontend + Backend
+To run FE and BE locally for testing purposes:
+1. Check out [Iced Latte Frontend](https://github.com/Sunagatov/Iced-Latte-Frontend/) repo
+2. Navigate to the root of FE repo and create `.env`: ```bash echo 'NEXT_PUBLIC_API_HOST_REMOTE=http://localhost:80/backend/api/v1' > .env```
+3. Uncomment `iced-latte-frontend.build` section in [docker-compose.local.yml](./docker-compose.local.yml#L18)
+4. Set path to local FE repo in `iced-latte-frontend.build.context`
+5. Run build as usual
+```bash
+docker compose -f docker-compose.local.yml up -d --build
+```
+
+* FE is here http://localhost/
+* BE is here http://localhost/backend (e.g. http://localhost/backend/api/v1/products) and here too http://localhost:8083
+
+:warning: **Limitations**:
+
+AWS is available only in production, therefore there are no real pictures of products, only stubs.
+
 ## Database Navigator
 
 > For Ultimate Edition consider using [Database Tools and SQL plugin](https://www.jetbrains.com/help/idea/relational-databases.html)
@@ -90,4 +130,4 @@ Add new PostgresSQL connection:
 
 Enjoy!
 
-![](db_navigator.png)
+![](docs/images/db_navigator.png)

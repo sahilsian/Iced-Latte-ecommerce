@@ -34,7 +34,7 @@ public class SpringSecurityConfiguration {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(SecurityConstants.SHOPPING_CART_URL).authenticated()
-                                .requestMatchers(SecurityConstants.PAYMENT_URL).permitAll()
+                                .requestMatchers(SecurityConstants.PAYMENT_URL).authenticated()
                                 .requestMatchers(SecurityConstants.USERS_URL).authenticated()
                                 .requestMatchers(SecurityConstants.FAVOURITES_URL).authenticated()
                                 .requestMatchers(SecurityConstants.ORDERS_URL).authenticated()
