@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @Slf4j
@@ -41,7 +42,7 @@ public class ProductReviewsStatisticsProvider {
         if (avgRating == null) {
             avgRating = 0.0;
         }
-        return String.format("%.1f", avgRating);
+        return String.format(Locale.US, "%.1f", avgRating);
     }
 
     private RatingMap getProductRatingMap(UUID productId) {

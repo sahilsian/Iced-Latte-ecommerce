@@ -1,0 +1,199 @@
+@startuml
+' hide the spot
+' hide circle
+
+' avoid problems with angled crows feet
+skinparam linetype ortho
+
+entity "orders" as or {
+ *id : UUID PK
+ --
+ *user_id : UUID
+ *created_at : TIMESTAMPTZ
+ *order_status : VARCHAR(55)
+ *items_quantity : INT
+ *delivery_cost : DECIMAL
+ *tax_cost : DECIMAL
+ *delivery_info : VARCHAR(55)
+ *recipient_name : VARCHAR(55)
+ *recipient_surname : VARCHAR(55)
+ *email : VARCHAR(55)
+ phone_number : VARCHAR(25)
+}
+
+entity "order_item" as oi {
+ *id : UUID PK
+ --
+ *order_id : UUID
+ *product_id : UUID
+ *products_quantity : INT
+}
+
+entity "login_attempts" as la {
+ *id : UUID PK
+ --
+ *user_email : VARCHAR(55)
+ *attempts : INTEGER
+ *is_user_locked : BOOLEAN
+ expiration_datetime : TIMESTAMPTZ
+ *last_modified : TIMESTAMPTZ
+}
+
+entity "product_reviews" as rv {
+ *id : UUID PK
+ --
+ *product_id : UUID
+ *user_id : UUID
+ created_at : TIMESTAMPTZ
+ *text : VARCHAR(1500)
+ *rating : INT
+ *likes_count : INT
+ *dislikes_count : INT
+}
+
+entity "product_reviews_likes" as rl {
+ *id : UUID PK
+ --
+ *review_id : UUID
+ *product_id : UUID
+ *user_id : UUID
+ *is_like : BOOLEAN
+}
+
+entity "file_metadata" as md {
+ *id : UUID PK
+ --
+ *related_object_id : UUID
+ bucket_name : VARCHAR(255)
+ file_name : VARCHAR(255)
+ created_at : TIMESTAMPTZ
+ updated_at : TIMESTAMPTZ
+}
+
+entity "product" as pd {
+ *id : UUID PK
+ --
+ *name : VARCHAR(64)
+ description : TEXT
+ *price : DECIMAL
+ *quantity : INT
+ *active : BOOLEAN
+ average_rating : DECIMAL
+ reviews_count : INT
+ *brand_name : VARCHAR(64)
+ *seller_name : VARCHAR(64)
+}
+
+entity "payment" as py {
+ *payment_id : BIGSERIAL PK
+ --
+ *payment_intent_id : VARCHAR(64)
+ *shopping_cart_id : UUID
+ *items_total_price : DECIMAL
+ status : VARCHAR(32)
+ description : TEXT
+}
+
+entity "shopping_cart" as ct {
+ *id : UUID PK
+ --
+ *user_id : UUID
+ *items_quantity : INT
+ *products_quantity : INT
+ *created_at : TIMESTAMPTZ
+ closed_at : TIMESTAMPTZ
+}
+
+entity "shopping_cart_item" as ci {
+ *id : UUID PK
+ --
+ *shopping_cart_id : UUID
+ *product_id : UUID
+ *products_quantity : INT
+ version : INT
+}
+
+enum "RESERVATION_STATUS" as rs {
+  CREATED
+  CONFIRMED
+  CANCELLED
+}
+
+entity "reservation" as rr {
+ *id : SERIAL PK
+ --
+ *reservation_id : UUID
+ *product_id : UUID
+ *reserved_quantity : INT
+ *created_at : TIMESTAMP
+ *status : RESERVATION_STATUS
+}
+
+entity "favorite_list" as fl {
+ *id : UUID PK
+ --
+ *user_id : UUID
+ updated_at : TIMESTAMPTZ
+}
+
+entity "favorite_item" as fi {
+ *id : UUID PK
+ --
+ *favorite_id : UUID
+ *product_id : UUID
+ version : INT
+}
+
+entity "address" as ad {
+ *id : UUID PK
+ --
+ *line : VARCHAR(55)
+ *city : VARCHAR(55)
+ *country : VARCHAR(55)
+ *postcode : VARCHAR(55)
+}
+
+entity "user_granted_authority" as ua {
+ *id : UUID PK
+ --
+ *user_id : UUID
+ *authority : VARCHAR(32)
+}
+
+entity "user_details" as ud {
+ *id : UUID PK
+ --
+ *first_name : VARCHAR(128)
+ *last_name : VARCHAR(128)
+ *birth_date : DATE
+ phone_number : VARCHAR(25)
+ stripe_customer_token : VARCHAR(25)
+ *email : VARCHAR(55)
+ *password : VARCHAR(255)
+ *address_id : UUID
+ *account_non_expired : BOOLEAN
+ *account_non_locked : BOOLEAN
+ *credentials_non_expired : BOOLEAN
+ *enabled : BOOLEAN
+}
+
+
+or::id ||.up.o{ oi::order_id
+ud::email ||.up.o{ la::user_email
+ud::id ||.up.o{ rv::user_id
+pd::id ||.up.o{ rv::product_id
+
+rv::id ||.up.o{ rl::review_id
+pd::id ||.up.o{ rl::product_id
+ud::id ||.up.o{ rl::user_id
+
+rs ||.up.o{ rr::status
+
+ud::id ||.up.o{ fl::user_id
+
+fl::id ||.up.o{ fi::favorite_id
+pd::id ||.up.o{ fi::product_id
+
+ad::id ||.up.o{ ud::address_id
+
+@enduml
