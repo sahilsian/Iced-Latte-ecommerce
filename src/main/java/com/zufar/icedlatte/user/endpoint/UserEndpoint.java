@@ -15,6 +15,7 @@ import com.zufar.icedlatte.user.api.UpdateUserOperationPerformer;
 import com.zufar.icedlatte.filestorage.file.FileDeleter;
 import com.zufar.icedlatte.user.api.avatar.UserAvatarLinkProvider;
 import com.zufar.icedlatte.user.api.avatar.UserAvatarUploader;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -68,7 +69,7 @@ public class UserEndpoint implements com.zufar.icedlatte.openapi.user.api.UserAp
 
     @Override
     @PutMapping
-    public ResponseEntity<UserDto> editUserById(UpdateUserAccountRequest updateUserAccountRequest) {
+    public ResponseEntity<UserDto> editUserById(@Valid @RequestBody UpdateUserAccountRequest updateUserAccountRequest) {
         UUID userId = securityPrincipalProvider.getUserId();
         log.info("Received the request to edit the User with userId - {}.", userId);
         UserDto updatedUserDto = updateUserOperationPerformer.updateUser(updateUserAccountRequest);

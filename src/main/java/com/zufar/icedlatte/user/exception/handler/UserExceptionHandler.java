@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -46,5 +47,18 @@ public class UserExceptionHandler {
         log.warn("Handle user's invalid old password exception: failed: message: {}, debugMessage: {}",
                 apiErrorResponse.message(), errorDebugMessageCreator.buildErrorDebugMessage(exception));
         return apiErrorResponse;
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrorResponse handleValidationExceptions(MethodArgumentNotValidException ex) {
+        StringBuilder errorMessage = new StringBuilder();
+        ex.getBindingResult().getFieldErrors().forEach(error -> {
+            if (errorMessage.length() > 0) {
+                errorMessage.append(" and ");
+            }
+            errorMessage.append(error.getDefaultMessage());
+        });
+        return apiErrorResponseCreator.buildResponse(errorMessage.toString(), HttpStatus.BAD_REQUEST);
     }
 }
