@@ -97,7 +97,7 @@ ai:
 # Spring AI Properties
 #
   openai:
-    api-key: "sk-proj-PHBqaOlpTchhqHyeQ4aTT3BlbkFJ3Pmjr0HU9YkZS18ns4e3"
+    api-key: "sk-proj-"
     prompt: "You are an assistant who checks texts for appropriateness.
             Analyze the following text {review} and determine if it contains political statements,
             non-English language, or inappropriate language.

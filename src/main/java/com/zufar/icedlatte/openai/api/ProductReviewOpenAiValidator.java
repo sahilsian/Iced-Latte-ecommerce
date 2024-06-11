@@ -1,5 +1,6 @@
 package com.zufar.icedlatte.openai.api;
 
+import com.zufar.icedlatte.openai.exception.ChatServiceUnavailableException;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
@@ -34,9 +35,13 @@ public class ProductReviewOpenAiValidator {
         PromptTemplate promptTemplate = new PromptTemplate(openAiPrompt);
         promptTemplate.add("review", review);
 
-        ChatResponse response = chatModel.call(new Prompt(List.of(promptTemplate.createMessage()),
-                OpenAiChatOptions.builder().build()));
-
+        ChatResponse response;
+        try {
+            response = chatModel.call(new Prompt(List.of(promptTemplate.createMessage()),
+                    OpenAiChatOptions.builder().build()));
+        } catch (Exception e) {
+            throw new ChatServiceUnavailableException("Chat service is unavailable", e);
+        }
         return response.getResults().stream()
                 .anyMatch(result -> !result.getOutput().getContent().startsWith("not appropriate"));
     }
