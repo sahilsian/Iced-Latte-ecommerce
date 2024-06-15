@@ -6,7 +6,7 @@ import com.zufar.icedlatte.openapi.dto.ProductReviewDto;
 import com.zufar.icedlatte.openapi.dto.ProductReviewLikeDto;
 import com.zufar.icedlatte.openapi.dto.ProductReviewsAndRatingsWithPagination;
 import com.zufar.icedlatte.review.validator.GetReviewsRequestValidator;
-import com.zufar.icedlatte.review.api.ProductAverageRatingProvider;
+import com.zufar.icedlatte.review.api.ProductReviewsStatisticsProvider;
 import com.zufar.icedlatte.review.api.ProductReviewCreator;
 import com.zufar.icedlatte.review.api.ProductReviewDeleter;
 import com.zufar.icedlatte.review.api.ProductReviewLikesUpdater;
@@ -42,7 +42,7 @@ public class ProductReviewEndpoint implements com.zufar.icedlatte.openapi.produc
     private final ProductReviewCreator productReviewCreator;
     private final ProductReviewDeleter productReviewDeleter;
     private final ProductReviewsProvider productReviewsProvider;
-    private final ProductAverageRatingProvider productAverageRatingProvider;
+    private final ProductReviewsStatisticsProvider productReviewsStatisticsProvider;
     private final ProductReviewLikesUpdater productReviewLikesUpdater;
     private final GetReviewsRequestValidator getReviewsRequestValidator;
 
@@ -96,7 +96,7 @@ public class ProductReviewEndpoint implements com.zufar.icedlatte.openapi.produc
     @GetMapping("/{productId}/reviews/statistics")
     public ResponseEntity<ProductReviewRatingStats> getRatingAndReviewStat(@PathVariable final UUID productId) {
         log.info("Received the request to get the statistics of product's review and rating for the product with the productId = '{}'", productId);
-        final ProductReviewRatingStats stats = productAverageRatingProvider.getRatingAndReviewStat(productId);
+        final ProductReviewRatingStats stats = productReviewsStatisticsProvider.get(productId);
         log.info("Statistics for product's review and rating for the product with the productId = '{}' was retrieved successfully", productId);
         return ResponseEntity.ok().body(stats);
     }

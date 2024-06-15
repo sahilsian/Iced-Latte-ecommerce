@@ -53,23 +53,21 @@ class PageableProductsProviderTest {
     void shouldFetchProductsUsingPageAttributes() {
         Page<ProductInfo> page = new PageImpl<>(products);
         final int pageNumber = 1;
-        final int size = 10;
+        final int pageSize = 10;
         final String sortAttribute = "name";
+        Sort.Direction sortDirection = Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sortDirection, sortAttribute);
 
-        Pageable pageRequest = PageRequest.of(pageNumber, size, Sort.Direction.ASC, sortAttribute);
-
-        when(productRepository.findAll(pageRequest)).thenReturn(page);
+        when(productRepository.findAllProducts( null, null, null, null, null, pageable)).thenReturn(page);
         when(productInfoConverter.toDto(any(ProductInfo.class))).thenReturn(mock(ProductInfoDto.class));
-        when(productInfoConverter.toProductPaginationDto(ArgumentMatchers.<Page<ProductInfoDto>>any())).thenReturn(mock(ProductListWithPaginationInfoDto.class));
+        when(productInfoConverter.toProductPaginationDto(ArgumentMatchers.any())).thenReturn(mock(ProductListWithPaginationInfoDto.class));
         when(productUpdater.update(any(ProductInfoDto.class))).thenReturn(mock(ProductInfoDto.class));
 
-        ProductListWithPaginationInfoDto productList = productsProvider.getProducts(pageNumber, size,
-                sortAttribute, Sort.Direction.ASC.name()
-        );
+        ProductListWithPaginationInfoDto productList = productsProvider.getProducts(pageable, null, null, null, null, null);
 
         assertNotNull(productList);
 
-        verify(productRepository, times(1)).findAll(pageRequest);
-        verify(productInfoConverter, times(1)).toProductPaginationDto(ArgumentMatchers.<Page<ProductInfoDto>>any());
+        verify(productRepository, times(1)).findAllProducts( null, null, null, null, null, pageable);
+        verify(productInfoConverter, times(1)).toProductPaginationDto(ArgumentMatchers.any());
     }
 }

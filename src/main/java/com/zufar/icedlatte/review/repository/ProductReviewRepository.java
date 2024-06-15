@@ -36,10 +36,10 @@ public interface ProductReviewRepository extends JpaRepository<ProductReview, UU
             "WHERE pr.productId = :productId")
     Double getAvgRatingByProductId(UUID productId);
 
-    @Query("SELECT new com.zufar.icedlatte.review.dto.ProductRatingCount(pr.productRating, COUNT(pr.productRating)) " +
-            "FROM ProductReview pr " +
-            "WHERE pr.productId = :productId " +
-            "GROUP BY pr.productRating")
+    @Query("SELECT new com.zufar.icedlatte.review.dto.ProductRatingCount(productReview.productRating, COUNT(productReview.productRating)) " +
+            "FROM ProductReview productReview " +
+            "WHERE productReview.productId = :productId " +
+            "GROUP BY productReview.productRating")
     List<ProductRatingCount> getRatingsMapByProductId(UUID productId);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
@@ -48,7 +48,7 @@ public interface ProductReviewRepository extends JpaRepository<ProductReview, UU
                     "SET likes_count = (" +
                         "SELECT count(product_reviews_likes.id) " +
                         "FROM product_reviews_likes " +
-                        "WHERE product_reviews_likes.is_like = true AND product_reviews_likes.review_id = product_reviews.id" +
+                        "WHERE product_reviews_likes.is_like = true AND product_reviews_likes.review_id = :productReviewId" +
                     ") " +
                     "WHERE product_reviews.id = :productReviewId")
     void updateLikesCount(final UUID productReviewId);
@@ -59,7 +59,7 @@ public interface ProductReviewRepository extends JpaRepository<ProductReview, UU
                     "SET dislikes_count = (" +
                         "SELECT count(product_reviews_likes.id) " +
                         "FROM product_reviews_likes " +
-                        "WHERE product_reviews_likes.is_like = false AND product_reviews_likes.review_id = product_reviews.id" +
+                        "WHERE product_reviews_likes.is_like = false AND product_reviews_likes.review_id = :productReviewId" +
                     ") " +
                     "WHERE product_reviews.id = :productReviewId")
     void updateDislikesCount(final UUID productReviewId);

@@ -221,16 +221,15 @@ components:
     UpdateUserAccountRequest:
       type: "object"
       description: "A user profile object details to update"
-      required:
-        - firstName
-        - lastName
       properties:
         firstName:
           type: "string"
           description: "The first name of the user"
+          x-field-extra-annotation: "@jakarta.validation.constraints.NotNull(message = \"First name is the mandatory attribute\")"
         lastName:
           type: "string"
           description: "The last name of the user"
+          x-field-extra-annotation: "@jakarta.validation.constraints.NotNull(message = \"Last name is the mandatory attribute\")"
         birthDate:
           type: "string"
           description: "The birth date of the user"

@@ -4,8 +4,6 @@ import com.zufar.icedlatte.favorite.converter.FavoriteListDtoConverter;
 import com.zufar.icedlatte.favorite.dto.FavoriteListDto;
 import com.zufar.icedlatte.favorite.entity.FavoriteListEntity;
 import com.zufar.icedlatte.favorite.repository.FavoriteRepository;
-import com.zufar.icedlatte.user.api.SingleUserProvider;
-import com.zufar.icedlatte.user.entity.UserEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,9 +32,6 @@ class FavoriteListProviderTest {
     private FavoriteRepository favoriteRepository;
 
     @Mock
-    private SingleUserProvider singleUserProvider;
-
-    @Mock
     private FavoriteListDtoConverter favoriteListDtoConverter;
 
     private final OffsetDateTime beforeLaunchTime = OffsetDateTime.now().minusSeconds(1);
@@ -60,15 +55,13 @@ class FavoriteListProviderTest {
     void shouldCreateNewFavoriteListIfItDoesntExist() {
         UUID userId = UUID.randomUUID();
 
-        UserEntity userEntity = new UserEntity();
-
         when(favoriteRepository.findByUserId(userId)).thenReturn(Optional.empty());
-        when(singleUserProvider.getUserEntityById(userId)).thenReturn(userEntity);
 
         FavoriteListEntity result = favoriteListProvider.getFavoriteListEntity(userId);
 
         verify(favoriteRepository, times(1)).findByUserId(userId);
-        assertEquals(userEntity, result.getUser());
+
+        assertEquals(userId, result.getUserId());
         assertTrue(result.getFavoriteItems().isEmpty());
         assertTrue(beforeLaunchTime.isBefore(result.getUpdatedAt()));
     }
@@ -86,7 +79,7 @@ class FavoriteListProviderTest {
                 OffsetDateTime.now()
         );
 
-        when(favoriteRepository.findByUserId(userId)).thenReturn(Optional.ofNullable(favoriteList));
+        when(favoriteRepository.findByUserId(userId)).thenReturn(Optional.of(favoriteList));
         when(favoriteListDtoConverter.toDto(favoriteList)).thenReturn(expectedFavoriteList);
 
         FavoriteListDto result = favoriteListProvider.getFavoriteListDto(userId);

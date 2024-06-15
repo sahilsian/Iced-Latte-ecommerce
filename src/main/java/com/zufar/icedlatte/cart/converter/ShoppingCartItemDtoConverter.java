@@ -13,6 +13,6 @@ import org.mapstruct.Named;
 public interface ShoppingCartItemDtoConverter {
 
     @Named("toShoppingCartItemDto")
-    @Mapping(target = "productInfo", source = "entity.productInfo", qualifiedByName = {"toProductInfoDto"})
+    @Mapping(target = "productInfo", source = "productInfo", qualifiedByName = {"toProductInfoDto"})
     ShoppingCartItemDto toDto(final ShoppingCartItem entity);
 }

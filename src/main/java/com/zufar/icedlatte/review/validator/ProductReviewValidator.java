@@ -30,7 +30,7 @@ public class ProductReviewValidator {
      * Check if the product review's text is not empty
      */
     public void validateReviewText(final String productReviewText) {
-        if (productReviewText.isEmpty()) {
+        if (productReviewText.trim().isEmpty()) {
             throw new EmptyProductReviewException();
         }
     }
@@ -52,7 +52,7 @@ public class ProductReviewValidator {
                                             final UUID productId) {
         var productReview = productReviewRepository.findByUserIdAndProductId(userId, productId);
         if (productReview.isPresent()) {
-            throw new DeniedProductReviewCreationException(productId, userId, productReview.get().getId());
+            throw new DeniedProductReviewCreationException(userId, productId, productReview.get().getId());
         }
     }
 

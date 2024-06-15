@@ -1,9 +1,14 @@
 package com.zufar.icedlatte.product.endpoint;
 
-import com.zufar.icedlatte.openapi.dto.*;
+import com.zufar.icedlatte.openapi.dto.BrandsDto;
+import com.zufar.icedlatte.openapi.dto.ProductIdsDto;
+import com.zufar.icedlatte.openapi.dto.ProductInfoDto;
+import com.zufar.icedlatte.openapi.dto.ProductListWithPaginationInfoDto;
+import com.zufar.icedlatte.openapi.dto.SellersDto;
+import com.zufar.icedlatte.product.api.ProductsProvider;
+import com.zufar.icedlatte.product.api.SingleProductProvider;
 import com.zufar.icedlatte.product.validator.GetProductsRequestValidator;
 import com.zufar.icedlatte.product.api.PageableProductsProvider;
-import com.zufar.icedlatte.product.api.ProductApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -33,15 +38,16 @@ public class ProductsEndpoint implements com.zufar.icedlatte.openapi.product.api
 
     public static final String PRODUCTS_URL = "/api/v1/products";
 
-    private final ProductApi productApi;
-    private final PageableProductsProvider productsProvider;
+    private final ProductsProvider productsProvider;
+    private final PageableProductsProvider pageableProductsProvider;
     private final GetProductsRequestValidator getProductsRequestValidator;
+    private final SingleProductProvider singleProductProvider;
 
     @Override
     @GetMapping("/{productId}")
     public ResponseEntity<ProductInfoDto> getProductById(@PathVariable final UUID productId) {
         log.info("Received the request to get the product with productId - {}.", productId);
-        ProductInfoDto product = productApi.getProduct(productId);
+        ProductInfoDto product = singleProductProvider.getProductById(productId);
         log.info("The product with productId: {} was retrieved successfully", productId);
         return ResponseEntity.ok()
                 .body(product);
@@ -62,7 +68,7 @@ public class ProductsEndpoint implements com.zufar.icedlatte.openapi.product.api
                 "page - {}, size - {}, sort_attribute - {}, sort_direction - {}", pageNumber, pageSize, sortAttribute, sortDirection);
         getProductsRequestValidator.validate(pageNumber, pageSize, sortAttribute, sortDirection, minPrice, maxPrice, minimumAverageRating, brandNames, sellersNames);
         Pageable pageable = createPageableObject(pageNumber, pageSize, sortAttribute, sortDirection);
-        ProductListWithPaginationInfoDto productPaginationDto = productsProvider.getProducts(pageable, minPrice, maxPrice, minimumAverageRating, brandNames, sellersNames);
+        ProductListWithPaginationInfoDto productPaginationDto = pageableProductsProvider.getProducts(pageable, minPrice, maxPrice, minimumAverageRating, brandNames, sellersNames);
         log.info("Products were retrieved successfully with these pagination and sorting attributes: " +
                 "page - {}, size - {}, sort_attribute - {}, sort_direction - {}", pageNumber, pageSize, sortAttribute, sortDirection);
         return ResponseEntity.ok()
@@ -75,7 +81,7 @@ public class ProductsEndpoint implements com.zufar.icedlatte.openapi.product.api
         List<UUID> productIds = productIdsDto.getProductIds();
         var stringIDs = productIds.stream().map(UUID::toString).collect(Collectors.joining(", "));
         log.info("Received the request to get the products with productIds - {}.", stringIDs);
-        List<ProductInfoDto> products = productApi.getProducts(productIds);
+        List<ProductInfoDto> products = productsProvider.getProducts(productIds);
         log.info("Products with productIds: {} was retrieved successfully", stringIDs);
         return ResponseEntity.ok()
                 .body(products);

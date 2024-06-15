@@ -16,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static com.zufar.icedlatte.common.util.Utils.createPageableObject;
-
 
 @Slf4j
 @Service
@@ -36,23 +34,9 @@ public class PageableProductsProvider {
                                                         final List<String> brandNames,
                                                         final List<String> sellerNames) {
         BigDecimal minimumAverageRatingValue = minimumAverageRating == null ? null : BigDecimal.valueOf(minimumAverageRating);
+
         Page<ProductInfoDto> productsWithPageInfo = productInfoRepository
                 .findAllProducts(minPrice, maxPrice, minimumAverageRatingValue, brandNames, sellerNames, pageable)
-                .map(productInfoDtoConverter::toDto)
-                .map(productUpdater::update);
-
-        return productInfoDtoConverter.toProductPaginationDto(productsWithPageInfo);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, readOnly = true)
-    public ProductListWithPaginationInfoDto getProducts(final Integer page,
-                                                        final Integer size,
-                                                        final String sortAttribute,
-                                                        final String sortDirection) {
-        Pageable pageable = createPageableObject(page, size, sortAttribute, sortDirection);
-
-        Page<ProductInfoDto> productsWithPageInfo = productInfoRepository
-                .findAll(pageable)
                 .map(productInfoDtoConverter::toDto)
                 .map(productUpdater::update);
 
