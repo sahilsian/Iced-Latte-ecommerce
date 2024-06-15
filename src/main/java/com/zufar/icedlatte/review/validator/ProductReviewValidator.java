@@ -52,7 +52,7 @@ public class ProductReviewValidator {
                                             final UUID productId) {
         var productReview = productReviewRepository.findByUserIdAndProductId(userId, productId);
         if (productReview.isPresent()) {
-            throw new DeniedProductReviewCreationException(productId, userId, productReview.get().getId());
+            throw new DeniedProductReviewCreationException(userId, productId, productReview.get().getId());
         }
     }
 
