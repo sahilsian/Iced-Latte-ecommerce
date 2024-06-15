@@ -19,6 +19,14 @@ spring:
   output:
     ansi:
       enabled: detect
+  ai:
+    openai:
+      api-key: ${SPRING_AI_OPENAI_API_KEY}
+      prompt: ${SPRING_AI_PROMPT}
+
+      chat:
+        options:
+          model: gpt-3.5-turbo
 
   #
   # Database Properties
