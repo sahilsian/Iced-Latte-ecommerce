@@ -44,4 +44,8 @@ public class ShoppingCartManager implements CartApi {
                                                                           final int productQuantityChange) throws ShoppingCartNotFoundException, ShoppingCartItemNotFoundException, InvalidShoppingCartIdException {
         return productQuantityItemUpdater.update(shoppingCartItemId, productQuantityChange);
     }
+
+    public void deleteByUserId(final UUID userId) {
+        shoppingCartProvider.deleteByUserId(userId);
+    }
 }

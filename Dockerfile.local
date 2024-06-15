@@ -1,8 +1,10 @@
 FROM maven:3.9-eclipse-temurin-21-alpine AS build
-WORKDIR /usr/app
-COPY . /usr/app
-RUN mvn versions:set-property -Dproperty=project.version -DnewVersion=0.0.1 && \
-    mvn package -Pdev -DskipTests
+ENV HOME=/usr/app
+WORKDIR $HOME
+COPY pom.xml $HOME
+RUN mvn verify clean --fail-never
+COPY . $HOME
+RUN --mount=type=cache,target=/root/.m2 mvn package -Pdev -DskipTests
 
 FROM maven:3.9-eclipse-temurin-21-alpine
 WORKDIR /usr/app
