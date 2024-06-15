@@ -30,7 +30,7 @@ public class ProductReviewValidator {
      * Check if the product review's text is not empty
      */
     public void validateReviewText(final String productReviewText) {
-        if (productReviewText.isEmpty()) {
+        if (productReviewText.trim().isEmpty()) {
             throw new EmptyProductReviewException();
         }
     }
