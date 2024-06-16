@@ -22,7 +22,12 @@ spring:
   ai:
     openai:
       api-key: ${SPRING_AI_OPENAI_API_KEY}
-      prompt: ${SPRING_AI_PROMPT}
+      prompt: "You are an assistant who checks texts for appropriateness.
+            Analyze the following text {review} and determine if it contains political statements,
+            non-English language, or inappropriate language.
+            If you find any of these issues, return the phrase 'not appropriate', after return the reason in curly brackets. 
+            Only the reason should be in curly brackets.
+            Else return OK"
 
       chat:
         options:
