@@ -57,13 +57,14 @@ public class UserExceptionHandler {
         log.warn("Handle user's invalid property exception: failed: message: {}, debugMessage: {}",
                 apiErrorResponse.message(), errorDebugMessageCreator.buildErrorDebugMessage(exception));
         return apiErrorResponse;
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrorResponse handleValidationExceptions(MethodArgumentNotValidException ex) {
         StringBuilder errorMessage = new StringBuilder();
         ex.getBindingResult().getFieldErrors().forEach(error -> {
-            if (errorMessage.length() > 0) {
+            if (!errorMessage.isEmpty()) {
                 errorMessage.append(" and ");
             }
             errorMessage.append(error.getDefaultMessage());
