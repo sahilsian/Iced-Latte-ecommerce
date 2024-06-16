@@ -21,7 +21,7 @@ spring:
       enabled: detect
   ai:
     openai:
-      api-key: ${SPRING_AI_OPENAI_API_KEY}
+      api-key: ${OPENAI_API_KEY}
       prompt: ${SPRING_AI_PROMPT}
 
       chat:

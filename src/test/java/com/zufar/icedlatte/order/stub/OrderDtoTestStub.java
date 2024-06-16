@@ -7,6 +7,7 @@ import com.zufar.icedlatte.order.entity.OrderItem;
 import com.zufar.icedlatte.product.entity.ProductInfo;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -68,14 +69,16 @@ public class OrderDtoTestStub {
     public static OrderItem createFirstOrderItem(Order order) {
         UUID firstProductId = UUID.fromString("a834c24e-886d-470f-bf19-7454a60f0639");
         ProductInfo firstProductInfo = new ProductInfo(
-                firstProductId, "First test name", "First test description", BigDecimal.valueOf(1.1), 30, true, BigDecimal.ZERO, 0, "brandName", "sellerName");
+                firstProductId, "First test name", "First test description", BigDecimal.valueOf(1.1), 30, true, BigDecimal.ZERO, 0, "brandName", "sellerName",
+                "originCountry", 100, 10, 5, 15, 100, 10, LocalDateTime.now(), 50);
         return new OrderItem(firstProductId, order, firstProductInfo, 5);
     }
 
     public static OrderItem createSecondOrderItem(Order order) {
         UUID secondProductId = UUID.fromString("2ade78e3-aa45-4b6b-adf4-86f8302ced7d");
         ProductInfo secondProductInfo = new ProductInfo(
-                secondProductId, "Second test name", "Second test description", BigDecimal.valueOf(2.2), 70, true, BigDecimal.ZERO, 0, "brandName", "sellerName");
+                secondProductId, "Second test name", "Second test description", BigDecimal.valueOf(2.2), 70, true, BigDecimal.ZERO, 0, "brandName", "sellerName",
+                "originCountry", 200, 20, 5, 5, 200, 10, LocalDateTime.now(), 40);
         return new OrderItem(secondProductId, order, secondProductInfo, 3);
     }
 }
