@@ -67,6 +67,9 @@ jobs:
               -e GOOGLE_AUTH_CLIENT_SECRET=${{ vars.GOOGLE_AUTH_CLIENT_SECRET }} \
               -e GOOGLE_AUTH_REDIRECT_URI=${{ vars.GOOGLE_AUTH_REDIRECT_URI }} \
               -e REDIS_PORT=${{ vars.REDIS_PORT }} \
+              -e SPRING_AI_PROMPT=${{ vars.SPRING_AI_PROMPT }} \
+              -e SPRING_AI_OPENAI_API_KEY=${{ secrets.SPRING_AI_OPENAI_API_KEY }} \ 
+              -e STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }} \ 
               -v ${{ vars.APP_DATA_PATH_ON_THE_REMOTE_SERVER }}:/usr/app/logs \
               -v ${{ vars.APP_DATA_PATH_ON_THE_REMOTE_SERVER }}/products:/usr/app/products \
               zufarexplainedit/iced-latte-backend:latest-version
