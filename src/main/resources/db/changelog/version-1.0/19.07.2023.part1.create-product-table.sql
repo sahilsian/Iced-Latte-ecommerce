@@ -10,14 +10,14 @@ CREATE TABLE IF NOT EXISTS product (
     brand_name      VARCHAR(64) NOT NULL,
     seller_name     VARCHAR(64) NOT NULL,
     origin_country  VARCHAR(128) NOT NULL,
-    weight          DECIMAL NOT NULL CHECK (weight > 0),
+    weight          INT NOT NULL CHECK (weight > 0),
     size_length     INT NOT NULL CHECK (size_length > 0),
     size_width      INT NOT NULL CHECK (size_width > 0),
     size_height     INT NOT NULL CHECK (size_height > 0),
     sold_products_count INT NOT NULL CHECK (sold_products_count > 0),
     discount        INT NOT NULL CHECK (discount > 0),
     date_added      TIMESTAMPTZ NOT NULL CHECK (date_added <= CURRENT_TIMESTAMP),
-    popularity_score NOT NULL CHECK (popularity_score > 0),
+    popularity_score INT NOT NULL CHECK (popularity_score > 0),
     PRIMARY KEY (id)
 );
 
