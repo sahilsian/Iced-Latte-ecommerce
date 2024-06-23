@@ -1,4 +1,3 @@
-
 #
 # Server Properties
 #
@@ -35,6 +34,21 @@ spring:
     user: ${spring.datasource.username}
     password: ${spring.datasource.password}
     drop-first: true
+  #
+  # Spring AI Properties
+  #
+  ai:
+    openai:
+      api-key: "sk-proj-"
+      prompt: "You are an assistant who checks texts for appropriateness.
+            Analyze the following text {review} and determine if it contains political statements,
+            non-English language, or inappropriate language.
+            If you find any of these issues, return the phrase 'not appropriate', after return the reason in curly brackets. 
+            Only the reason should be in curly brackets.
+            Else return OK"
+    chat:
+      options:
+        model: gpt-3.5-turbo
 
   #
   # Aws Properties
@@ -88,25 +102,10 @@ jwt:
 #
 ai:
   # https://platform.openai.com/docs/api-reference/moderations/create
-  url:          "https://api.openai.com/v1/moderations"
-  api_key:      "sk-api-key"
+  url: "https://api.openai.com/v1/moderations"
+  api_key: "sk-api-key"
   request_body: '{ "input": "$message"}'
   message_replacement_pattern: "$message"
-
-#
-# Spring AI Properties
-#
-  openai:
-    api-key: "sk-proj-"
-    prompt: "You are an assistant who checks texts for appropriateness.
-            Analyze the following text {review} and determine if it contains political statements,
-            non-English language, or inappropriate language.
-            If you find any of these issues, return the phrase 'not appropriate', after return the reason in curly brackets. 
-            Only the reason should be in curly brackets.
-            Else return OK"
-    chat:
-      options:
-        model: gpt-3.5-turbo
 
 #
 # Google Auth Properties
