@@ -51,11 +51,11 @@ public class OrderItem {
         if (object == null || getClass() != object.getClass())
             return false;
 
-        var that = (OrderItem) object;
+        var otherOrderItem = (OrderItem) object;
 
         return new EqualsBuilder()
-                .append(id, that.id)
-                .append(productInfo, that.productInfo)
+                .append(id, otherOrderItem.id)
+                .append(productInfo, otherOrderItem.productInfo)
                 .isEquals();
     }
 
