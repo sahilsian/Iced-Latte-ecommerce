@@ -102,9 +102,9 @@ Contributions are welcome.
 
 The main point of interaction is the [Issues page](https://github.com/Sunagatov/Iced-Latte/issues).
 
-Here's our contribution guidelines — [CONTRIBUTING.md](CONTRIBUTING.md).
-
 > The official development language at the moment is English, because 100% of our users speak it. We don't want to introduce unnecessary barriers for them. But we are used to writing commits and comments in Russian and we won't mind communicating with you in it.
+
+The bussiness docs are here [Docs](https://drive.google.com/drive/folders/1vvfXy6n4cz01JjNyTgoYG0g6EIRvyHDw?usp=share_link).
 
 ### 😎 I want to write some code
 
