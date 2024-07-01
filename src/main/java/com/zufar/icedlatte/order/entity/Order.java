@@ -83,8 +83,8 @@ public class Order {
             return true;
         if (object == null || getClass() != object.getClass())
             return false;
-        var that = (Order) object;
-        return Objects.equals(id, that.id);
+        var order = (Order) object;
+        return Objects.equals(id, order.id);
     }
 
     @Override
