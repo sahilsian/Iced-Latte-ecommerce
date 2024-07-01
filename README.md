@@ -106,6 +106,8 @@ The main point of interaction is the [Issues page](https://github.com/Sunagatov/
 
 The bussiness docs are here [Docs](https://drive.google.com/drive/folders/1vvfXy6n4cz01JjNyTgoYG0g6EIRvyHDw?usp=share_link).
 
+Swagger REST APIs contracts described [here](https://iced-latte.uk/backend/api/docs/swagger-ui/index.html).
+
 ### 😎 I want to write some code
 
 - Open our [Issues page](https://github.com/Sunagatov/Iced-Latte/issues) to see the most important tickets at top.
