@@ -20,24 +20,42 @@ public class StripeLineItemsConverter {
     public List<SessionCreateParams.LineItem> getLineItems(ShoppingCartDto shoppingCart) {
         var result = new ArrayList<SessionCreateParams.LineItem>();
         for (ShoppingCartItemDto item : shoppingCart.getItems()) {
-            var quantity = item.getProductQuantity();
-            // convert to cents
-            var unitAmount = item.getProductInfo().getPrice().multiply(BigDecimal.valueOf(100)).longValue();
-            var productName = item.getProductInfo().getName();
-            var productData = SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                    .setName(productName)
-                    .build();
-            var priceData = SessionCreateParams.LineItem.PriceData.builder()
-                    .setUnitAmount(unitAmount)
-                    .setCurrency("USD")
-                    .setProductData(productData)
-                    .build();
-            var lineItem = SessionCreateParams.LineItem.builder()
-                    .setQuantity((long) quantity)
-                    .setPriceData(priceData)
-                    .build();
-            result.add(lineItem);
+            result.add(convertToLineItem(item));
         }
         return result;
+    }
+
+    private SessionCreateParams.LineItem convertToLineItem(ShoppingCartItemDto item) {
+        var quantity = item.getProductQuantity();
+        var unitAmount = convertToCents(item.getProductInfo().getPrice());
+        var productName = item.getProductInfo().getName();
+        var priceData = createPriceData(unitAmount, productName);
+        return buildLineItem(quantity, priceData);
+    }
+
+    private long convertToCents(BigDecimal price) {
+        return price.multiply(BigDecimal.valueOf(100)).longValue();
+    }
+
+    private SessionCreateParams.LineItem.PriceData createPriceData(long unitAmount, String productName) {
+        var productData = createProductData(productName);
+        return SessionCreateParams.LineItem.PriceData.builder()
+                .setUnitAmount(unitAmount)
+                .setCurrency("USD")
+                .setProductData(productData)
+                .build();
+    }
+
+    private SessionCreateParams.LineItem.PriceData.ProductData createProductData(String productName) {
+        return SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                .setName(productName)
+                .build();
+    }
+
+    private SessionCreateParams.LineItem buildLineItem(int quantity, SessionCreateParams.LineItem.PriceData priceData) {
+        return SessionCreateParams.LineItem.builder()
+                .setQuantity((long) quantity)
+                .setPriceData(priceData)
+                .build();
     }
 }
