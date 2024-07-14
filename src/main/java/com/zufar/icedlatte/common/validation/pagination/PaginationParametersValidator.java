@@ -9,30 +9,26 @@ public class PaginationParametersValidator {
 
     private static final Set<String> ALLOWED_SORT_DIRECTION_VALUES = Set.of("asc", "desc");
 
-    public StringBuilder validate(final Integer pageNumber,
-                                  final Integer pageSize,
-                                  final String sortAttribute,
-                                  final String sortDirection,
-                                  final Set<String> allowedSortAttributeValues) {
+    public StringBuilder validate(final PaginationParameters params) {
         final StringBuilder errorMessages = new StringBuilder();
-        if (pageNumber != null && pageNumber < 0) {
+        if (params.getPageNumber() != null && params.getPageNumber() < 0) {
             String errorMessage = String.format("'%s' is the incorrect 'PageNumber' attribute value. " +
-                    "'PageNumber' value should be non negative integer number value.", pageNumber);
+                    "'PageNumber' value should be non negative integer number value.", params.getPageNumber());
             errorMessages.append(createErrorMessage(errorMessage));
         }
-        if (pageSize != null && pageSize < 1) {
+        if (params.getPageSize() != null && params.getPageSize() < 1) {
             String errorMessage = String.format("'%s' is the incorrect 'PageSize' attribute value. " +
-                    "'PageSize' value should be non negative integer number value which is bigger than 1.", pageSize);
+                    "'PageSize' value should be non negative integer number value which is bigger than 1.", params.getPageSize());
             errorMessages.append(createErrorMessage(errorMessage));
         }
-        if (sortAttribute != null && !allowedSortAttributeValues.contains(sortAttribute)) {
+        if (params.getSortAttribute() != null && !params.getAllowedSortAttributeValues().contains(params.getSortAttribute())) {
             String errorMessage = String.format("'%s' is incorrect 'sortAttribute' value. Allowed 'sortAttribute' values are '%s'.",
-                    sortAttribute, allowedSortAttributeValues);
+            params.getSortAttribute(), params.getAllowedSortAttributeValues());
             errorMessages.append(createErrorMessage(errorMessage));
         }
-        if (sortDirection != null && !ALLOWED_SORT_DIRECTION_VALUES.contains(sortDirection.toLowerCase())) {
+        if (params.getSortDirection() != null && !ALLOWED_SORT_DIRECTION_VALUES.contains(params.getSortDirection().toLowerCase())) {
             String errorMessage = String.format("'%s' is incorrect 'sortDirection' value. Allowed 'sortDirection' values are '%s'.",
-                    sortDirection, ALLOWED_SORT_DIRECTION_VALUES);
+            params.getSortDirection(), ALLOWED_SORT_DIRECTION_VALUES);
             errorMessages.append(createErrorMessage(errorMessage));
         }
         return errorMessages;
