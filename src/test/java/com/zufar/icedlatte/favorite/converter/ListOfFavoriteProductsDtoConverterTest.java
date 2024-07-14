@@ -5,8 +5,8 @@ import com.zufar.icedlatte.favorite.dto.FavoriteListDto;
 import com.zufar.icedlatte.openapi.dto.ListOfFavoriteProductsDto;
 import com.zufar.icedlatte.openapi.dto.ProductInfoDto;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
 import java.time.OffsetDateTime;
@@ -14,7 +14,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ListOfFavoriteProductsDtoConverterTest {
 
@@ -44,8 +43,6 @@ public class ListOfFavoriteProductsDtoConverterTest {
 
         ListOfFavoriteProductsDto actualListOfFavoriteProductsDto = converter.toListProductDto(expectedFavoriteListDto);
 
-        assertThat(actualListOfFavoriteProductsDto.getProducts()).isEqualTo(converter.toProductInfoDto(expectedFavoriteListDto.favoriteItems()));
-
-        assertEquals(actualListOfFavoriteProductsDto.getProducts().get(0), productInfoDto);
+        assertThat(actualListOfFavoriteProductsDto.getProducts()).containsExactly(productInfoDto);
     }
 }
